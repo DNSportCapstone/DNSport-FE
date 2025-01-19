@@ -1,0 +1,12 @@
+.img-fluid {
+  height: 415px;
+  width: 415px;
+}
+
+.stadium-status-open {
+    color: #28a745;
+}
+
+.stadium-status-closed {
+    color: #dc3545;
+}

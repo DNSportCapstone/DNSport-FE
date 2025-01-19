@@ -1,25 +1,29 @@
 <template>
-    <header>
-        <div class="startClass">
-            <nav class="p-2">
-                <RouterLink class="m-2" to="/">Home</RouterLink>
-                <RouterLink class="m-2" to="/about">About</RouterLink>
-                <RouterLink class="m-2" to="/tesst">About</RouterLink>
-            </nav>
-        </div>
-    </header>
-    <div>
-        <Suspense>
-            <RouterView />
-        </Suspense>
-    </div>
+  <HeaderPage />
+  <router-view></router-view>
+  <FooterPage />
 </template>
 
-<script setup lang="ts">
-import {RouterLink, RouterView} from 'vue-router';
-</script>
-<style scoped>
-.startClass {
-    color: brown;
+<script>
+import HeaderPage from '@/components/HeaderPage.vue'
+import FooterPage from '@/components/FooterPage.vue'
+
+export default {
+  name: 'App',
+  components: {
+    HeaderPage,
+    FooterPage
+  }
 }
-</style>
+</script>
+
+<!-- <style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style> -->
