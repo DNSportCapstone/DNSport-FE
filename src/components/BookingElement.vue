@@ -1,5 +1,6 @@
 <template>
-    <div _ngcontent-c26="" @click="handleClick()" :class="isChoose ? 'mlp-slot rounded float-left mlp-slot-avail ng-star-inserted isChoose' : 'mlp-slot rounded float-left mlp-slot-avail ng-star-inserted'">
+    <div _ngcontent-c26="" @click="handleClick()"
+        :class="isChoose ? 'mlp-slot rounded float-left mlp-slot-avail ng-star-inserted isChoose' : 'mlp-slot rounded float-left mlp-slot-avail ng-star-inserted'">
         <!---->
         <div _ngcontent-c26="" class="ng-star-inserted">
             <div _ngcontent-c26="" class="mlp-line-one">
@@ -11,7 +12,7 @@
                 <!---->
 
                 <!----><span _ngcontent-c26="" class="ng-star-inserted">
-                    {{ price }}
+                    {{ formatCurrency(price) }}
                 </span>
             </div>
             <div _ngcontent-c26="" class="mlp-line-three">
@@ -21,6 +22,8 @@
     </div>
 </template>
 <script>
+/* import JS functions */
+import { formatVND } from '@/assets/scripts/common'
 export default {
     name: 'BookingElement',
     components: {},
@@ -63,7 +66,10 @@ export default {
             } else {
                 this.isChoose = true;
             }
-        }
+        },
+        formatCurrency(value) {
+            return formatVND(value); // Gọi trực tiếp từ component
+        },
     },
     watch: {            // 10. Theo dõi dữ liệu
         msg(newValue, oldValue) {
@@ -113,7 +119,8 @@ export default {
     letter-spacing: 1.5px;
     font-weight: 600;
 }
-.isChoose{
+
+.isChoose {
     background-color: #56e07b !important;
 }
 </style>

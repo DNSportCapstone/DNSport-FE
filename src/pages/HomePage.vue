@@ -1,6 +1,4 @@
 <template>
-    
-
     <!-- About Section -->
     <section id="about" class="about section">
 

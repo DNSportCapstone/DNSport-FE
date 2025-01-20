@@ -1,23 +1,40 @@
 .booking-container {
-    display: flex;
-    max-width: 1400px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background: #fff;
-    gap: 20px;
+  display: flex;
+  max-width: 1400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  gap: 20px;
 }
 
 .simplecalendar-time {
-    width: 5%;
+  width: 5%;
 }
 
 .simplecalendar-agenda {
-    width: 11%;
+  width: 11%;
 }
 
-.simplecalendar-date, .simplecalendar-td {
-    width: 12%;
+.simplecalendar-date,
+.simplecalendar-td {
+  width: 12%;
+}
+
+.component-calendar-cart {
+  .cart-info {
+    .cart-total, .slot-added {
+      color: var(--heading-color);
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .total-price, .count-added {
+      color: var(--accent-color);
+      font-size: 28px;
+      font-weight: 700;
+    }
+  }
 }
