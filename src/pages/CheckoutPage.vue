@@ -10,55 +10,190 @@
             </div>
             <div class="ibox-content">
               <div class="table-responsive">
-                <table class="table shoping-cart-table">
+                <table class="table booking-table">
                   <tbody>
                     <tr>
                       <td width="90">
-                        <div class="cart-product-imitation"></div>
+                        <div class="field-image"></div>
                       </td>
                       <td class="desc">
                         <h3>
-                          <a href="#" class="text-navy">
-                            Desktop publishing software
-                          </a>
+                          <a href="#" class="text-navy"> Sân bóng Đà Nẵng </a>
                         </h3>
                         <p class="small">
-                          It is a long established fact that a reader will be
-                          distracted by the readable content of a page when
-                          looking at its layout. The point of using Lorem Ipsum
-                          is
+                          Sân tiêu chuẩn với mặt cỏ nhân tạo chất lượng cao
                         </p>
+
                         <dl class="small m-b-none">
-                          <dt>Description lists</dt>
+                          <dt>Danh sách Slot</dt>
                           <dd>
-                            A description list is perfect for defining terms.
+                            Slot 1: 17:00 - 18:30
+                            <a href="#" class="text-muted"
+                              ><i class="fa fa-edit"></i> Sửa</a
+                            >
+                            |
+                            <a href="#" class="text-muted"
+                              ><i class="fa fa-trash"></i> Xóa</a
+                            >
                           </dd>
+                          <table class="table service-table">
+                            <tr>
+                              <th>Dịch vụ</th>
+                              <th>Giá</th>
+                              <th>Số lượng</th>
+                              <th>Hành động</th>
+                            </tr>
+                            <tr>
+                              <td>Nước</td>
+                              <td>10,000 VND</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value="1"
+                                  min="0"
+                                  class="form-control service-quantity"
+                                />
+                              </td>
+                              <td>
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-edit"></i> Sửa</a
+                                >
+                                |
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-trash"></i> Xóa</a
+                                >
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Trọng tài</td>
+                              <td>50,000 VND</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value="1"
+                                  min="0"
+                                  class="form-control service-quantity"
+                                />
+                              </td>
+                              <td>
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-edit"></i> Sửa</a
+                                >
+                                |
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-trash"></i> Xóa</a
+                                >
+                              </td>
+                            </tr>
+                          </table>
+                          <dd>
+                            Slot 2: 18:30 - 20:00
+                            <a href="#" class="text-muted"
+                              ><i class="fa fa-edit"></i> Sửa</a
+                            >
+                            |
+                            <a href="#" class="text-muted"
+                              ><i class="fa fa-trash"></i> Xóa</a
+                            >
+                          </dd>
+                          <table class="table service-table">
+                            <tr>
+                              <th>Dịch vụ</th>
+                              <th>Giá</th>
+                              <th>Số lượng</th>
+                              <th>Hành động</th>
+                            </tr>
+                            <tr>
+                              <td>Nước</td>
+                              <td>10,000 VND</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value="1"
+                                  min="0"
+                                  class="form-control service-quantity"
+                                />
+                              </td>
+                              <td>
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-edit"></i> Sửa</a
+                                >
+                                |
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-trash"></i> Xóa</a
+                                >
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Trọng tài</td>
+                              <td>50,000 VND</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value="1"
+                                  min="0"
+                                  class="form-control service-quantity"
+                                />
+                              </td>
+                              <td>
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-edit"></i> Sửa</a
+                                >
+                                |
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-trash"></i> Xóa</a
+                                >
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Áo tập</td>
+                              <td>20,000 VND</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value="1"
+                                  min="0"
+                                  class="form-control service-quantity"
+                                />
+                              </td>
+                              <td>
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-edit"></i> Sửa</a
+                                >
+                                |
+                                <a href="#" class="text-muted"
+                                  ><i class="fa fa-trash"></i> Xóa</a
+                                >
+                              </td>
+                            </tr>
+                          </table>
+                          <a href="#" class="text-muted"
+                            ><i class="fa fa-plus"></i> Thêm Slot</a
+                          >
                         </dl>
 
                         <div class="m-t-sm">
-                          <a href="#" class="text-muted"
-                            ><i class="fa fa-gift"></i> Add gift package</a
-                          >
+                          <a href="#" class="text-muted">
+                            <i class="fa fa-calendar"></i> Chọn thời gian khác
+                          </a>
                           |
-                          <a href="#" class="text-muted"
-                            ><i class="fa fa-trash"></i> Remove item</a
-                          >
+                          <a href="#" class="text-muted">
+                            <i class="fa fa-trash"></i> Hủy đặt sân
+                          </a>
                         </div>
                       </td>
 
-                      <td>
-                        $180,00
-                        <s class="small text-muted">$230,00</s>
-                      </td>
+                      <td>300,000 VND / Slot</td>
                       <td width="65">
                         <input
+                          disabled
                           type="text"
                           class="form-control"
-                          placeholder="1"
+                          value="2"
                         />
                       </td>
                       <td>
-                        <h4>$180,00</h4>
+                        <h4>600,000 VND</h4>
                       </td>
                     </tr>
                   </tbody>
@@ -82,7 +217,7 @@
                           available
                         </p>
                         <dl class="small m-b-none">
-                          <dt>Description lists</dt>
+                          <dt>Slot lists</dt>
                           <dd>List is perfect for defining terms.</dd>
                         </dl>
 
@@ -266,7 +401,7 @@
               </div>
             </div>
             <div class="ibox-content">
-              <button class="btn btn-primary pull-right">
+              <button class="btn btn-dns-primary pull-right">
                 <i class="fa fa fa-shopping-cart"></i> Checkout
               </button>
               <button class="btn btn-white">
@@ -291,7 +426,7 @@
               </span>
               <div class="m-t-sm">
                 <div class="btn-group">
-                  <a href="#" class="btn btn-primary btn-sm"
+                  <a href="#" class="btn btn-dns-primary btn-sm"
                     ><i class="fa fa-shopping-cart"></i> Checkout</a
                   >
                   <a href="#" class="btn btn-white btn-sm"> Cancel</a>
@@ -323,7 +458,7 @@
                   Many desktop publishing packages and web page editors now.
                 </div>
                 <div class="m-t text-righ">
-                  <a href="#" class="btn btn-xs btn-outline btn-primary"
+                  <a href="#" class="btn btn-xs btn-outline btn-dns-primary"
                     >Info <i class="fa fa-long-arrow-right"></i>
                   </a>
                 </div>
@@ -335,7 +470,7 @@
                   Many desktop publishing packages and web page editors now.
                 </div>
                 <div class="m-t text-righ">
-                  <a href="#" class="btn btn-xs btn-outline btn-primary"
+                  <a href="#" class="btn btn-xs btn-outline btn-dns-primary"
                     >Info <i class="fa fa-long-arrow-right"></i>
                   </a>
                 </div>
@@ -362,10 +497,6 @@ export default {
 };
 </script>
 <style>
-body {
-  margin-top: 20px;
-  background: #eee;
-}
 h3 {
   font-size: 16px;
 }
@@ -455,5 +586,8 @@ table.shoping-cart-table tr td:last-child {
   font-size: 90%;
   background: #ffffff;
   padding: 10px 15px;
+}
+.service-quantity {
+  width: 65px;
 }
 </style>

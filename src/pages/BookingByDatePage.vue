@@ -311,6 +311,9 @@
                                                     :time="slot.time"
                                                     :price="slot.price"
                                                     :duration="slot.duration"
+                                                    @click="
+                                                      toggleSlotSelection(slot)
+                                                    "
                                                   />
                                                 </a>
                                               </td>
@@ -350,10 +353,12 @@
       </div>
     </div>
   </div>
+  <SlotsChoosenPage :slots="selectedSlots" />
 </template>
 <script>
 /* import Components */
 import BookingElement from "@/components/BookingElement.vue";
+import SlotsChoosenPage from "@/components/SlotsChoosenPage.vue";
 /* import JS functions */
 import { formatVND } from "@/assets/scripts/common";
 
@@ -361,10 +366,12 @@ export default {
   name: "App",
   components: {
     BookingElement,
+    SlotsChoosenPage,
   },
   data() {
     return {
       bookingSlots: [],
+      selectedSlots: [],
     };
   },
   methods: {
@@ -385,6 +392,14 @@ export default {
       }
 
       this.bookingSlots = slots;
+    },
+    toggleSlotSelection(slot) {
+      console.log(this.selectedSlots);
+      if (this.selectedSlots.includes(slot)) {
+        this.selectedSlots = this.selectedSlots.filter((s) => s !== slot);
+      } else {
+        this.selectedSlots.push(slot);
+      }
     },
     formatCurrency(number) {
       return formatVND(number);

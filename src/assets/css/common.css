@@ -42,9 +42,25 @@
   padding: 10px 30px;
   transition: 0.4s;
   border-radius: 10px;
+  margin: 2px;
 }
 
 .btn-dns-primary:hover {
   color: var(--contrast-color);
   background: color-mix(in srgb, var(--accent-color), transparent 25%);
+}
+
+.btn-dns-secondary {
+  color: var(--accent-color);
+  background: var(--contrast-color);
+  border: 0;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 10px;
+  margin: 2px;
+}
+
+.btn-dns-secondary :hover {
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--contrast-color), transparent 25%);
 }

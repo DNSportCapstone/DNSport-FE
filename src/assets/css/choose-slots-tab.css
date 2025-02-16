@@ -1,0 +1,76 @@
+/* Tab slot đã chọn */
+.selected-slots-tab {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  width: 300px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0.95;
+  z-index: 9999;
+}
+
+.selected-slots-tab.open {
+  transform: translateY(0);
+}
+
+.selected-slots-tab .tab-header {
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  position: relative;
+}
+
+.selected-slots-tab .tab-header .slot-count {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  background: #2e7d32;
+  color: #ffffff;
+  border-radius: 100%;
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.selected-slots-tab .tab-content {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.slot-selected-item {
+  padding: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.no-slot {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+/* Thu nhỏ tab khi đóng */
+.selected-slots-tab:not(.open) {
+  transform: translateY(80%);
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.tab-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  color: #ffffff;
+  padding: 5px 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
