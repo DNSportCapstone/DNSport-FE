@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store";
 import HomePage from "@/pages/HomePage.vue";
 import ShopPage from "@/pages/ShopPage.vue";
 import BookingByDatePage from "@/pages/BookingByDatePage.vue";
@@ -68,5 +69,14 @@ router.beforeEach((to, from, next) => {
     next("/");
   } else {
     next();
+  }
+});
+
+router.afterEach(() => {
+  const accessToken = store.getters.accessToken;
+  if (accessToken != null) {
+    localStorage.setItem("accessToken", accessToken);
+  } else if (localStorage.getItem("accessToken") != null) {
+    store.dispatch("setAccessToken", localStorage.getItem("accessToken"));
   }
 });

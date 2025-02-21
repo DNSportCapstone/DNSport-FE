@@ -10,24 +10,38 @@
 </template>
 
 <script>
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import API from "@/utils/axios";
 
 export default {
   methods: {
     async loginWithGoogle(callback) {
       try {
         const { credential } = callback;
-        const response = await axios.post(
-          "https://localhost:7247/api/auth/google-login",
-          {
-            token: credential,
-          }
-        );
+        const response = await API.post("/auth/google-login", {
+          token: credential,
+        });
+
         if (response.status == 200) {
-          localStorage.setItem("accessToken", response.data.token);
-          var accessTokenDecoded = jwtDecode(response.data.token);
-          localStorage.setItem("fullName", accessTokenDecoded.fullName);
+          var accessTokenDecoded = jwtDecode(response.data.accessToken);
+
+          this.$store.dispatch("setAccessToken", response.data.accessToken);
+
+          const refreshToken = await API.post("/auth/refresh-token", {
+            emailAddress: accessTokenDecoded.emailAddress,
+            fullName: accessTokenDecoded.fullName,
+            roleId: accessTokenDecoded.roleId,
+          });
+
+          const identity = {
+            accessToken: response.data.accessToken,
+            emailAddress: accessTokenDecoded.emailAddress,
+            fullName: accessTokenDecoded.fullName,
+            roleId: accessTokenDecoded.roleId,
+            refreshToken: refreshToken.data.refreshToken,
+          };
+
+          this.$store.dispatch("login", identity);
           window.location.href = "/";
         }
       } catch (error) {

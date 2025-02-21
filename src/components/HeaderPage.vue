@@ -237,10 +237,19 @@ export default {
       return this.msg.split("").reverse().join("");
     },
     isLogin() {
-      return localStorage.getItem("accessToken") ? true : false;
+      if (
+        localStorage.getItem("accessToken") != null ||
+        this.$store.getters.accessToken != null
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     },
     fullName() {
-      return localStorage.getItem("fullName").toString();
+      var { fullName } = this.$store.getters.identity;
+      console.log(this.$store.getters.identity);
+      return fullName;
     },
   },
   methods: {
@@ -257,7 +266,7 @@ export default {
       window.location.href = "/";
     },
     handleLogin() {
-      window.location.href = "/";
+      this.$router.push("/login");
     },
   },
   watch: {
