@@ -25,13 +25,23 @@ API.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response && error.response.status === 401) {
-      try {
-        await store.dispatch("refreshToken");
-        return API.request(error.config);
-      } catch (refreshError) {
-        store.dispatch("logout");
-        return Promise.reject(refreshError);
-      }
+      await API.post("/auth/access-token", {
+        refreshToken:
+          store.getters.refreshToken ?? localStorage.getItem("refreshToken"),
+      })
+        .then((response) => {
+          if (response.data.accessToken) {
+            store.dispatch("setAccessToken", response.data.accessToken);
+            return API.request(error.config);
+          } else {
+            store.dispatch("logout");
+            return Promise.reject(error);
+          }
+        })
+        .catch((refreshError) => {
+          store.dispatch("logout");
+          return Promise.reject(refreshError);
+        });
     }
     return Promise.reject(error);
   }

@@ -3,7 +3,7 @@ import API from '@/utils/axios';
 import { ref, onMounted } from 'vue';
 
 const user = ref({
-  name: '',
+  fullName: '',
   email: '',
   phone: '',
   address: ''

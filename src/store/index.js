@@ -5,6 +5,7 @@ const store = createStore({
     identity: {
       accessToken: localStorage.getItem("accessToken") || null,
       refreshToken: localStorage.getItem("refreshToken") || null,
+      userId: null,
       emailAddress: null,
       fullName: null,
       roleId: null,
