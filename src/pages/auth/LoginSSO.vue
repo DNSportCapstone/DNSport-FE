@@ -34,6 +34,7 @@ export default {
           const identity = {
             accessToken: response.data.accessToken,
             emailAddress: accessTokenDecoded.emailAddress,
+            userId: accessTokenDecoded.userId,
             fullName: accessTokenDecoded.fullName,
             roleId: accessTokenDecoded.roleId,
             refreshToken: refreshToken.data.refreshToken,

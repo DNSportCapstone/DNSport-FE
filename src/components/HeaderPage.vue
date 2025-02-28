@@ -102,7 +102,7 @@
             >
             <ul>
               <li>
-                <a href="#"
+                <a href="/edituser"
                   ><span
                     ><font-awesome-icon
                       class="pr-5"
