@@ -214,6 +214,8 @@
 </template>
 
 <script>
+import CommonHelper from "@/assets/scripts/common";
+
 export default {
   name: "HelloWorld", // 1. Tên component
   components: {}, // 2. Component con
@@ -258,6 +260,7 @@ export default {
       this.count++;
     },
     changeMenu(menu) {
+      console.log(CommonHelper.getCurrentUserId());
       this.currentHeaderMenu = menu;
     },
     handleLogout() {
