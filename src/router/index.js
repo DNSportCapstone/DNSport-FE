@@ -7,6 +7,7 @@ import CheckoutPage from "@/pages/CheckoutPage.vue";
 import CartPage from "@/pages/CartPage.vue";
 import BookingList from "@/pages/BookingList.vue";
 import LoginSSO from "@/pages/auth/LoginSSO.vue";
+import TestPage from "@/components/TestPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -46,6 +47,11 @@ const router = createRouter({
       name: "login-sso",
       component: LoginSSO,
     },
+    {
+      path: "/test",
+      name: "test-page",
+      component: TestPage,
+    },
   ],
 });
 
@@ -59,6 +65,7 @@ router.beforeEach((to, from, next) => {
     "/checkout",
     "/cart",
     "/booking-cancel",
+    "/test",
   ];
   // const adminPages = ["/product"];
   const authRequired = !publicPages.includes(to.path);

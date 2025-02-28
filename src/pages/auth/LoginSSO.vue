@@ -28,9 +28,7 @@ export default {
           this.$store.dispatch("setAccessToken", response.data.accessToken);
 
           const refreshToken = await API.post("/auth/refresh-token", {
-            emailAddress: accessTokenDecoded.emailAddress,
-            fullName: accessTokenDecoded.fullName,
-            roleId: accessTokenDecoded.roleId,
+            accessToken: response.data.accessToken,
           });
 
           const identity = {
