@@ -1,6 +1,7 @@
 <script setup>
 import API from '@/utils/axios';
 import { ref, onMounted } from 'vue';
+import CommonHelper from "@/assets/scripts/common";
 
 const user = ref({
   fullName: '',
@@ -13,8 +14,10 @@ const API_URL = ref('User');
 
 onMounted(async () => {
   try {
-    const response = await API.get('User?userId=2');
+    const userId = CommonHelper.getCurrentUserId();
+    const response = await API.get(`User?userId=${userId}`);
     user.value = response.data;
+    console.log('Dữ liệu đã tải:', user.value);
   } catch (error) {
     console.error('Lỗi khi tải dữ liệu:', error);
   }
