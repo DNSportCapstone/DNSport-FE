@@ -1,25 +1,25 @@
 <script setup>
-import API from '@/utils/axios';
-import { ref, onMounted } from 'vue';
-import CommonHelper from "@/assets/scripts/common";
+import API from "@/utils/axios";
+import { ref, onMounted } from "vue";
+import CommonHelper from "@/utils/common";
 
 const user = ref({
-  fullName: '',
-  email: '',
-  phone: '',
-  address: ''
+  fullName: "",
+  email: "",
+  phone: "",
+  address: "",
 });
 
-const API_URL = ref('User');
+const API_URL = ref("User");
 
 onMounted(async () => {
   try {
     const userId = CommonHelper.getCurrentUserId();
     const response = await API.get(`User?userId=${userId}`);
     user.value = response.data;
-    console.log('Dữ liệu đã tải:', user.value);
+    console.log("Dữ liệu đã tải:", user.value);
   } catch (error) {
-    console.error('Lỗi khi tải dữ liệu:', error);
+    console.error("Lỗi khi tải dữ liệu:", error);
   }
 });
 
@@ -27,19 +27,19 @@ onMounted(async () => {
 const updateProfile = async () => {
   try {
     if (!API_URL.value) {
-      console.error('API_URL chưa được gán');
+      console.error("API_URL chưa được gán");
       return;
     }
 
     const response = await API.put(API_URL.value, user.value);
 
     if (response.status === 200) {
-      alert('Cập nhật thành công!');
+      alert("Cập nhật thành công!");
     } else {
-      throw new Error('Cập nhật thất bại!');
+      throw new Error("Cập nhật thất bại!");
     }
   } catch (error) {
-    console.error('Lỗi khi cập nhật:', error);
+    console.error("Lỗi khi cập nhật:", error);
   }
 };
 </script>
@@ -74,7 +74,8 @@ const updateProfile = async () => {
   border-radius: 8px;
   background: #f9f9f9;
 }
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 8px;
   margin-top: 5px;

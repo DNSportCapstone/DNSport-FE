@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import vue3GoogleLogin from "vue3-google-login";
 import store from "./store";
+import i18n from "./locales";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -34,6 +35,7 @@ app.use(vue3GoogleLogin, {
   clientId:
     "986690553182-iu46essfat950aivttt815jpnbr0cku5.apps.googleusercontent.com",
 });
+app.use(i18n);
 app.use(router);
 app.use(store);
 app.mount("#app");

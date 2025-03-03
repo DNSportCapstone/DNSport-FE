@@ -143,6 +143,9 @@
               Log In
             </button>
           </li>
+          <li>
+            <ChooseLanguage />
+          </li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -214,11 +217,14 @@
 </template>
 
 <script>
-import CommonHelper from "@/assets/scripts/common";
+import CommonHelper from "@/utils/common";
+import ChooseLanguage from "@/components/ChooseLanguage.vue";
 
 export default {
-  name: "HelloWorld", // 1. Tên component
-  components: {}, // 2. Component con
+  name: "HeaderPage", // 1. Tên component
+  components: {
+    ChooseLanguage,
+  }, // 2. Component con
   directives: {}, // 3. Directive cục bộ
   extends: {}, // 4. Kế thừa
   mixins: [], // 4. Mixins
@@ -231,6 +237,7 @@ export default {
     return {
       count: 0,
       currentHeaderMenu: "hpl-home",
+      currentLang: localStorage.getItem("lang") || "en",
     };
   },
   computed: {
@@ -250,7 +257,6 @@ export default {
     },
     fullName() {
       var { fullName } = this.$store.getters.identity;
-      console.log(this.$store.getters.identity);
       return fullName;
     },
   },
@@ -280,7 +286,7 @@ export default {
   },
   mounted() {
     // 11. Phương thức vòng đời
-    console.log("Component mounted");
+    this.$i18n.locale = this.currentLang;
   },
 };
 </script>

@@ -1,6 +1,5 @@
 <template>
   <div class="booking-container">
-    <ProgressSteps />
     <div class="booking-by-date right_col layout-full" role="main">
       <div class="row">
         <div class="x_panel">
@@ -504,14 +503,12 @@
   </div>
 </template>
 <script>
-import BookingElement from "@/components/BookingElement.vue";
-import ProgressSteps from "@/components/ProgressSteps.vue";
+import BookingElement from "@/components/SlotElement.vue";
 
 export default {
   name: "App",
   components: {
     BookingElement,
-    ProgressSteps,
   },
   data() {
     return {
