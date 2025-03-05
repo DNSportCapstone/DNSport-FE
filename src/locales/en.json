@@ -1,0 +1,19 @@
+{
+  "language": "Language",
+  "Today": "Today",
+  "ChooseFields": "Choose fields",
+  "ConfirmInformation": "Confirm information",
+  "Payment": "Payment",
+  "Field": "Field",
+  "PlanYourGameDay": "Plan Your Game Day",
+  "ReviewAndComments": "Review & Comments",
+  "ErrorMessage": "Error",
+  "YouHaveRated": "You have already rated this booking.",
+  "WriteReview": "Write your review...",
+  "SubmitReview": "Submit Review",
+  "OnlySuccessfulBookings": "You can only rate a booking that has been successfully completed.",
+  "RateAfterBookingEnds": "You can only submit a rating after your booking has ended.",
+  "RateOncePerBooking": "You can only rate once per booking.",
+  "ReviewSubmitted": "Your review has been submitted successfully!",
+  "SubmitError": "An error occurred while submitting your review."
+}

@@ -3,7 +3,7 @@
   <div class="selected-slots-tab" :class="{ open: isTabOpen }">
     <div class="tab-header" @click="toggleTab">
       <span class="slot-count">{{ this.slots.length }}</span>
-      <span>Slot đã chọn</span>
+      <span>Selected Slot</span>
       <span
         ><font-awesome-icon
           class="tab-close"
@@ -20,7 +20,8 @@
         {{ slot.time }}
       </div>
       <div v-if="!this.slots.length" class="no-slot">
-        Chưa có slot nào được chọn
+        No slots have been selected yet
+        <!-- Chưa có slot nào được chọn -->
       </div>
       <div class="component-calendar-cart pt-2">
         <div class="cart-info">
@@ -43,7 +44,7 @@
 <script>
 import "@/assets/css/choose-slots-tab.css";
 /* import JS functions */
-import { formatVND } from "@/assets/scripts/common";
+import CommonHelper from "@/utils/common";
 
 export default {
   props: {
@@ -62,7 +63,7 @@ export default {
       this.isTabOpen = !this.isTabOpen; // Mở hoặc đóng tab
     },
     formatCurrency(number) {
-      return formatVND(number);
+      return CommonHelper.formatVND(number);
     },
   },
 };

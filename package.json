@@ -20,6 +20,7 @@
     "jwt-decode": "^4.0.0",
     "swiper": "^11.2.4",
     "vue": "^3.2.13",
+    "vue-i18n": "^11.1.1",
     "vue-router": "^4.5.0",
     "vue3-google-login": "^2.0.33",
     "vuex": "^4.1.0"

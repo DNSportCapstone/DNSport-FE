@@ -39,6 +39,9 @@ const store = createStore({
     async login({ commit }, identity) {
       commit("setIdentity", identity);
     },
+    async setIdentity({ commit }, identity) {
+      commit("setIdentity", identity);
+    },
     setAccessToken({ commit }, accessToken) {
       commit("setAccessToken", accessToken);
     },

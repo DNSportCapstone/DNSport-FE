@@ -1,10 +1,15 @@
 <template>
-  <div
-    class="container d-flex justify-content-center align-items-center vh-100"
-  >
-    <div class="card p-4 shadow-lg" style="width: 350px">
-      <h3 class="text-center mb-4">Đăng nhập SSO</h3>
-      <GoogleLogin :callback="loginWithGoogle" />
+  <div class="login-container">
+    <div
+      class="container d-flex justify-content-center align-items-center vh-100"
+    >
+      <div class="card p-4 shadow-lg" style="width: 350px">
+        <div class="text-center mb-4 logo-container">
+          <img src="@/assets/logo.png" alt="Logo" class="logo" />
+        </div>
+        <h3 class="text-center mb-4">Login SSO</h3>
+        <GoogleLogin :callback="loginWithGoogle" />
+      </div>
     </div>
   </div>
 </template>
@@ -51,8 +56,35 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 body {
   background-color: #f8f9fa;
+}
+
+.login-container {
+  background: url("@/assets/LoginBG.png") no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid #28a745; /* Add border with the desired color */
+}
+</style>
+<style>
+.header {
+  background-color: none;
 }
 </style>

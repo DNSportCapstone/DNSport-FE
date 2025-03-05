@@ -4,13 +4,14 @@
     <div class="container section-title" data-aos="fade-up">
       <h2>Booking</h2>
       <div>
-        <span>Plan</span> <span class="description-title">Your Game Day</span>
+        <span class="description-title">{{ t("PlanYourGameDay") }}</span>
       </div>
     </div>
     <!-- End Section Title -->
 
     <div class="booking-container">
       <div class="booking-by-date right_col layout-full" role="main">
+        <ProgressSteps :currentStep="1" :steps="steps" />
         <div class="row">
           <div class="x_panel">
             <div class="x_content">
@@ -28,7 +29,7 @@
                             href="#"
                             simple-date="2025-01-19"
                           >
-                            Hôm nay
+                            {{ $t("Today") }}
                           </a>
 
                           <div class="component-calendar-dateswitcher">
@@ -47,7 +48,7 @@
                               <span
                                 class="simplecalendar-title"
                                 data-rel="simplecalendar-title"
-                                >19 tháng 01 2025</span
+                                >{{ todayDate }}</span
                               >
                               <a
                                 data-rel="simplecalendar-next-date"
@@ -121,7 +122,9 @@
                                 >
                                   <thead>
                                     <tr>
-                                      <th style="width: 10%">Sân</th>
+                                      <th style="width: 10%">
+                                        {{ t("Field") }}
+                                      </th>
                                       <th>Chủ Nhật 19/01</th>
                                     </tr>
                                   </thead>
@@ -136,7 +139,9 @@
                                         >
                                           <tbody>
                                             <tr
-                                              data-agenda="Nguyên Đức 1 Sân 7"
+                                              v-for="(field, index) in fields"
+                                              :key="index"
+                                              :data-agenda="field.fieldName"
                                             >
                                               <td
                                                 style="
@@ -145,175 +150,20 @@
                                                   width: 10%;
                                                 "
                                               >
-                                                <strong
-                                                  >Nguyên Đức 1 Sân 7</strong
-                                                >
+                                                <strong>{{
+                                                  field.fieldName
+                                                }}</strong>
                                               </td>
-                                              <td class="2025-01-19">
+                                              <td>
                                                 <a>
-                                                  <BookingElement
+                                                  <SlotElement
                                                     v-for="(
                                                       slot, index
-                                                    ) in bookingSlots"
+                                                    ) in field.bookingSlots"
                                                     :key="index"
                                                     :time="slot.time"
                                                     :price="slot.price"
                                                     :duration="slot.duration"
-                                                  />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr
-                                              data-agenda="Nguyên Đức 2 Sân 7"
-                                            >
-                                              <td
-                                                width="100px"
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                "
-                                              >
-                                                <strong
-                                                  >Nguyên Đức 2 Sân 7</strong
-                                                >
-                                              </td>
-                                              <td class="2025-01-19">
-                                                <a>
-                                                  <BookingElement
-                                                    v-for="(
-                                                      slot, index
-                                                    ) in bookingSlots"
-                                                    :key="index"
-                                                    :time="slot.time"
-                                                    :price="slot.price"
-                                                    :duration="slot.duration"
-                                                  />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr
-                                              data-agenda="Nguyên Đức 3 Sân 7"
-                                            >
-                                              <td
-                                                width="100px"
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                "
-                                              >
-                                                <strong
-                                                  >Nguyên Đức 3 Sân 7</strong
-                                                >
-                                              </td>
-                                              <td class="2025-01-19">
-                                                <a>
-                                                  <BookingElement
-                                                    v-for="(
-                                                      slot, index
-                                                    ) in bookingSlots"
-                                                    :key="index"
-                                                    :time="slot.time"
-                                                    :price="slot.price"
-                                                    :duration="slot.duration"
-                                                  />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr data-agenda="ND1 Sân 5">
-                                              <td
-                                                width="100px"
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                "
-                                              >
-                                                <strong>ND1 Sân 5</strong>
-                                              </td>
-                                              <td class="2025-01-19">
-                                                <a>
-                                                  <BookingElement
-                                                    v-for="(
-                                                      slot, index
-                                                    ) in bookingSlots"
-                                                    :key="index"
-                                                    :time="slot.time"
-                                                    :price="slot.price"
-                                                    :duration="slot.duration"
-                                                  />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr data-agenda="ND1 Sân 5 (2)">
-                                              <td
-                                                width="100px"
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                "
-                                              >
-                                                <strong>ND1 Sân 5 (2)</strong>
-                                              </td>
-                                              <td class="2025-01-19">
-                                                <a>
-                                                  <BookingElement
-                                                    v-for="(
-                                                      slot, index
-                                                    ) in bookingSlots"
-                                                    :key="index"
-                                                    :time="slot.time"
-                                                    :price="slot.price"
-                                                    :duration="slot.duration"
-                                                  />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr data-agenda="ND1 Sân 5 (3)">
-                                              <td
-                                                width="100px"
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                "
-                                              >
-                                                <strong>ND1 Sân 5 (3)</strong>
-                                              </td>
-                                              <td class="2025-01-19">
-                                                <a>
-                                                  <BookingElement
-                                                    v-for="(
-                                                      slot, index
-                                                    ) in bookingSlots"
-                                                    :key="index"
-                                                    :time="slot.time"
-                                                    :price="slot.price"
-                                                    :duration="slot.duration"
-                                                  />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr data-agenda="ND2 Sân 5">
-                                              <td
-                                                width="100px"
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                "
-                                              >
-                                                <strong>ND2 Sân 5</strong>
-                                              </td>
-                                              <td class="2025-01-19">
-                                                <a>
-                                                  <BookingElement
-                                                    v-for="(
-                                                      slot, index
-                                                    ) in bookingSlots"
-                                                    :key="index"
-                                                    :time="slot.time"
-                                                    :price="slot.price"
-                                                    :duration="slot.duration"
-                                                    @click="
-                                                      toggleSlotSelection(slot)
-                                                    "
                                                   />
                                                 </a>
                                               </td>
@@ -335,63 +185,75 @@
               </div>
             </div>
           </div>
-          <div class="component-calendar-cart pt-2">
-            <div class="cart-info">
-              <div class="slot-added">
-                Choosed: <span class="count-added">5</span> Slot(s)
-              </div>
-              <div class="cart-total">
-                Total Price:
-                <span class="total-price">{{ formatCurrency(300000) }}</span>
-              </div>
-            </div>
-            <div>
-              <button class="btn-dns-primary">Booking</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </div>
-  <SlotsChoosenPage :slots="selectedSlots" />
+  <SlotsChoosen :slots="selectedSlots" />
 </template>
+<script setup>
+import { useI18n } from "vue-i18n";
+import { ref, watchEffect } from "vue";
+const { t } = useI18n();
+const steps = ref([]);
+
+watchEffect(() => {
+  steps.value = [t("ChooseFields"), t("ConfirmInformation"), t("Payment")];
+});
+</script>
 <script>
 /* import Components */
-import BookingElement from "@/components/BookingElement.vue";
-import SlotsChoosenPage from "@/components/SlotsChoosenPage.vue";
+import SlotElement from "@/components/SlotElement.vue";
+import SlotsChoosen from "@/components/SlotsChoosen.vue";
+import ProgressSteps from "@/components/ProgressSteps.vue";
 /* import JS functions */
-import { formatVND } from "@/assets/scripts/common";
+import CommonHelper from "@/utils/common";
 
 export default {
   name: "App",
   components: {
-    BookingElement,
-    SlotsChoosenPage,
+    SlotElement,
+    SlotsChoosen,
+    ProgressSteps,
   },
   data() {
     return {
       bookingSlots: [],
       selectedSlots: [],
+      todayDate: CommonHelper.convertToDateTime(new Date().toISOString()),
+      fields: [
+        {
+          fieldId: 1,
+          fieldName: "Trung Vuong",
+          bookingSlots: [],
+        },
+        {
+          fieldId: 2,
+          fieldName: "Chi Lang",
+          bookingSlots: [],
+        },
+      ],
     };
   },
   methods: {
     generateSlots() {
-      const startHour = 8; // Giờ bắt đầu
-      const endHour = 22; // Giờ kết thúc
+      const startHour = 0; // Giờ bắt đầu
+      const endHour = 23; // Giờ kết thúc
       const duration = 60; // Thời lượng mỗi slot (phút)
       const pricePerSlot = 60000; // Giá mỗi slot (£)
+      this.fields.forEach((field) => {
+        const slots = [];
+        for (let hour = startHour; hour <= endHour; hour++) {
+          const time = `${hour.toString().padStart(2, "0")}:00`; // Định dạng giờ (HH:mm)
+          slots.push({
+            time,
+            price: pricePerSlot,
+            duration,
+          });
+        }
 
-      const slots = [];
-      for (let hour = startHour; hour < endHour; hour++) {
-        const time = `${hour.toString().padStart(2, "0")}:00`; // Định dạng giờ (HH:mm)
-        slots.push({
-          time,
-          price: pricePerSlot,
-          duration,
-        });
-      }
-
-      this.bookingSlots = slots;
+        field.bookingSlots = slots;
+      });
     },
     toggleSlotSelection(slot) {
       console.log(this.selectedSlots);
@@ -402,15 +264,16 @@ export default {
       }
     },
     formatCurrency(number) {
-      return formatVND(number);
+      return CommonHelper.formatVND(number);
     },
   },
   mounted() {
-    this.generateSlots(); // Tạo danh sách slot khi component được mount
+    this.generateSlots();
+    this.todayDate = CommonHelper.convertToDate(new Date().toISOString());
   },
 };
 </script>
-<style>
+<style scoped>
 .booking-by-date {
   width: 100%;
 }

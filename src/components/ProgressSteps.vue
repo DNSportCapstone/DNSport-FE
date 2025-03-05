@@ -24,48 +24,30 @@
         <p>{{ step }}</p>
       </div>
     </div>
-
-    <!-- Buttons -->
-    <div class="mt-4 text-center">
-      <button
-        class="btn btn-secondary me-2"
-        :disabled="currentStep === 1"
-        @click="prevStep"
-      >
-        Back
-      </button>
-      <button
-        class="btn btn-primary"
-        :disabled="currentStep === steps.length"
-        @click="nextStep"
-      >
-        Continue
-      </button>
-    </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    currentStep: {
+      type: Number,
+      required: true,
+    },
+    steps: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
-    return {
-      currentStep: 1,
-      steps: ["Choose Fields", "Confirm Information", "Payment"],
-    };
+    return {};
   },
   computed: {
     progressWidth() {
       return `${(this.currentStep / this.steps.length) * 100}%`;
     },
   },
-  methods: {
-    nextStep() {
-      if (this.currentStep < this.steps.length) this.currentStep++;
-    },
-    prevStep() {
-      if (this.currentStep > 1) this.currentStep--;
-    },
-  },
+  methods: {},
 };
 </script>
 

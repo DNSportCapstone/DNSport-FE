@@ -97,7 +97,7 @@
   <script setup>
   import API from '@/utils/axios';
   import { ref, onMounted, computed } from 'vue';
-  import CommonHelper from "@/assets/scripts/common";
+  import CommonHelper from "@/utils/common";
 
   const bookings = ref([
     { BookingId: 1, TotalPrice: 100, BookingDate: '2025-03-01', Status: 'Confirmed', FieldId: 101, StartTime: '08:00', EndTime: '10:00', StadiumName: 'Sân A' },
