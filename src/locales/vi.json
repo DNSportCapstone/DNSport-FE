@@ -5,5 +5,15 @@
   "ConfirmInformation": "Xác nhận thông tin",
   "Payment": "Thanh toán",
   "Field": "Sân",
-  "PlanYourGameDay": "Chuẩn Bị Cho Ngày Chơi"
+  "PlanYourGameDay": "Chuẩn Bị Cho Ngày Chơi",
+  "ReviewAndComments": "Đánh giá & Bình luận",
+  "ErrorMessage": "Lỗi",
+  "YouHaveRated": "Bạn đã đánh giá lượt đặt sân này.",
+  "WriteReview": "Viết đánh giá...",
+  "SubmitReview": "Gửi đánh giá",
+  "OnlySuccessfulBookings": "Bạn chỉ có thể đánh giá một lượt đặt sân đã hoàn thành thành công.",
+  "RateAfterBookingEnds": "Bạn chỉ có thể đánh giá sau khi thời gian đặt sân kết thúc.",
+  "RateOncePerBooking": "Bạn chỉ có thể đánh giá một lần cho mỗi lượt đặt sân.",
+  "ReviewSubmitted": "Đánh giá của bạn đã được gửi thành công!",
+  "SubmitError": "Đã xảy ra lỗi khi gửi đánh giá."
 }

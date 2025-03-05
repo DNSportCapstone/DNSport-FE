@@ -152,7 +152,7 @@
     </div>
   </header>
   <!-- Hero Section -->
-  <section id="hero" class="hero section dns-background">
+  <!-- <section id="hero" class="hero section dns-background">
     <img src="assets/img/hero-bg-2.jpg" alt="" class="hero-bg" />
 
     <div class="container">
@@ -212,7 +212,7 @@
         <use xlink:href="#wave-path" x="50" y="9"></use>
       </g>
     </svg>
-  </section>
+  </section> -->
   <!-- /Hero Section -->
 </template>
 
