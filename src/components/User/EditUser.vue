@@ -49,7 +49,7 @@ const updateProfile = async () => {
     <h2>Chỉnh sửa hồ sơ</h2>
     <form @submit.prevent="updateProfile">
       <label>Tên:</label>
-      <input v-model="user.fullName" type="text" required />
+      <input v-model="user.fullName" type="text" disabled />
 
       <label>Email:</label>
       <input v-model="user.email" type="text" disabled />
