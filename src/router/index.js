@@ -7,13 +7,13 @@ import CheckoutPage from "@/pages/CheckoutPage.vue";
 import CartPage from "@/pages/CartPage.vue";
 import BookingList from "@/pages/BookingList.vue";
 import LoginSSO from "@/pages/auth/LoginSSO.vue";
-import EditUser from "@/components/User/EditUser.vue";
 import TestPage from "@/components/TestPage.vue";
-import BookingHistory from "@/components/BookingHistory.vue";
 import PaymentPage from "@/pages/PaymentPage.vue";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 
 import { jwtDecode } from "jwt-decode";
+import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
+import EditUserPage from "@/pages/EditUserPage.vue";
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
 const refreshToken =
@@ -59,7 +59,7 @@ const router = createRouter({
     {
       path: "/edituser",
       name: "edituser",
-      component: EditUser
+      component: EditUserPage
     },
     {
       path: "/test",
@@ -69,7 +69,7 @@ const router = createRouter({
     {
       path: "/booking-history",
       name: "booking-history",
-      component: BookingHistory
+      component: BookingHistoryPage
     },
     {
       path: "/payment",
@@ -104,7 +104,8 @@ router.beforeEach((to, from, next) => {
     "/edituser",
     "/test",
     "/payment",
-    "/payment-success"
+    "/payment-success",
+    "/booking-history"
   ];
   // const adminPages = ["/product"];
   const authRequired = !publicPages.includes(to.path);
