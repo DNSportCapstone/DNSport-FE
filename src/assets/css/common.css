@@ -18,6 +18,10 @@
   margin-top: 2px;
 }
 
+.mt-100{
+  margin-top: 100px;
+}
+
 .rounded {
   border-radius: 0.25rem !important;
 }

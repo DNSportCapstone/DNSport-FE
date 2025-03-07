@@ -1,6 +1,8 @@
 <template>
   <HeaderPage />
-  <router-view></router-view>
+  <div class="mt-100">
+    <router-view></router-view>
+  </div>
   <FooterPage />
 </template>
 

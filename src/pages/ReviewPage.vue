@@ -1,40 +1,49 @@
 <template>
-  <div class="review-container">
-    <h2 class="title">Review & Comments</h2>
-
-    <!-- Show error messages from API -->
-    <div v-if="errorMessage" class="alert-message error">
-      {{ errorMessage }}
+  <div class="section">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+      <h2>Review</h2>
+      <div>
+        <span class="description-title">Review & Comments</span>
+      </div>
     </div>
+    <!-- End Section Title -->
 
-    <!-- If the user has already rated, show a success message -->
-    <div v-if="hasRated" class="alert-message success">
-      You have already rated this booking.
-    </div>
-
-    <!-- If not rated yet, show the rating form -->
-    <div v-else>
-      <!-- Star Rating -->
-      <div class="rating-section">
-        <StarRating @rating-selected="handleRatingSelected" />
+    <div class="review-container">
+      <!-- Show error messages from API -->
+      <div v-if="errorMessage" class="alert-message error">
+        {{ errorMessage }}
       </div>
 
-      <!-- Comment Input -->
-      <div class="comment-box">
-        <textarea
-          v-model="newComment"
-          placeholder="Write your review..."
-        ></textarea>
+      <!-- If the user has already rated, show a success message -->
+      <div v-if="hasRated" class="alert-message success">
+        You have already rated this booking.
       </div>
 
-      <!-- Submit Button -->
-      <button
-        class="submit-btn"
-        :disabled="rating === 0 && newComment.trim() === ''"
-        @click="submitReview"
-      >
-        Submit Review
-      </button>
+      <!-- If not rated yet, show the rating form -->
+      <div v-else>
+        <!-- Star Rating -->
+        <div class="rating-section">
+          <StarRating @rating-selected="handleRatingSelected" />
+        </div>
+
+        <!-- Comment Input -->
+        <div class="comment-box">
+          <textarea
+            v-model="newComment"
+            placeholder="Write your review..."
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          class="submit-btn"
+          :disabled="rating === 0 && newComment.trim() === ''"
+          @click="submitReview"
+        >
+          Submit Review
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +51,7 @@
 <script>
 import axios from "axios";
 import StarRating from "@/components/StarRating.vue";
+import CommonHelper from "@/utils/common";
 
 export default {
   components: { StarRating },
@@ -50,13 +60,37 @@ export default {
       rating: 0,
       newComment: "",
       hasRated: false,
-      bookingId: 1, // Replace with actual BookingId
-      userId: 5, // Replace with actual UserId
-      errorMessage: "", // Store error messages
+      bookingId: 1,
+      userId: null,
+      errorMessage: "",
     };
   },
   methods: {
+    async fetchUserAndBooking() {
+      try {
+        // Get userId from CommonHelper instead of calling API
+        this.userId = CommonHelper.getCurrentUserId();
+        console.log("User ID:", this.userId);
+
+        if (!this.userId) {
+          throw new Error("User ID not found.");
+        }
+
+        // const bookingResponse = await axios.get("https://localhost:44394/api/booking/", {
+        //   params: { userId: this.userId },
+        // });
+        // this.bookingId = bookingResponse.data.bookingId;
+
+        //kiểm tra xem đã đánh giá chưa
+        await this.checkIfRated();
+      } catch (error) {
+        console.error("Error fetching user and booking info:", error);
+        this.errorMessage = "Failed to load booking and user information.";
+      }
+    },
     async checkIfRated() {
+      if (!this.bookingId || !this.userId) return;
+
       try {
         const { data } = await axios.get(
           `https://localhost:44394/api/rating/check/${this.bookingId}/${this.userId}`
@@ -109,7 +143,7 @@ export default {
     },
   },
   async created() {
-    await this.checkIfRated();
+    await this.fetchUserAndBooking();
   },
 };
 </script>
