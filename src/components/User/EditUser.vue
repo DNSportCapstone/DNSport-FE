@@ -45,23 +45,30 @@ const updateProfile = async () => {
 </script>
 
 <template>
-  <div class="container">
-    <h2>Chỉnh sửa hồ sơ</h2>
-    <form @submit.prevent="updateProfile">
-      <label>Tên:</label>
-      <input v-model="user.fullName" type="text" required />
+  <div class="section">
+    <div class="section-title">
+      <div>
+        <span class="description-title">title</span>
+      </div>
+    </div>
+    <div class="container">
+      <h2>Chỉnh sửa hồ sơ</h2>
+      <form @submit.prevent="updateProfile">
+        <label>Tên:</label>
+        <input v-model="user.fullName" type="text" disabled />
 
-      <label>Email:</label>
-      <input v-model="user.email" type="text" disabled />
+        <label>Email:</label>
+        <input v-model="user.email" type="text" disabled />
 
-      <label>Số điện thoại:</label>
-      <input v-model="user.phoneNumber" type="tel" required />
+        <label>Số điện thoại:</label>
+        <input v-model="user.phoneNumber" type="tel" required />
 
-      <label>Địa chỉ:</label>
-      <textarea v-model="user.address" required></textarea>
+        <label>Địa chỉ:</label>
+        <textarea v-model="user.address" required></textarea>
 
-      <button type="submit">Lưu thay đổi</button>
-    </form>
+        <button type="submit">Lưu thay đổi</button>
+      </form>
+    </div>
   </div>
 </template>
 

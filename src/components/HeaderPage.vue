@@ -87,22 +87,19 @@
           </li> -->
           <li><a href="#contact">Contact</a></li>
           <li v-if="isLogin" class="dropdown">
-            <a href="#"
-              ><font-awesome-icon
-                class="pr-5"
-                :icon="['far', 'user']"
-              /><span>{{ fullName }}</span></a
-            >
+            <a href="#">
+              <font-awesome-icon class="pr-5" :icon="['far', 'user']" />
+              <span>{{ fullName }}</span>
+            </a>
             <ul>
               <li>
-                <a href="/edituser"
-                  ><span
-                    ><font-awesome-icon
-                      class="pr-5"
-                      :icon="['fas', 'address-card']"
-                    />My Profile</span
-                  ></a
-                >
+                <router-link to="/edituser">
+                  <font-awesome-icon
+                    class="pr-5"
+                    :icon="['fas', 'address-card']"
+                  />
+                  <span>My Profile</span>
+                </router-link>
               </li>
               <!-- <li class="dropdown">
                 <a href="#"
@@ -110,24 +107,25 @@
                   <i class="bi bi-chevron-down toggle-dropdown"></i
                 ></a>
                 <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
+                  <li><router-link to="#">Deep Dropdown 1</router-link></li>
+                  <li><router-link to="#">Deep Dropdown 2</router-link></li>
+                  <li><router-link to="#">Deep Dropdown 3</router-link></li>
+                  <li><router-link to="#">Deep Dropdown 4</router-link></li>
+                  <li><router-link to="#">Deep Dropdown 5</router-link></li>
                 </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li> -->
+              </li> -->
               <li>
-                <a href="#" @click="handleLogout()"
-                  ><span
-                    ><font-awesome-icon
-                      class="pr-5"
-                      :icon="['fas', 'power-off']"
-                    />Logout</span
-                  ></a
-                >
+                <router-link to="/booking-history">Booking History</router-link>
+              </li>
+              <li><router-link to="#">Dropdown 3</router-link></li>
+              <li>
+                <a href="#" @click.prevent="handleLogout()">
+                  <font-awesome-icon
+                    class="pr-5"
+                    :icon="['fas', 'power-off']"
+                  />
+                  <span>Logout</span>
+                </a>
               </li>
             </ul>
           </li>
