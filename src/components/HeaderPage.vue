@@ -24,23 +24,16 @@
               href="#about"
               @click="changeMenu('hpl-about')"
               :class="currentHeaderMenu == 'hpl-about' ? 'active' : ''"
-              >About</a
+              >Field</a
             >
           </li>
-          <li>
-            <a
-              href="#features"
-              @click="changeMenu('hpl-features')"
-              :class="currentHeaderMenu == 'hpl-features' ? 'active' : ''"
-              >Features</a
-            >
-          </li>
-          <li>
+
+          <!-- <li>
             <a
               href="#gallery"
               @click="changeMenu('hpl-gallery')"
               :class="currentHeaderMenu == 'hpl-gallery' ? 'active' : ''"
-              >Gallery</a
+              >Review</a
             >
           </li>
           <li>
@@ -91,7 +84,7 @@
               <li><a href="#">Dropdown 3</a></li>
               <li><a href="#">Dropdown 4</a></li>
             </ul>
-          </li>
+          </li> -->
           <li><a href="#contact">Contact</a></li>
           <li v-if="isLogin" class="dropdown">
             <a href="#">
@@ -101,15 +94,18 @@
             <ul>
               <li>
                 <router-link to="/edituser">
-                  <font-awesome-icon class="pr-5" :icon="['fas', 'address-card']" />
+                  <font-awesome-icon
+                    class="pr-5"
+                    :icon="['fas', 'address-card']"
+                  />
                   <span>My Profile</span>
                 </router-link>
               </li>
-              <li class="dropdown">
-                <a href="#">
-                  <span>Deep Dropdown</span>
-                  <i class="bi bi-chevron-down toggle-dropdown"></i>
-                </a>
+              <!-- <li class="dropdown">
+                <a href="#"
+                  ><span>Deep Dropdown</span>
+                  <i class="bi bi-chevron-down toggle-dropdown"></i
+                ></a>
                 <ul>
                   <li><router-link to="#">Deep Dropdown 1</router-link></li>
                   <li><router-link to="#">Deep Dropdown 2</router-link></li>
@@ -117,12 +113,17 @@
                   <li><router-link to="#">Deep Dropdown 4</router-link></li>
                   <li><router-link to="#">Deep Dropdown 5</router-link></li>
                 </ul>
+              </li> -->
+              <li>
+                <router-link to="/booking-history">Booking History</router-link>
               </li>
-              <li><router-link to="/booking-history">Booking History</router-link></li>
               <li><router-link to="#">Dropdown 3</router-link></li>
               <li>
                 <a href="#" @click.prevent="handleLogout()">
-                  <font-awesome-icon class="pr-5" :icon="['fas', 'power-off']" />
+                  <font-awesome-icon
+                    class="pr-5"
+                    :icon="['fas', 'power-off']"
+                  />
                   <span>Logout</span>
                 </a>
               </li>
@@ -141,69 +142,6 @@
       </nav>
     </div>
   </header>
-  <!-- Hero Section -->
-  <!-- <section id="hero" class="hero section dns-background">
-    <img src="assets/img/hero-bg-2.jpg" alt="" class="hero-bg" />
-
-    <div class="container">
-      <div class="row gy-4 justify-content-between">
-        <div
-          class="col-lg-4 order-lg-last hero-img"
-          data-aos="zoom-out"
-          data-aos-delay="100"
-        >
-          <img
-            src="assets/img/hero-img.png"
-            class="img-fluid animated"
-            alt=""
-          />
-        </div>
-
-        <div
-          class="col-lg-6 d-flex flex-column justify-content-center"
-          data-aos="fade-in"
-        >
-          <h1>Build Your Landing Page With <span>DNS</span></h1>
-          <p>
-            We are team of talented designers making websites with Bootstrap
-          </p>
-          <div class="d-flex">
-            <a href="#about" class="btn-get-started">Get Started</a>
-            <a
-              href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
-              class="glightbox btn-watch-video d-flex align-items-center"
-              ><i class="bi bi-play-circle"></i><span>Watch Video</span></a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <svg
-      class="hero-waves"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      viewBox="0 24 150 28 "
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <path
-          id="wave-path"
-          d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
-        ></path>
-      </defs>
-      <g class="wave1">
-        <use xlink:href="#wave-path" x="50" y="3"></use>
-      </g>
-      <g class="wave2">
-        <use xlink:href="#wave-path" x="50" y="0"></use>
-      </g>
-      <g class="wave3">
-        <use xlink:href="#wave-path" x="50" y="9"></use>
-      </g>
-    </svg>
-  </section> -->
-  <!-- /Hero Section -->
 </template>
 
 <script>

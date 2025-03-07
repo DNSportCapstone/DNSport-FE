@@ -8,6 +8,8 @@ import CartPage from "@/pages/CartPage.vue";
 import BookingList from "@/pages/BookingList.vue";
 import LoginSSO from "@/pages/auth/LoginSSO.vue";
 import TestPage from "@/components/TestPage.vue";
+import ReviewPage from "@/pages/ReviewPage.vue";
+import FieldList from "@/pages/FieldList.vue";
 import PaymentPage from "@/pages/PaymentPage.vue";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 
@@ -59,22 +61,32 @@ const router = createRouter({
     {
       path: "/edituser",
       name: "edituser",
-      component: EditUserPage
+      component: EditUserPage,
     },
     {
       path: "/test",
       name: "test-page",
-      component: TestPage
+      component: TestPage,
+    },
+    {
+      path: "/review",
+      name: "rate",
+      component: ReviewPage,
+    },
+    {
+      path: "/field-list",
+      name: "field-list",
+      component: FieldList,
     },
     {
       path: "/booking-history",
       name: "booking-history",
-      component: BookingHistoryPage
+      component: BookingHistoryPage,
     },
     {
       path: "/payment",
       name: "payment",
-      component: PaymentPage
+      component: PaymentPage,
     },
     {
       path: "/payment-success",
@@ -103,9 +115,11 @@ router.beforeEach((to, from, next) => {
     "/booking-cancel",
     "/edituser",
     "/test",
+    "/review",
+    "/field-list",
     "/payment",
     "/payment-success",
-    "/booking-history"
+    "/booking-history",
   ];
   // const adminPages = ["/product"];
   const authRequired = !publicPages.includes(to.path);
