@@ -31,7 +31,7 @@ export default {
     const handlePayment = async () => {
       try {
           // API.get(`Booking/history/${userId}`)
-        const response = await API.post(`payment/CreatePaymentUrl`, {
+        const response = await API.post(`payment/create-payment-url`, {
           amount: amount.value,
         });
         window.location.href = response.data;
