@@ -1,36 +1,47 @@
 <template>
-    <div class="section">
-      <div class="section-title">
-        <div>
-          <span class="description-title">title</span>
+  <div style="margin-top: 150px;"></div>
+  <div class="wrapper bg-white mt-sm-5">
+    <h4 class="pb-4 border-bottom">{{ t('EditProfile') }}</h4>
+    <div v-if="showSuccessMessage" class="alert alert-success">{{ t('ProfileUpdateSuccess') }}</div>
+    <div class="py-2">
+      <div class="row py-2">
+        <div class="col-md-6">
+          <label>{{ t('Name') }}</label>
+          <input v-model="user.fullName" type="text" class="bg-light form-control" disabled/>
+        </div>
+        <div class="col-md-6">
+          <label>Email</label>
+          <input v-model="user.email" type="text" class="bg-light form-control" disabled />
         </div>
       </div>
-      <div class="container">
-        <h2>{{ t('EditProfile') }}</h2>
-        <form @submit.prevent="updateProfile">
-          <label>{{ t('Name') }}</label>
-          <input v-model="user.fullName" type="text" disabled />
-
-          <label>Email:</label>
-          <input v-model="user.email" type="text" disabled />
-
+      <div class="row py-2">
+        <div class="col-md-6 pt-md-0 pt-3">
           <label>{{ t('PhoneNumber') }}</label>
-          <input v-model="user.phoneNumber" type="tel" required />
-
+          <input v-model="user.phoneNumber" type="text" class="bg-light form-control" />
+        </div>
+        <div class="col-md-6 pt-md-0 pt-3">
           <label>{{ t('Address') }}</label>
-          <textarea v-model="user.address" required></textarea>
-
-          <button type="submit">{{ t('SaveChanges') }}</button>
-        </form>
+          <input v-model="user.address" type="tel" class="bg-light form-control" />
+        </div>
+      </div>
+      <div class="row py-2">
+        <div class="col-md-6 pt-md-0 pt-3">
+          <label>{{ t('ReceiveNotifications') }}</label>
+          <input v-model="user.receiveNotification" type="checkbox" class="form-check-input"  style="margin-left: 20px;"/>
+        </div>
+      </div>
+      <div class="py-3 pb-4 border-bottom">
+        <button class="btn btn-primary mr-3" @click="saveChanges">{{ t('SaveChanges') }}</button>
       </div>
     </div>
-  </template>
+  </div>
+</template>
+
 <script setup>
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 </script>
 
-<!-- Phần logic API và Vue Component -->
 <script>
 import API from "@/utils/axios";
 import CommonHelper from "@/utils/common";
@@ -40,11 +51,12 @@ export default {
     return {
       user: {
         fullName: "",
+        lastName: "",
         email: "",
-        phone: "",
         address: "",
+        receiveNotification: false,
       },
-      API_URL: "User",
+      showSuccessMessage: false,
     };
   },
   mounted() {
@@ -54,64 +66,84 @@ export default {
     async loadUserData() {
       try {
         const userId = CommonHelper.getCurrentUserId();
-        console.log("userId", userId);
         const response = await API.get(`User?userId=${userId}`);
-        this.user = response.data;
-        console.log("Dữ liệu đã tải:", this.user);
+        this.user = { ...response.data };
       } catch (error) {
-        console.error("Lỗi khi tải dữ liệu:", error);
+        console.error("Error loading user data:", error);
+        alert("Failed to load user data.");
       }
     },
-    async updateProfile() {
+    async saveChanges() {
       try {
-        if (!this.API_URL) {
-          console.error("API_URL chưa được gán");
-          return;
-        }
-
-        const response = await API.put(this.API_URL, this.user);
-
-        if (response.status === 200) {
-          alert("Cập nhật thành công!");
-        } else {
-          throw new Error("Cập nhật thất bại!");
-        }
+        await API.put("User", this.user);
+        this.showSuccessMessage = true;
+        setTimeout(() => {
+          this.showSuccessMessage = false;
+        }, 7000);
       } catch (error) {
-        console.error("Lỗi khi cập nhật:", error);
+        console.error("Error updating profile:", error);
+        alert("Failed to update profile.");
+      }
+    },
+    cancelChanges() {
+      this.loadUserData();
+    },
+    deactivateAccount() {
+      if (confirm("Are you sure you want to deactivate your account?")) {
+        console.log("Account deactivated");
       }
     }
-  }
+  },
 };
 </script>
 
 <style scoped>
-.container {
-  max-width: 400px;
-  margin: auto;
-  padding: 20px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: aliceblue;
+}
+.wrapper {
+  padding: 30px 50px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f9f9f9;
+  border-radius: 15px;
+  margin: 10px auto;
+  max-width: 600px;
 }
-input,
-textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.form-control {
+  border-radius: 10px;
 }
-button {
-  width: 100%;
+.button {
+  background-color: #fff;
+  color: #198754;
+}
+.button:hover {
+  background-color: #20c997;
+  color: #fff;
+}
+.btn-primary {
+  background-color: #198754;
+}
+.danger {
+  background-color: #fff;
+  color: #e20404;
+  border: 1px solid #ddd;
+}
+.danger:hover {
+  background-color: #e20404;
+  color: #fff;
+}
+.alert {
+  background-color: #d4edda;
+  color: #155724;
   padding: 10px;
-  background: blue;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:hover {
-  background: darkblue;
+  margin-bottom: 15px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  text-align: center;
 }
 </style>

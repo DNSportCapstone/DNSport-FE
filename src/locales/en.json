@@ -35,5 +35,7 @@
   "EditProfile": "Edit Profile",
   "Name": "Name",
   "Address": "Address",
-  "SaveChanges": "Save Changes"
+  "SaveChanges": "Save Changes",
+  "ReceiveNotifications": "Receive Notifications",
+  "ProfileUpdateSuccess": "Profile updated successfully!"
 }

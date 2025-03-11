@@ -35,5 +35,7 @@
   "EditProfile": "Chỉnh sửa hồ sơ",
   "Name": "Tên",
   "Address": "Địa chỉ",
-  "SaveChanges": "Lưu thay đổi"
+  "SaveChanges": "Lưu thay đổi",
+  "ReceiveNotifications": "Nhận thông báo",
+  "ProfileUpdateSuccess": "Cập nhật hồ sơ thành công!"
 }
