@@ -1,44 +1,71 @@
 <template>
-  <div style="margin-top: 150px;"></div>
+  <div style="margin-top: 150px"></div>
   <div class="wrapper bg-white mt-sm-5">
-    <h4 class="pb-4 border-bottom">{{ t('EditProfile') }}</h4>
-    <div v-if="showSuccessMessage" class="alert alert-success">{{ t('ProfileUpdateSuccess') }}</div>
+    <h4 class="pb-4 border-bottom">{{ t("EditProfile") }}</h4>
+    <div v-if="showSuccessMessage" class="alert alert-success">
+      {{ t("ProfileUpdateSuccess") }}
+    </div>
     <div class="py-2">
       <div class="row py-2">
         <div class="col-md-6">
-          <label>{{ t('Name') }}</label>
-          <input v-model="user.fullName" type="text" class="bg-light form-control" disabled/>
+          <label>{{ t("Name") }}</label>
+          <input
+            v-model="user.fullName"
+            type="text"
+            class="bg-light form-control"
+            disabled
+          />
         </div>
         <div class="col-md-6">
           <label>Email</label>
-          <input v-model="user.email" type="text" class="bg-light form-control" disabled />
+          <input
+            v-model="user.email"
+            type="text"
+            class="bg-light form-control"
+            disabled
+          />
         </div>
       </div>
       <div class="row py-2">
         <div class="col-md-6 pt-md-0 pt-3">
-          <label>{{ t('PhoneNumber') }}</label>
-          <input v-model="user.phoneNumber" type="text" class="bg-light form-control" />
+          <label>{{ t("PhoneNumber") }}</label>
+          <input
+            v-model="user.phoneNumber"
+            type="text"
+            class="bg-light form-control"
+          />
         </div>
         <div class="col-md-6 pt-md-0 pt-3">
-          <label>{{ t('Address') }}</label>
-          <input v-model="user.address" type="tel" class="bg-light form-control" />
+          <label>{{ t("Address") }}</label>
+          <input
+            v-model="user.address"
+            type="tel"
+            class="bg-light form-control"
+          />
         </div>
       </div>
       <div class="row py-2">
         <div class="col-md-6 pt-md-0 pt-3">
-          <label>{{ t('ReceiveNotifications') }}</label>
-          <input v-model="user.receiveNotification" type="checkbox" class="form-check-input"  style="margin-left: 20px;"/>
+          <label>{{ t("ReceiveNotifications") }}</label>
+          <input
+            v-model="user.receiveNotification"
+            type="checkbox"
+            class="form-check-input"
+            style="margin-left: 20px"
+          />
         </div>
       </div>
       <div class="py-3 pb-4 border-bottom">
-        <button class="btn btn-primary mr-3" @click="saveChanges">{{ t('SaveChanges') }}</button>
+        <button class="btn btn-primary mr-3" @click="saveChanges">
+          {{ t("SaveChanges") }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 </script>
 
@@ -92,7 +119,7 @@ export default {
       if (confirm("Are you sure you want to deactivate your account?")) {
         console.log("Account deactivated");
       }
-    }
+    },
   },
 };
 </script>
@@ -104,7 +131,7 @@ export default {
   box-sizing: border-box;
 }
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: aliceblue;
 }
 .wrapper {

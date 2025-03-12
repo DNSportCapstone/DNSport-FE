@@ -2,11 +2,12 @@ import axios from "axios";
 import store from "@/store";
 
 const API = axios.create({
-  baseURL: "https://localhost:44394/api",
+  baseURL: "https://localhost:7247/api",
 });
 
 API.interceptors.request.use(
   (config) => {
+    store.dispatch("setLoading", true);
     const token =
       store.getters.accessToken || localStorage.getItem("accessToken");
 
@@ -17,12 +18,16 @@ API.interceptors.request.use(
     return config;
   },
   (error) => {
+    store.dispatch("setLoading", false);
     return Promise.reject(error);
   }
 );
 
 API.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    store.dispatch("setLoading", false);
+    return response;
+  },
   async (error) => {
     if (error.response && error.response.status === 401) {
       await API.post("/auth/access-token", {
@@ -35,14 +40,17 @@ API.interceptors.response.use(
             return API.request(error.config);
           } else {
             store.dispatch("logout");
+            store.dispatch("setLoading", false);
             return Promise.reject(error);
           }
         })
         .catch((refreshError) => {
           store.dispatch("logout");
+          store.dispatch("setLoading", false);
           return Promise.reject(refreshError);
         });
     }
+    store.dispatch("setLoading", false);
     return Promise.reject(error);
   }
 );

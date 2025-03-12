@@ -122,10 +122,15 @@
                                 >
                                   <thead>
                                     <tr>
-                                      <th style="width: 10%">
+                                      <th class="th-booking-fields th-field">
                                         {{ t("Field") }}
                                       </th>
-                                      <th>Chủ Nhật 19/01</th>
+                                      <th class="th-booking-fields">
+                                        Chủ Nhật 19/01
+                                      </th>
+                                      <th class="th-booking-fields th-action">
+                                        {{ t("Action") }}
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -143,13 +148,7 @@
                                               :key="index"
                                               :data-agenda="field.fieldName"
                                             >
-                                              <td
-                                                style="
-                                                  vertical-align: middle;
-                                                  text-align: center;
-                                                  width: 10%;
-                                                "
-                                              >
+                                              <td class="td-booking-fields">
                                                 <strong>{{
                                                   field.fieldName
                                                 }}</strong>
@@ -166,6 +165,18 @@
                                                     :duration="slot.duration"
                                                   />
                                                 </a>
+                                              </td>
+                                              <td class="td-booking-fields">
+                                                <button
+                                                  class="btn btn-dns-primary"
+                                                  @click="
+                                                    $router.push(
+                                                      `/field-details/${field.fieldId}`
+                                                    )
+                                                  "
+                                                >
+                                                  {{ t("FieldDetails") }}
+                                                </button>
                                               </td>
                                             </tr>
                                           </tbody>
@@ -201,6 +212,7 @@ watchEffect(() => {
   steps.value = [t("ChooseFields"), t("ConfirmInformation"), t("Payment")];
 });
 </script>
+
 <script>
 /* import Components */
 import SlotElement from "@/components/SlotElement.vue";
@@ -276,5 +288,21 @@ export default {
 <style scoped>
 .booking-by-date {
   width: 100%;
+}
+
+.td-booking-fields {
+  vertical-align: middle;
+  text-align: center;
+  width: 10%;
+}
+.th-booking-fields {
+  vertical-align: middle;
+  text-align: center;
+}
+.th-field {
+  width: 10%;
+}
+.th-action {
+  width: 10%;
 }
 </style>
