@@ -20,7 +20,7 @@
           <label>Email</label>
           <input
             v-model="user.email"
-            type="text"
+            type="email"
             class="bg-light form-control"
             disabled
           />
@@ -31,15 +31,22 @@
           <label>{{ t("PhoneNumber") }}</label>
           <input
             v-model="user.phoneNumber"
-            type="text"
+            type="tel"
             class="bg-light form-control"
+            inputmode="numeric"
+            maxlength="20"
+            @input="
+              user.phoneNumber = user.phoneNumber
+                .replace(/\D/g, '')
+                .slice(0, 20)
+            "
           />
         </div>
         <div class="col-md-6 pt-md-0 pt-3">
           <label>{{ t("Address") }}</label>
           <input
             v-model="user.address"
-            type="tel"
+            type="text"
             class="bg-light form-control"
           />
         </div>
@@ -62,6 +69,7 @@
       </div>
     </div>
   </div>
+  <div style="margin-bottom: 250px"></div>
 </template>
 
 <script setup>
@@ -80,6 +88,7 @@ export default {
         fullName: "",
         lastName: "",
         email: "",
+        phoneNumber: "",
         address: "",
         receiveNotification: false,
       },

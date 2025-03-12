@@ -215,7 +215,7 @@
               <i class="bi bi-geo-alt flex-shrink-0"></i>
               <div>
                 <h3>Address</h3>
-                <p>123 Sports Avenue, City, Country</p>
+                <p>137 Nguyễn Thị Thập street, Liên Chiểu district, Đà Nẵng city.</p>
               </div>
             </div>
             <div
@@ -237,7 +237,7 @@
               <i class="bi bi-envelope flex-shrink-0"></i>
               <div>
                 <h3>Email Us</h3>
-                <p>info@sportsbooking.com</p>
+                <p>dnsport2025@gmail.com</p>
               </div>
             </div>
           </div>
@@ -260,38 +260,6 @@
       </div>
     </section>
   </div>
-  <!-- Promo Subscription Section -->
-  <section id="promo" class="promo section">
-    <div class="container section-title">
-      <h2>Get Promotions</h2>
-      <p>Subscribe to receive the latest promotions and discounts.</p>
-    </div>
-    <div class="container">
-      <form class="promo-form">
-        <div class="row gy-4">
-          <div class="col-md-6">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Your Name"
-              required
-            />
-          </div>
-          <div class="col-md-6">
-            <input
-              type="email"
-              class="form-control"
-              placeholder="Your Email"
-              required
-            />
-          </div>
-          <div class="col-md-12 text-center">
-            <button type="submit" class="btn btn-primary">Subscribe</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </section>
 </template>
 
 <script setup>
@@ -300,8 +268,8 @@ const { t } = useI18n();
 </script>
 
 <script>
-import axios from "axios";
 import HeroSection from "@/components/HeroSection.vue";
+import API from "@/utils/axios";
 
 export default {
   components: {
@@ -318,7 +286,7 @@ export default {
   methods: {
     async fetchStadiums() {
       try {
-        const response = await axios.get("https://localhost:44394/api/Stadium");
+        const response = await API.get("/Stadium");
         this.stadiums = response.data;
         console.log("List of stadiums:", this.stadiums);
       } catch (error) {

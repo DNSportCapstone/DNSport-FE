@@ -49,9 +49,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import StarRating from "@/components/StarRating.vue";
 import CommonHelper from "@/utils/common";
+import API from "@/utils/axios";
 
 export default {
   components: { StarRating },
@@ -76,7 +76,7 @@ export default {
           throw new Error("User ID not found.");
         }
 
-        // const bookingResponse = await axios.get("https://localhost:44394/api/booking/", {
+        // const bookingResponse = await API.get("/booking/", {
         //   params: { userId: this.userId },
         // });
         // this.bookingId = bookingResponse.data.bookingId;
@@ -92,8 +92,8 @@ export default {
       if (!this.bookingId || !this.userId) return;
 
       try {
-        const { data } = await axios.get(
-          `https://localhost:44394/api/rating/check/${this.bookingId}/${this.userId}`
+        const { data } = await API.get(
+          `/rating/check/${this.bookingId}/${this.userId}`
         );
         this.hasRated = data.hasRated;
       } catch (error) {
@@ -105,7 +105,7 @@ export default {
     },
     async submitReview() {
       try {
-        await axios.post("https://localhost:44394/api/rating/add", {
+        await API.post("/rating/add", {
           userId: this.userId,
           bookingId: this.bookingId,
           ratingValue: this.rating,

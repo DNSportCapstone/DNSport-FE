@@ -20,9 +20,9 @@
           </li>
           <li>
             <a
-              href="#about"
-              @click="changeMenu('hpl-about')"
-              :class="currentHeaderMenu == 'hpl-about' ? 'active' : ''"
+              href="field-list"
+              @click="changeMenu('hpl-field-list')"
+              :class="currentHeaderMenu == 'hpl-field-list' ? 'active' : ''"
               >Field</a
             >
           </li>
