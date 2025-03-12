@@ -13,7 +13,6 @@
         <ul>
           <li>
             <a
-              href="#"
               @click="changeMenu('hpl-home')"
               :class="currentHeaderMenu == 'hpl-home' ? 'active' : ''"
               ><router-link to="/">Home</router-link></a
@@ -93,7 +92,7 @@
             </a>
             <ul>
               <li>
-                <router-link to="/edituser">
+                <router-link to="/edit-user">
                   <font-awesome-icon
                     class="pr-5"
                     :icon="['fas', 'address-card']"
@@ -117,15 +116,15 @@
               <li>
                 <router-link to="/booking-history">Booking History</router-link>
               </li>
-              <li><router-link to="#">Dropdown 3</router-link></li>
               <li>
-                <a href="#" @click.prevent="handleLogout()">
-                  <font-awesome-icon
-                    class="pr-5"
-                    :icon="['fas', 'power-off']"
-                  />
-                  <span>Logout</span>
-                </a>
+                <a href="" @click="handleLogout()"
+                  ><span
+                    ><font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'power-off']"
+                    />Logout</span
+                  ></a
+                >
               </li>
             </ul>
           </li>
@@ -198,9 +197,7 @@ export default {
       this.currentHeaderMenu = menu;
     },
     handleLogout() {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("currentUser");
-      window.location.href = "/";
+      this.$store.dispatch("logout");
     },
     handleLogin() {
       this.$router.push("/login");
@@ -215,6 +212,7 @@ export default {
   mounted() {
     // 11. Phương thức vòng đời
     this.$i18n.locale = this.currentLang;
+    console.log("Store:", this.$store);
   },
 };
 </script>

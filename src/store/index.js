@@ -10,48 +10,56 @@ const store = createStore({
       fullName: null,
       roleId: null,
     },
+    isLoading: false,
   },
   mutations: {
-    setIdentity(state, identity) {
+    SET_IDENTITY(state, identity) {
       state.identity = identity;
       localStorage.setItem("accessToken", identity.accessToken);
       localStorage.setItem("refreshToken", identity.refreshToken);
     },
-    clearIdentity(state) {
+    CLEAR_IDENTITY(state) {
       state.identity.accessToken = null;
       state.identity.refreshToken = null;
+      state.identity.userId = null;
       state.identity.emailAddress = null;
       state.identity.fullName = null;
       state.identity.roleId = null;
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
     },
-    setAccessToken(state, accessToken) {
+    SET_ACCESS_TOKEN(state, accessToken) {
       state.identity.accessToken = accessToken;
       localStorage.setItem("accessToken", accessToken);
     },
-    setRefreshToken(state, refreshToken) {
+    SET_REFRESH_TOKEN(state, refreshToken) {
       state.identity.refreshToken = refreshToken;
       localStorage.setItem("refreshToken", refreshToken);
+    },
+    SET_LOADING(state, status) {
+      state.isLoading = status;
     },
   },
   actions: {
     async login({ commit }, identity) {
-      commit("setIdentity", identity);
+      commit("SET_IDENTITY", identity);
     },
     async setIdentity({ commit }, identity) {
-      commit("setIdentity", identity);
+      commit("SET_IDENTITY", identity);
     },
     setAccessToken({ commit }, accessToken) {
-      commit("setAccessToken", accessToken);
+      commit("SET_ACCESS_TOKEN", accessToken);
     },
 
     setRefreshToken({ commit }, refreshToken) {
-      commit("setRefreshToken", refreshToken);
+      commit("SET_REFRESH_TOKEN", refreshToken);
     },
 
-    logout({ commit }) {
-      commit("clearIdentity");
+    async logout({ commit }) {
+      commit("CLEAR_IDENTITY");
+    },
+    setLoading({ commit }, status) {
+      commit("SET_LOADING", status);
     },
   },
   getters: {

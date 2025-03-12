@@ -12,24 +12,24 @@
       {{ $t("language") }}
     </button>
     <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-      <li>
+      <li class="dropdown-li">
         <a class="dropdown-item" href="#" @click="changeLanguage('en')">
           <img
-            src="https://flagcdn.com/w40/us.png"
+            src="https://flagcdn.com/w40/gb.png"
             alt="English"
             class="flag-icon"
           />
-          English
+          EN
         </a>
       </li>
-      <li>
+      <li class="dropdown-li">
         <a class="dropdown-item" href="#" @click="changeLanguage('vi')">
           <img
             src="https://flagcdn.com/w40/vn.png"
             alt="Vietnamese"
             class="flag-icon"
           />
-          Tiếng Việt
+          VN
         </a>
       </li>
     </ul>
@@ -49,7 +49,7 @@ export default {
     // 7. Dữ liệu
     return {
       flags: {
-        en: "https://flagcdn.com/w40/us.png",
+        en: "https://flagcdn.com/w40/gb.png",
         vi: "https://flagcdn.com/w40/vn.png",
       },
       currentLang: localStorage.getItem("lang") || "en",
@@ -80,6 +80,18 @@ export default {
   margin-right: 8px;
 }
 .btn-dns-primary {
-  width: 180px;
+  width: 100%;
+}
+.dropdown-menu {
+  min-width: none;
+  width: 5px !important;
+}
+.dropdown-li {
+  min-width: none;
+  padding: 0;
+  margin: 0;
+}
+.dropdown-item {
+  width: 10px;
 }
 </style>

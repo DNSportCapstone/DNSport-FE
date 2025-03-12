@@ -36,6 +36,8 @@
   "Name": "Tên",
   "Address": "Địa chỉ",
   "SaveChanges": "Lưu thay đổi",
+  "FieldDetails": "Chi tiết sân",
+  "Action": "Hoạt động",
   "ReceiveNotifications": "Nhận thông báo",
   "ProfileUpdateSuccess": "Cập nhật hồ sơ thành công!"
 }

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { jwtDecode } from "jwt-decode";
 import store from "@/store";
+
 import HomePage from "@/pages/HomePage.vue";
 import ShopPage from "@/pages/ShopPage.vue";
 import BookingByDatePage from "@/pages/BookingByDatePage.vue";
@@ -12,14 +14,17 @@ import ReviewPage from "@/pages/ReviewPage.vue";
 import FieldList from "@/pages/FieldList.vue";
 import PaymentPage from "@/pages/PaymentPage.vue";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
-
-import { jwtDecode } from "jwt-decode";
+import FieldDetails from "@/pages/user/FieldDetails.vue";
+import BookingServices from "@/pages/user/BookingServices.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
+
 const refreshToken =
   store.getters.refreshToken || localStorage.getItem("refreshToken");
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -59,8 +64,8 @@ const router = createRouter({
       component: LoginSSO,
     },
     {
-      path: "/edituser",
-      name: "edituser",
+      path: "/edit-user",
+      name: "edit-user",
       component: EditUserPage,
     },
     {
@@ -93,6 +98,16 @@ const router = createRouter({
       name: "PaymentSuccess",
       component: PaymentSuccessPage,
     },
+    {
+      path: "/field-details/:fieldId/:returnPath",
+      name: "field-details",
+      component: FieldDetails,
+    },
+    {
+      path: "/booking-services",
+      name: "booking-services",
+      component: BookingServices,
+    },
   ],
 });
 
@@ -103,6 +118,7 @@ router.beforeEach((to, from, next) => {
     const currentTime = Math.floor(Date.now() / 1000);
     if (accessTokenDecoded.exp < currentTime) {
       store.dispatch("logout");
+      next("/");
     }
   }
   const publicPages = [
@@ -113,16 +129,26 @@ router.beforeEach((to, from, next) => {
     "/checkout",
     "/cart",
     "/booking-cancel",
-    "/edituser",
+    "/edit-user",
     "/test",
     "/review",
     "/field-list",
     "/payment",
     "/payment-success",
     "/booking-history",
+    "/field-details/:fieldId/:returnPath",
   ];
+
+  // const userPages = [
+  //   "/shop",
+  //   "/booking-by-date",
+  //   "/checkout",
+  //   "/cart",
+  //   "/booking-cancel",
+  // ];
+
   // const adminPages = ["/product"];
-  const authRequired = !publicPages.includes(to.path);
+  const authRequired = !publicPages.some((page) => to.path.startsWith(page));
   const loggedIn = localStorage.getItem("accessToken");
   // trying to access a restricted page + not logged in
   // redirect to login page

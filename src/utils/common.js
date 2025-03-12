@@ -9,24 +9,24 @@ const CommonHelper = {
       currency: "VND",
     }).format(number);
   },
+
   getCurrentUserId() {
     const accessTokenDecoded = jwtDecode(
       store.getters.accessToken ?? localStorage.getItem("accessToken")
     );
     return accessTokenDecoded.userId;
   },
+
   convertToDate(isoString) {
     const { locale } = useI18n();
     const date = new Date(isoString);
-    date.setHours(date.getHours() + 7);
     return date.toLocaleDateString(locale.value);
   },
 
   convertToDateTime(isoString) {
     const { locale } = useI18n();
     const date = new Date(isoString);
-    date.setHours(date.getHours() + 7);
-    return date.toLocaleString(locale.value); // dd/MM/yyyy HH:mm
+    return date.toLocaleString(locale.value);
   },
 };
 
