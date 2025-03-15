@@ -1,40 +1,46 @@
 <template>
-  <!-- Tab slot đã chọn -->
   <div class="selected-slots-tab" :class="{ open: isTabOpen }">
     <div class="tab-header" @click="toggleTab">
-      <span class="slot-count">{{ this.slots.length }}</span>
-      <span>Selected Slot</span>
-      <span
-        ><font-awesome-icon
+      <span class="slot-count">{{ totalSlots }}</span>
+      <span>Selected Slots</span>
+      <span>
+        <font-awesome-icon
           class="tab-close"
           v-show="isTabOpen"
           :icon="['fas', 'xmark']"
-      /></span>
+        />
+      </span>
     </div>
     <div class="tab-content" v-if="isTabOpen">
-      <div
-        v-for="(slot, index) in this.slots"
-        :key="index"
-        class="slot-selected-item"
-      >
-        {{ slot.time }}
+      <div v-for="field in selectedFields" :key="field.fieldId">
+        <h3>{{ field.fieldName }}</h3>
+        <div
+          v-for="(slot, index) in field.selectedSlots"
+          :key="index"
+          class="slot-selected-item"
+        >
+          {{ slot.time }}
+        </div>
       </div>
-      <div v-if="!this.slots.length" class="no-slot">
+
+      <div v-if="totalSlots === 0" class="no-slot">
         No slots have been selected yet
-        <!-- Chưa có slot nào được chọn -->
       </div>
+
       <div class="component-calendar-cart pt-2">
         <div class="cart-info">
           <div class="slot-added">
-            Choosed: <span class="count-added">5</span> Slot(s)
+            Choosed: <span class="count-added">{{ totalSlots }}</span> Slot(s)
           </div>
           <div class="cart-total">
             Total Price:
-            <span>{{ formatCurrency(3000000) }}</span>
+            <span>{{ formatCurrency(totalPrice) }}</span>
           </div>
         </div>
         <div>
-          <button class="btn-dns-primary">Booking</button>
+          <button class="btn-dns-primary" @click="goToServicePage">
+            Continue
+          </button>
         </div>
       </div>
     </div>
@@ -43,27 +49,47 @@
 
 <script>
 import "@/assets/css/choose-slots-tab.css";
-/* import JS functions */
 import CommonHelper from "@/utils/common";
 
 export default {
   props: {
-    slots: {
+    selectedFields: {
       type: Array,
       required: true,
     },
   },
+  computed: {
+    totalSlots() {
+      return this.selectedFields.reduce(
+        (sum, field) => sum + field.selectedSlots.length,
+        0
+      );
+    },
+    totalPrice() {
+      return this.selectedFields.reduce(
+        (sum, field) =>
+          sum + field.selectedSlots.reduce((s, slot) => s + slot.price, 0),
+        0
+      );
+    },
+  },
   data() {
     return {
-      isTabOpen: false, // Trạng thái tab mở/đóng
+      isTabOpen: false,
     };
   },
   methods: {
     toggleTab() {
-      this.isTabOpen = !this.isTabOpen; // Mở hoặc đóng tab
+      this.isTabOpen = !this.isTabOpen;
     },
     formatCurrency(number) {
       return CommonHelper.formatVND(number);
+    },
+    goToServicePage() {
+      this.$router.push({
+        name: "booking-services",
+        query: { selectedFields: JSON.stringify(this.selectedFields) },
+      });
     },
   },
 };

@@ -163,6 +163,12 @@
                                                     :time="slot.time"
                                                     :price="slot.price"
                                                     :duration="slot.duration"
+                                                    :isBooked="slot.isBooked"
+                                                    :fieldId="field.fieldId"
+                                                    :fieldName="field.fieldName"
+                                                    @slotSelected="
+                                                      handleSlotSelected
+                                                    "
                                                   />
                                                 </a>
                                               </td>
@@ -200,7 +206,7 @@
       </div>
     </div>
   </div>
-  <SlotsChoosen :slots="selectedSlots" />
+  <SlotsChoosen :selectedFields="selectedFields" />
 </template>
 <script setup>
 import { useI18n } from "vue-i18n";
@@ -209,7 +215,12 @@ const { t } = useI18n();
 const steps = ref([]);
 
 watchEffect(() => {
-  steps.value = [t("ChooseFields"), t("ConfirmInformation"), t("Payment")];
+  steps.value = [
+    t("ChooseFields"),
+    t("ChooseServices"),
+    t("ConfirmInformation"),
+    t("Payment"),
+  ];
 });
 </script>
 
@@ -219,69 +230,119 @@ import SlotElement from "@/components/SlotElement.vue";
 import SlotsChoosen from "@/components/SlotsChoosen.vue";
 import ProgressSteps from "@/components/ProgressSteps.vue";
 /* import JS functions */
-import CommonHelper from "@/utils/common";
+import API from "@/utils/axios";
 
 export default {
-  name: "App",
-  components: {
-    SlotElement,
-    SlotsChoosen,
-    ProgressSteps,
-  },
+  components: { ProgressSteps, SlotElement, SlotsChoosen },
   data() {
     return {
-      bookingSlots: [],
-      selectedSlots: [],
-      todayDate: CommonHelper.convertToDateTime(new Date().toISOString()),
-      fields: [
-        {
-          fieldId: 1,
-          fieldName: "Trung Vuong",
-          bookingSlots: [],
-        },
-        {
-          fieldId: 2,
-          fieldName: "Chi Lang",
-          bookingSlots: [],
-        },
-      ],
+      fields: [],
+      selectedFields: [],
+      todayDate: "",
     };
   },
   methods: {
-    generateSlots() {
-      const startHour = 0; // Giờ bắt đầu
-      const endHour = 23; // Giờ kết thúc
-      const duration = 60; // Thời lượng mỗi slot (phút)
-      const pricePerSlot = 60000; // Giá mỗi slot (£)
-      this.fields.forEach((field) => {
-        const slots = [];
-        for (let hour = startHour; hour <= endHour; hour++) {
-          const time = `${hour.toString().padStart(2, "0")}:00`; // Định dạng giờ (HH:mm)
-          slots.push({
-            time,
-            price: pricePerSlot,
-            duration,
-          });
-        }
-
-        field.bookingSlots = slots;
-      });
-    },
-    toggleSlotSelection(slot) {
-      console.log(this.selectedSlots);
-      if (this.selectedSlots.includes(slot)) {
-        this.selectedSlots = this.selectedSlots.filter((s) => s !== slot);
-      } else {
-        this.selectedSlots.push(slot);
+    async fetchFields() {
+      try {
+        const response = await API.get(`Field/fields-by-stadium-id/${5}`);
+        this.fields = response.data.map((field) => {
+          const allSlots = this.generateSlots(); // Tạo danh sách slot
+          this.todayDate = "2025-02-24";
+          // **Lấy danh sách slot đã đặt trong ngày hôm nay**
+          const bookedSlots = field.bookingFields
+            .filter(
+              (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
+            )
+            .map((b) => this.formatTime(b.startTime));
+          console.log(bookedSlots);
+          // **Gán trạng thái đã đặt (isBooked)**
+          const bookingSlots = allSlots.map((slot) => ({
+            ...slot,
+            isBooked: bookedSlots.includes(slot.time),
+          }));
+          console.log(bookingSlots);
+          return {
+            fieldId: field.fieldId,
+            fieldName: field.description,
+            bookingSlots, // Chứa cả slot đã đặt & chưa đặt
+          };
+        });
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách sân:", error);
       }
     },
-    formatCurrency(number) {
-      return CommonHelper.formatVND(number);
+    formatTime(isoString) {
+      const date = new Date(isoString);
+      return date.toTimeString().slice(0, 5); // Lấy HH:mm
+    },
+    handleSlotSelected(slot) {
+      const { fieldId, fieldName, isChoose, time } = slot;
+
+      // Tìm fieldId trong selectedFields
+      let field = this.selectedFields.find((f) => f.fieldId === fieldId);
+
+      if (!field) {
+        // Nếu fieldId chưa có, thêm mới
+        this.selectedFields.push({ fieldId, fieldName, selectedSlots: [] });
+        field = this.selectedFields.find((f) => f.fieldId === fieldId);
+      }
+
+      if (isChoose) {
+        // Nếu chọn slot, thêm vào danh sách
+        field.selectedSlots.push(slot);
+      } else {
+        // Nếu bỏ chọn slot, loại khỏi danh sách
+        field.selectedSlots = field.selectedSlots.filter(
+          (s) => s.time !== time
+        );
+
+        // Nếu không còn slot nào, xóa fieldId khỏi selectedFields
+        if (field.selectedSlots && field.selectedSlots.length === 0) {
+          this.selectedFields = this.selectedFields.filter(
+            (f) => f.fieldId !== fieldId
+          );
+        }
+      }
+
+      this.selectedFields.map((field) => ({
+        ...field,
+        selectedSlots: field.selectedSlots.sort((a, b) => {
+          return (
+            this.convertTimeToMinutes(a.time) -
+            this.convertTimeToMinutes(b.time)
+          );
+        }),
+      }));
+
+      console.log("Danh sách sân và slot đã chọn:", this.selectedFields);
+    },
+    convertTimeToMinutes(time) {
+      const [hours, minutes] = time.split(":").map(Number);
+      return hours * 60 + minutes;
+    },
+    // **Hàm tạo danh sách slot**
+    generateSlots() {
+      const slots = [];
+      const startHour = 0;
+      const endHour = 23;
+      const duration = 60;
+      const pricePerSlot = 60000;
+
+      for (let hour = startHour; hour <= endHour; hour++) {
+        const time = `${hour.toString().padStart(2, "0")}:00`;
+        slots.push({
+          time,
+          price: pricePerSlot,
+          duration,
+          isBooked: false, // Mặc định là chưa đặt
+        });
+      }
+      return slots;
     },
   },
-  mounted() {
-    this.generateSlots();
-    this.todayDate = CommonHelper.convertToDate(new Date().toISOString());
+  async mounted() {
+    await this.fetchFields();
+    this.todayDate = new Date().toISOString();
   },
 };
 </script>

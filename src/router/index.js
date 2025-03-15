@@ -144,6 +144,7 @@ router.beforeEach((to, from, next) => {
     "/booking-history",
     "/field-details/:fieldId/:returnPath",
     "/nearby-stadiums",
+    "/booking-services",
   ];
 
   // const userPages = [
