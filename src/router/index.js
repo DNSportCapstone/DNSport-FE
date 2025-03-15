@@ -20,6 +20,7 @@ import NearbyStadiums from "@/pages/NearbyStadiums.vue";
 
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+import RevenueReportPage from "@/pages/RevenueReportPage.vue";
 
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
@@ -115,6 +116,11 @@ const router = createRouter({
       name: "nearby-stadiums",
       component: NearbyStadiums,
     },
+    {
+      path: "/revenue-report",
+      name: "revenue-report",
+      component: RevenueReportPage,
+    }
   ],
 });
 export default router;
@@ -145,6 +151,7 @@ router.beforeEach((to, from, next) => {
     "/field-details/:fieldId/:returnPath",
     "/nearby-stadiums",
     "/booking-services",
+    "/revenue-report"
   ];
 
   // const userPages = [
