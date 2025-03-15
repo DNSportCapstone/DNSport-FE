@@ -16,6 +16,8 @@ import PaymentPage from "@/pages/PaymentPage.vue";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 import FieldDetails from "@/pages/user/FieldDetails.vue";
 import BookingServices from "@/pages/user/BookingServices.vue";
+import NearbyStadiums from "@/pages/NearbyStadiums.vue";
+
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
 
@@ -108,9 +110,13 @@ const router = createRouter({
       name: "booking-services",
       component: BookingServices,
     },
+    {
+      path: "/nearby-stadiums",
+      name: "nearby-stadiums",
+      component: NearbyStadiums,
+    },
   ],
 });
-
 export default router;
 router.beforeEach((to, from, next) => {
   if (accessToken && refreshToken) {
@@ -137,6 +143,7 @@ router.beforeEach((to, from, next) => {
     "/payment-success",
     "/booking-history",
     "/field-details/:fieldId/:returnPath",
+    "/nearby-stadiums",
     "/booking-services",
   ];
 
