@@ -488,12 +488,23 @@
 /* import css */
 
 export default {
-  name: "App",
+  name: "check-out",
   components: {},
   data() {
-    return {};
+    return {
+      selectedFields: [],
+      selectedServices: [],
+    };
   },
-  methods: {},
+  methods: {
+    fetchData() {
+      const query = this.$route.query;
+      if (query.selectedFields && query.selectedServices) {
+        this.selectedFields = JSON.parse(query.selectedFields);
+        this.selectedServices = JSON.parse(query.selectedServices);
+      }
+    },
+  },
 };
 </script>
 <style>

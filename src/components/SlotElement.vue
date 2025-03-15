@@ -2,11 +2,11 @@
   <div
     _ngcontent-c26=""
     @click="handleClick()"
-    :class="
-      isChoose
-        ? 'mlp-slot rounded float-left mlp-slot-avail ng-star-inserted isChoose'
-        : 'mlp-slot rounded float-left mlp-slot-avail ng-star-inserted'
-    "
+    :class="[
+      'mlp-slot rounded float-left ng-star-inserted',
+      isChoose ? 'mlp-slot-avail isChoose' : '',
+      isBooked ? 'mlp-slot-unavail' : 'mlp-slot-avail',
+    ]"
   >
     <!---->
     <div _ngcontent-c26="" class="ng-star-inserted">
@@ -14,11 +14,10 @@
         {{ time }}
       </div>
       <div _ngcontent-c26="" class="mlp-line-two">
-        <!---->
-
-        <!---->
-
-        <!----><span _ngcontent-c26="" class="ng-star-inserted">
+        <span v-if="isBooked" _ngcontent-c26="" class="ng-star-inserted">
+          Booked
+        </span>
+        <span v-else _ngcontent-c26="" class="ng-star-inserted">
           {{ formatCurrency(price) }}
         </span>
       </div>
@@ -48,6 +47,18 @@ export default {
       type: Number,
       required: true,
     },
+    isBooked: {
+      type: Boolean,
+      required: true,
+    },
+    fieldId: {
+      type: Number,
+      required: true,
+    },
+    fieldName: {
+      type: String,
+      required: true,
+    },
   },
   emits: ["eventName"],
   data() {
@@ -68,11 +79,19 @@ export default {
       this.count++;
     },
     handleClick() {
-      if (this.isChoose) {
-        this.isChoose = false;
-      } else {
-        this.isChoose = true;
-      }
+      if (this.isBooked) return; // Không cho chọn nếu đã đặt
+
+      this.isChoose = !this.isChoose;
+
+      // Emit sự kiện để truyền slot đã chọn ra ngoài
+      this.$emit("slotSelected", {
+        time: this.time,
+        price: this.price,
+        duration: this.duration,
+        isChoose: this.isChoose,
+        fieldId: this.fieldId,
+        fieldName: this.fieldName,
+      });
     },
     formatCurrency(value) {
       return CommonHelper.formatVND(value); // Gọi trực tiếp từ component
@@ -90,7 +109,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .mlp-slot[_ngcontent-c26] {
   text-align: center;
   border: 1px solid #d6d5d5;
@@ -127,6 +146,21 @@ export default {
   font-size: 120%;
   letter-spacing: 1.5px;
   font-weight: 600;
+}
+
+.mlp-slot-unavail {
+  background-color: #d6d6d6; /* Màu nền xám nhạt */
+  border: 1px solid #a0a0a0; /* Viền xám đậm */
+  cursor: not-allowed;
+  opacity: 0.7; /* Làm mờ một chút */
+  pointer-events: none;
+}
+
+.mlp-slot-unavail .mlp-line-one {
+  font-size: 120%;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  color: #606060; /* Màu chữ xám đậm */
 }
 
 .isChoose {

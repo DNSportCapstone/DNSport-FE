@@ -137,6 +137,7 @@ router.beforeEach((to, from, next) => {
     "/payment-success",
     "/booking-history",
     "/field-details/:fieldId/:returnPath",
+    "/booking-services",
   ];
 
   // const userPages = [
