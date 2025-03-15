@@ -11,6 +11,7 @@ const store = createStore({
       roleId: null,
     },
     isLoading: false,
+    chosenServices: [],
   },
   mutations: {
     SET_IDENTITY(state, identity) {
@@ -39,6 +40,15 @@ const store = createStore({
     SET_LOADING(state, status) {
       state.isLoading = status;
     },
+    SET_CHOSEN_SERVICES(state, services) {
+      state.chosenServices = services;
+    },
+    UPDATE_SERVICE_QUANTITY(state, { index, quantity }) {
+      state.chosenServices[index].quantity = quantity;
+    },
+    REMOVE_SERVICE(state, index) {
+      state.chosenServices.splice(index, 1);
+    },
   },
   actions: {
     async login({ commit }, identity) {
@@ -61,12 +71,22 @@ const store = createStore({
     setLoading({ commit }, status) {
       commit("SET_LOADING", status);
     },
+    setChosenServices({ commit }, services) {
+      commit("SET_CHOSEN_SERVICES", services);
+    },
+    updateServiceQuantity({ commit }, payload) {
+      commit("UPDATE_SERVICE_QUANTITY", payload);
+    },
+    removeService({ commit }, index) {
+      commit("REMOVE_SERVICE", index);
+    },
   },
   getters: {
     isAuthenticated: (state) => !!state.identity.accessToken,
     accessToken: (state) => state.identity.accessToken,
     refreshToken: (state) => state.identity.refreshToken,
     identity: (state) => state.identity,
+    chosenServices: (state) => state.chosenServices,
   },
 });
 

@@ -39,5 +39,6 @@
   "FieldDetails": "Field Details",
   "Action": "Action",
   "ReceiveNotifications": "Receive Notifications",
-  "ProfileUpdateSuccess": "Profile updated successfully!"
+  "ProfileUpdateSuccess": "Profile updated successfully!",
+  "ChooseServices": "Choose services"
 }
