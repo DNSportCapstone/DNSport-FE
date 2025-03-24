@@ -1,109 +1,110 @@
 <template>
   <div class="section">
-      <div class="section-title">
-        <div>
-          <span class="description-title">title</span>
-        </div>
-      </div>
-  <div class="container mt-4">
-    <!-- Header with search and filters -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="mb-0 fw-bold text-primary">
-        <i class="bi bi-calendar-check me-2"></i>{{ t("BookingHistory") }}
-      </h2>
-      <div class="d-flex gap-2">
-        <div class="input-group">
-          <input type="text" v-model="searchQuery" class="form-control" placeholder='' />
-          <button class="btn btn-outline-primary" type="button">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
+    <div class="section-title">
+      <div>
+        <span class="description-title">title</span>
       </div>
     </div>
-
-    <!-- Main content card -->
-    <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-      <!-- Loading state -->
-      <div v-if="loading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">{{ t("loading") }}</span>
+    <div class="container mt-4">
+      <!-- Header with search and filters -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0 fw-bold text-primary">
+          <i class="bi bi-calendar-check me-2"></i>{{ t("BookingHistory") }}
+        </h2>
+        <div class="d-flex gap-2">
+          <div class="input-group">
+            <input type="text" v-model="searchQuery" class="form-control" placeholder='' />
+            <button class="btn btn-outline-primary" type="button">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
         </div>
-        <p class="mt-3 text-muted">{{ t("loading") }}</p>
       </div>
 
-      <!-- Empty state -->
-      <div v-else-if="paginatedBookings.length === 0" class="text-center py-5">
-        <i class="bi bi-calendar-x display-1 text-muted"></i>
-        <p class="mt-3 text-muted">{{ t("NoBookingHistory") }}</p>
-      </div>
+      <!-- Main content card -->
+      <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <!-- Loading state -->
+        <div v-if="loading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">{{ t("loading") }}</span>
+          </div>
+          <p class="mt-3 text-muted">{{ t("loading") }}</p>
+        </div>
 
-      <!-- Table with data -->
-      <div v-else class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th class="fw-semibold border-0">{{ t('BookingDate') }}</th>
-              <th class="fw-semibold border-0">{{ t('Status') }}</th>
-              <th class="fw-semibold border-0">{{ t('TotalAmount') }}</th>
-              <th class="fw-semibold border-0">{{ t('Field') }}</th>
-              <th class="fw-semibold border-0">{{ t('Time') }}</th>
-              <th class="fw-semibold border-0">{{ t('Stadium')}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="booking in paginatedBookings" :key="booking.BookingId" class="align-middle">
-              <td>{{ formatDate(booking.BookingDate) }}</td>
-              <td>
-                <span class="badge" :class="getStatusBadgeClass(booking.Status)">
-                  {{ booking.Status }}
-                </span>
-              </td>
-              <td class="fw-semibold">{{ formatCurrency(booking.TotalPrice) }}</td>
-              <td>{{ booking.FieldId }}</td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="bi bi-clock me-1 text-muted"></i>
-                  {{ booking.StartTime }} - {{ booking.EndTime }}
-                </div>
-              </td>
-              <td>{{ booking.StadiumName }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <!-- Empty state -->
+        <div v-else-if="paginatedBookings.length === 0" class="text-center py-5">
+          <i class="bi bi-calendar-x display-1 text-muted"></i>
+          <p class="mt-3 text-muted">{{ t("NoBookingHistory") }}</p>
+        </div>
 
-      <!-- Pagination footer -->
-      <div class="card-footer bg-white py-3 border-0">
-        <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted">{{ t('Show') }} {{ paginatedBookings.length }} {{ t('On') }} {{ bookings.length }} {{ t('Result') }}</small>
+        <!-- Table with data -->
+        <div v-else class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="fw-semibold border-0">{{ t('BookingDate') }}</th>
+                <th class="fw-semibold border-0">{{ t('Status') }}</th>
+                <th class="fw-semibold border-0">{{ t('TotalAmount') }}</th>
+                <th class="fw-semibold border-0">{{ t('Field') }}</th>
+                <th class="fw-semibold border-0">{{ t('Time') }}</th>
+                <th class="fw-semibold border-0">{{ t('Stadium') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="booking in paginatedBookings" :key="booking.BookingId" class="align-middle">
+                <td>{{ formatDate(booking.BookingDate) }}</td>
+                <td>
+                  <span class="badge" :class="getStatusBadgeClass(booking.Status)">
+                    {{ booking.Status }}
+                  </span>
+                </td>
+                <td class="fw-semibold">{{ formatCurrency(booking.TotalPrice) }}</td>
+                <td>{{ booking.FieldId }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-clock me-1 text-muted"></i>
+                    {{ booking.StartTime }} - {{ booking.EndTime }}
+                  </div>
+                </td>
+                <td>{{ booking.StadiumName }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <nav aria-label="Điều hướng trang">
-            <ul class="pagination pagination-sm mb-0">
-              <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                <button class="page-link rounded-start" @click="currentPage--">
-                  <i class="bi bi-chevron-left"></i> Trước
-                </button>
-              </li>
-              <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
-                <button class="page-link" @click="currentPage = page">{{ page }}</button>
-              </li>
-              <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                <button class="page-link rounded-end" @click="currentPage++">
-                  Tiếp <i class="bi bi-chevron-right"></i>
-                </button>
-              </li>
-            </ul>
-          </nav>
+        <!-- Pagination footer -->
+        <div class="card-footer bg-white py-3 border-0">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">{{ t('Show') }} {{ paginatedBookings.length }} {{ t('On') }} {{ bookings.length }}
+              {{ t('Result') }}</small>
+
+            <nav aria-label="Điều hướng trang">
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                  <button class="page-link rounded-start" @click="currentPage--">
+                    <i class="bi bi-chevron-left"></i> Trước
+                  </button>
+                </li>
+                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
+                  <button class="page-link" @click="currentPage = page">{{ page }}</button>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                  <button class="page-link rounded-end" @click="currentPage++">
+                    Tiếp <i class="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup>
-  import { useI18n } from "vue-i18n";
-  const { t } = useI18n();
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 </script>
 
 <script>
@@ -113,23 +114,7 @@ import CommonHelper from "@/utils/common";
 export default {
   data() {
     return {
-      bookings: [
-        { BookingId: 1, TotalPrice: 100, BookingDate: '2025-03-01', Status: 'Confirmed', FieldId: 101, StartTime: '08:00', EndTime: '10:00', StadiumName: 'Sân A' },
-        { BookingId: 2, TotalPrice: 120, BookingDate: '2025-03-02', Status: 'Pending', FieldId: 102, StartTime: '10:00', EndTime: '12:00', StadiumName: 'Sân B' },
-        { BookingId: 3, TotalPrice: 80, BookingDate: '2025-03-03', Status: 'Cancelled', FieldId: 103, StartTime: '12:00', EndTime: '14:00', StadiumName: 'Sân C' },
-        { BookingId: 4, TotalPrice: 200, BookingDate: '2025-03-04', Status: 'Confirmed', FieldId: 104, StartTime: '14:00', EndTime: '16:00', StadiumName: 'Sân D' },
-        { BookingId: 5, TotalPrice: 150, BookingDate: '2025-03-05', Status: 'Pending', FieldId: 105, StartTime: '16:00', EndTime: '18:00', StadiumName: 'Sân E' },
-        { BookingId: 1, TotalPrice: 100, BookingDate: '2025-03-01', Status: 'Confirmed', FieldId: 101, StartTime: '08:00', EndTime: '10:00', StadiumName: 'Sân A' },
-        { BookingId: 2, TotalPrice: 120, BookingDate: '2025-03-02', Status: 'Pending', FieldId: 102, StartTime: '10:00', EndTime: '12:00', StadiumName: 'Sân B' },
-        { BookingId: 3, TotalPrice: 80, BookingDate: '2025-03-03', Status: 'Cancelled', FieldId: 103, StartTime: '12:00', EndTime: '14:00', StadiumName: 'Sân C' },
-        { BookingId: 4, TotalPrice: 200, BookingDate: '2025-03-04', Status: 'Confirmed', FieldId: 104, StartTime: '14:00', EndTime: '16:00', StadiumName: 'Sân D' },
-        { BookingId: 5, TotalPrice: 150, BookingDate: '2025-03-05', Status: 'Pending', FieldId: 105, StartTime: '16:00', EndTime: '18:00', StadiumName: 'Sân E' },
-        { BookingId: 1, TotalPrice: 100, BookingDate: '2025-03-01', Status: 'Confirmed', FieldId: 101, StartTime: '08:00', EndTime: '10:00', StadiumName: 'Sân A' },
-        { BookingId: 2, TotalPrice: 120, BookingDate: '2025-03-02', Status: 'Pending', FieldId: 102, StartTime: '10:00', EndTime: '12:00', StadiumName: 'Sân B' },
-        { BookingId: 3, TotalPrice: 80, BookingDate: '2025-03-03', Status: 'Cancelled', FieldId: 103, StartTime: '12:00', EndTime: '14:00', StadiumName: 'Sân C' },
-        { BookingId: 4, TotalPrice: 200, BookingDate: '2025-03-04', Status: 'Confirmed', FieldId: 104, StartTime: '14:00', EndTime: '16:00', StadiumName: 'Sân D' },
-        { BookingId: 5, TotalPrice: 150, BookingDate: '2025-03-05', Status: 'Pending', FieldId: 105, StartTime: '16:00', EndTime: '18:00', StadiumName: 'Sân E' }
-      ],
+      bookings: [],
       loading: true,
       currentPage: 1,
       itemsPerPage: 10,
@@ -186,8 +171,8 @@ export default {
         const userId = CommonHelper.getCurrentUserId();
         const response = await API.get(`Booking/history/${userId}`);
         this.bookings = this.bookings.concat(response.data.map(b => ({
-          BookingId: b.BookingId,
-          TotalPrice: b.TotalPrice,
+          BookingId: b.bookingId,
+          TotalPrice: b.totalPrice,
           BookingDate: b.BookingDate,
           Status: b.Status,
           FieldId: b.FieldId,
@@ -279,14 +264,20 @@ export default {
     margin-top: 0.5rem;
   }
 
-  .table th, .table td {
+  .table th,
+  .table td {
     font-size: 0.9rem;
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .table-responsive {

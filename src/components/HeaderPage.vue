@@ -113,6 +113,9 @@
                   <li><router-link to="#">Deep Dropdown 5</router-link></li>
                 </ul>
               </li> -->
+              <li  v-if="isAdmin">
+                <router-link to="/administration">Administration</router-link>
+              </li>
               <li>
                 <router-link to="/booking-history">Booking History</router-link>
               </li>
@@ -186,6 +189,9 @@ export default {
       var { fullName } = this.$store.getters.identity;
       return fullName;
     },
+    isAdmin() {
+      return CommonHelper.getCurentRole() == 1;
+    }
   },
   methods: {
     // 9. Phương thức
