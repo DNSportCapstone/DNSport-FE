@@ -20,7 +20,8 @@
                       <i class="bi bi-currency-dollar text-primary"></i>
                     </div>
                     <h5 class="card-subtitle text-muted mb-2">Tổng doanh thu</h5>
-                    <h3 class="card-title mb-0 fw-bold text-primary currency-value">{{ formatCurrency(totalRevenue) }}
+                    <h3 class="card-title mb-0 fw-bold text-primary currency-value">{{
+                      formatCurrency(revenueData.totalRevenue) }}
                     </h3>
                   </div>
                 </div>
@@ -33,7 +34,8 @@
                       <i class="bi bi-wallet2 text-success"></i>
                     </div>
                     <h5 class="card-subtitle text-muted mb-2">Số tiền trả cho chủ sân</h5>
-                    <h3 class="card-title mb-0 fw-bold text-success currency-value">{{ formatCurrency(totalRevenue * 90
+                    <h3 class="card-title mb-0 fw-bold text-success currency-value">{{
+                      formatCurrency(revenueData.totalRevenue * 90
                       / 100) }}</h3>
                   </div>
                 </div>
@@ -46,7 +48,8 @@
                       <i class="bi bi-percent text-info"></i>
                     </div>
                     <h5 class="card-subtitle text-muted mb-2">Doanh thu hoa hồng</h5>
-                    <h3 class="card-title mb-0 fw-bold text-info currency-value">{{ formatCurrency(totalRevenue * 10 /
+                    <h3 class="card-title mb-0 fw-bold text-info currency-value">{{
+                      formatCurrency(revenueData.totalRevenue * 10 /
                       100) }}</h3>
                   </div>
                 </div>
@@ -56,11 +59,20 @@
             <!-- Báo cáo theo thời gian -->
             <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
               <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                <div class="d-flex align-items-center">
-                  <div class="badge bg-primary bg-opacity-10 p-2 rounded-circle me-3">
-                    <i class="bi bi-calendar-range text-primary"></i>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <div class="badge bg-primary bg-opacity-10 p-2 rounded-circle me-3">
+                      <i class="bi bi-calendar-range text-primary"></i>
+                    </div>
+                    <h4 class="mb-0 fw-bold">Báo cáo theo thời gian</h4>
                   </div>
-                  <h4 class="mb-0 fw-bold">Báo cáo theo thời gian</h4>
+                  <div class="d-flex align-items-center">
+                    <div class="input-group date-filter me-3">
+                      <select v-model="selectedYear" class="form-select" @change="filterDataByYear">
+                        <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="card-body">
@@ -120,7 +132,7 @@
                             </span>
                             <span class="badge bg-success rounded-pill fs-6 px-3 currency-value">{{
                               formatCurrency(totalPeriodRevenue)
-                            }}</span>
+                              }}</span>
                           </div>
                         </div>
                       </div>
@@ -161,24 +173,23 @@
                   </div>
                   <h4 class="mb-0 fw-bold">Biểu đồ xu hướng doanh thu</h4>
                 </div>
-                <!-- <div class="dropdown">
+                <div class="dropdown">
                   <button class="btn btn-sm btn-light rounded-pill dropdown-toggle" type="button"
                     id="chartOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical"></i>
+                    <i class="bi bi-sliders me-1"></i> Tùy chọn
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="chartOptionsDropdown">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-download me-2"></i>Tải xuống</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-printer me-2"></i>In báo cáo</a></li>
-                    <li>
-                      <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i>Chia sẻ</a></li>
+                    <li><a class="dropdown-item" href="#" @click.prevent="toggleChartType"><i
+                          :class="isBarChart ? 'bi bi-graph-up' : 'bi bi-bar-chart'" class="me-2"></i>{{ isBarChart ?
+                            'Chuyển sang biểu đồ đường' : 'Chuyển sang biểu đồ cột' }}</a></li>
+                    <li><a class="dropdown-item" href="#" @click.prevent="downloadChart"><i
+                          class="bi bi-download me-2"></i>Tải xuống</a></li>
                   </ul>
-                </div> -->
+                </div>
               </div>
               <div class="card-body p-4">
-                <div style="height: 350px">
-                  <BarChart :data="chartData" :options="chartOptions" />
+                <div style="height: 350px" ref="chartContainer">
+                  <component :is="chartComponent" :data="chartData" :options="chartOptions" ref="chart" />
                 </div>
               </div>
             </div>
@@ -192,11 +203,11 @@
                       <i class="bi bi-file-earmark-text text-warning"></i>
                     </div>
                     <h5 class="card-subtitle text-muted mb-2">Số lượng đơn</h5>
-                    <h3 class="card-title mb-0 fw-bold text-warning">{{ totalBookings }}</h3>
+                    <h3 class="card-title mb-0 fw-bold text-warning">{{ revenueData.totalBookings }}</h3>
                     <div class="progress mt-3" style="height: 6px;">
                       <div class="progress-bar bg-warning" role="progressbar"
-                        :style="{ width: (totalBookings / 100 * 5) + '%' }" aria-valuenow="25" aria-valuemin="0"
-                        aria-valuemax="100"></div>
+                        :style="{ width: (revenueData.totalBookings / 100 * 5) + '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>
@@ -246,32 +257,44 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
-import { Bar } from "vue-chartjs";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { Bar, Line } from 'vue-chartjs';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import API from "@/utils/axios";
 
 // Register chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 export default {
   components: {
-    BarChart: Bar
+    Bar,
+    Line
   },
-  setup() {
-    const revenueData = ref({
-      totalRevenue: 0,
-      totalBookings: 0,
-      daily: []
-    });
-
-    // Generate monthly data from daily data
-    const monthlyData = computed(() => {
+  data() {
+    return {
+      isBarChart: true,
+      allRevenueData: [],
+      revenueData: {
+        totalRevenue: 0,
+        totalBookings: 0,
+        daily: []
+      },
+      selectedYear: new Date().getFullYear(),
+      availableYears: [],
+      selectedPeriod: "daily",
+      isDataListExpanded: false,
+      chartContainer: null,
+      chart: null
+    };
+  },
+  computed: {
+    chartComponent() {
+      return this.isBarChart ? 'Bar' : 'Line';
+    },
+    monthlyData() {
       const monthMap = new Map();
 
-      revenueData.value.daily.forEach(item => {
+      this.revenueData.daily.forEach(item => {
         const monthKey = `${item.date.getFullYear()}-${item.date.getMonth()}`;
-        console.log(monthKey);
         if (!monthMap.has(monthKey)) {
           monthMap.set(monthKey, {
             date: new Date(item.date.getFullYear(), item.date.getMonth(), 1),
@@ -280,14 +303,13 @@ export default {
         }
         monthMap.get(monthKey).revenue += item.revenue;
       });
-      return Array.from(monthMap.values());
-    });
 
-    // Generate yearly data from daily data
-    const yearlyData = computed(() => {
+      return Array.from(monthMap.values()).sort((a, b) => a.date - b.date);
+    },
+    yearlyData() {
       const yearMap = new Map();
 
-      revenueData.value.daily.forEach(item => {
+      this.allRevenueData.forEach(item => {
         const yearKey = item.date.getFullYear();
         if (!yearMap.has(yearKey)) {
           yearMap.set(yearKey, {
@@ -298,51 +320,38 @@ export default {
         yearMap.get(yearKey).revenue += item.revenue;
       });
 
-      return Array.from(yearMap.values());
-    });
-
-    const selectedPeriod = ref("daily");
-    const isDataListExpanded = ref(false);
-
-    // Get the appropriate data based on selected period
-    const selectedPeriodData = computed(() => {
-      switch (selectedPeriod.value) {
+      return Array.from(yearMap.values()).sort((a, b) => a.date - b.date);
+    },
+    selectedPeriodData() {
+      switch (this.selectedPeriod) {
         case "monthly":
-          return monthlyData.value;
+          return this.monthlyData;
         case "yearly":
-          return yearlyData.value;
+          return this.yearlyData;
         case "daily":
         default:
-          return revenueData.value.daily;
+          return this.revenueData.daily;
       }
-    });
-
-    // Calculate total revenue for the selected period
-    const totalPeriodRevenue = computed(() => {
-      return selectedPeriodData.value.reduce((sum, item) => sum + item.revenue, 0);
-    });
-
-    // Find highest and lowest revenue for the selected period
-    const highestRevenue = computed(() => {
-      if (selectedPeriodData.value.length === 0) return 0;
-      return Math.max(...selectedPeriodData.value.map(item => item.revenue));
-    });
-
-    const highestTime = computed(() => {
-      return selectedPeriodData.value.find(item => item.revenue === highestRevenue.value)?.date;
-    });
-
-    const lowestRevenue = computed(() => {
-      if (selectedPeriodData.value.length === 0) return 0;
-      return Math.min(...selectedPeriodData.value.map(item => item.revenue));
-    });
-
-    const lowestTime = computed(() => {
-      return selectedPeriodData.value.find(item => item.revenue === lowestRevenue.value)?.date;
-    });
-
-    const periodTitle = computed(() => {
-      switch (selectedPeriod.value) {
+    },
+    totalPeriodRevenue() {
+      return this.selectedPeriodData.reduce((sum, item) => sum + item.revenue, 0);
+    },
+    highestRevenue() {
+      if (this.selectedPeriodData.length === 0) return 0;
+      return Math.max(...this.selectedPeriodData.map(item => item.revenue));
+    },
+    highestTime() {
+      return this.selectedPeriodData.find(item => item.revenue === this.highestRevenue)?.date;
+    },
+    lowestRevenue() {
+      if (this.selectedPeriodData.length === 0) return 0;
+      return Math.min(...this.selectedPeriodData.map(item => item.revenue));
+    },
+    lowestTime() {
+      return this.selectedPeriodData.find(item => item.revenue === this.lowestRevenue)?.date;
+    },
+    periodTitle() {
+      switch (this.selectedPeriod) {
         case "monthly":
           return "Hàng tháng";
         case "yearly":
@@ -351,42 +360,19 @@ export default {
         default:
           return "Hàng ngày";
       }
-    });
+    },
+    chartData() {
+      const backgroundColor = this.isBarChart
+        ? "rgba(13, 110, 253, 0.7)"
+        : "rgba(13, 110, 253, 0.2)";
 
-    const formatDate = (date) => {
-      if (!date) return "N/A";
+      const borderColor = "rgba(13, 110, 253, 1)";
 
-      if (selectedPeriod.value === "yearly") {
-        return date.getFullYear().toString();
-      } else if (selectedPeriod.value === "monthly") {
-        return date.toLocaleDateString("vi-VN", {
-          month: "long",
-          year: "numeric"
-        });
-      } else {
-        return date.toLocaleDateString("vi-VN", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric"
-        });
-      }
-    };
-
-    const toggleDataList = () => {
-      isDataListExpanded.value = !isDataListExpanded.value;
-    };
-
-    const selectReportPeriod = (period) => {
-      selectedPeriod.value = period;
-      isDataListExpanded.value = false;
-    };
-
-    const chartData = computed(() => {
       return {
-        labels: selectedPeriodData.value.map(item => {
-          if (selectedPeriod.value === "yearly") {
+        labels: this.selectedPeriodData.map(item => {
+          if (this.selectedPeriod === "yearly") {
             return item.date.getFullYear().toString();
-          } else if (selectedPeriod.value === "monthly") {
+          } else if (this.selectedPeriod === "monthly") {
             return item.date.toLocaleDateString("vi-VN", { month: "short", year: "numeric" });
           } else {
             return item.date.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
@@ -395,18 +381,19 @@ export default {
         datasets: [
           {
             label: "Doanh thu",
-            data: selectedPeriodData.value.map(item => item.revenue),
-            backgroundColor: "rgba(13, 110, 253, 0.7)",
-            borderColor: "rgba(13, 110, 253, 1)",
+            data: this.selectedPeriodData.map(item => item.revenue),
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
             borderWidth: 1,
-            borderRadius: 8,
-            maxBarThickness: 50
+            borderRadius: this.isBarChart ? 8 : 0,
+            maxBarThickness: 50,
+            tension: 0.4,
+            fill: !this.isBarChart
           }
         ]
       };
-    });
-
-    const chartOptions = computed(() => {
+    },
+    chartOptions() {
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -421,7 +408,7 @@ export default {
           },
           title: {
             display: true,
-            text: `Doanh thu ${periodTitle.value}`,
+            text: `Doanh thu ${this.periodTitle}`,
             font: {
               size: 16,
               weight: 'bold'
@@ -479,87 +466,27 @@ export default {
             ticks: {
               font: {
                 size: 11
-              }
+              },
+              maxRotation: 45,
+              minRotation: 0
             },
             grid: {
               display: false,
               drawBorder: false
             }
           }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
         }
       };
-    });
-
-    const loadSummaryData = async () => {
-      try {
-        // Simulate data loading for demo purposes
-        setTimeout(() => {
-          const demoData = generateDemoData();
-          revenueData.value.totalRevenue = demoData.reduce((sum, item) => sum + item.revenue, 0);
-          revenueData.value.totalBookings = demoData.length;
-          revenueData.value.daily = demoData;
-        }, 500);
-
-
-        const response = await API.get(`Admin/revenue-report`);
-        const data = response.data;
-
-        revenueData.value.totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0);
-        revenueData.value.totalBookings = data.length;
-        revenueData.value.daily = data.map(item => ({
-          date: new Date(item.date),
-          revenue: item.revenue
-        }));
-
-      } catch (error) {
-        console.error("Error loading revenue data:", error);
-        alert("Failed to load revenue data.");
-      }
-    };
-
-    // Generate demo data for testing
-    const generateDemoData = () => {
-      const data = [];
-      const today = new Date();
-
-      for (let i = 30; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(today.getDate() - i);
-
-        // Generate random revenue between 1M and 10M
-        const revenue = Math.floor(Math.random() * 9000000) + 1000000;
-
-        data.push({
-          date: new Date(date),
-          revenue: revenue
-        });
-      }
-
-      return data;
-    };
-
-    onMounted(() => {
-      loadSummaryData();
-    });
-
-    return {
-      totalRevenue: computed(() => revenueData.value.totalRevenue),
-      totalBookings: computed(() => revenueData.value.totalBookings),
-      selectedPeriodData,
-      selectedPeriod,
-      selectReportPeriod,
-      chartData,
-      chartOptions,
-      highestRevenue,
-      highestTime,
-      lowestRevenue,
-      lowestTime,
-      isDataListExpanded,
-      toggleDataList,
-      totalPeriodRevenue,
-      formatDate,
-      periodTitle
-    };
+    }
+  },
+  watch: {
+    selectedYear() {
+      this.filterDataByYear();
+    }
   },
   methods: {
     formatCurrency(value) {
@@ -567,7 +494,112 @@ export default {
         style: "currency",
         currency: "VND"
       }).format(value);
+    },
+    filterDataByYear() {
+      if (this.allRevenueData.length === 0) return;
+
+      const filteredData = this.allRevenueData.filter(item =>
+        item.date.getFullYear() === this.selectedYear
+      );
+
+      this.revenueData.daily = filteredData;
+      this.revenueData.totalRevenue = filteredData.reduce((sum, item) => sum + item.revenue, 0);
+      this.revenueData.totalBookings = filteredData.length;
+    },
+    formatDate(date) {
+      if (!date) return "N/A";
+
+      if (this.selectedPeriod === "yearly") {
+        return date.getFullYear().toString();
+      } else if (this.selectedPeriod === "monthly") {
+        return date.toLocaleDateString("vi-VN", {
+          month: "long",
+          year: "numeric"
+        });
+      } else {
+        return date.toLocaleDateString("vi-VN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        });
+      }
+    },
+    toggleDataList() {
+      this.isDataListExpanded = !this.isDataListExpanded;
+    },
+    selectReportPeriod(period) {
+      this.selectedPeriod = period;
+      this.isDataListExpanded = false;
+    },
+    toggleChartType() {
+      this.isBarChart = !this.isBarChart;
+    },
+    downloadChart() {
+      if (!this.$refs.chart) return;
+
+      const canvas = this.$refs.chart.$el;
+      const link = document.createElement('a');
+      link.download = `doanh-thu-${this.selectedPeriod}-${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    },
+    async loadSummaryData() {
+      try {
+        try {
+          const response = await API.get(`Admin/revenue-report`);
+          const data = response.data;
+
+          this.allRevenueData = data.map(item => ({
+            date: new Date(item.date),
+            revenue: item.revenue
+          }));
+
+        } catch (apiError) {
+          console.warn("API error, using demo data:", apiError);
+          this.allRevenueData = this.generateDemoData();
+        }
+
+        const years = [...new Set(this.allRevenueData.map(item => item.date.getFullYear()))];
+        this.availableYears = years.sort((a, b) => b - a);
+
+        if (this.availableYears.length > 0) {
+          this.selectedYear = this.availableYears[0];
+        }
+
+        this.filterDataByYear();
+
+      } catch (error) {
+        console.error("Error loading revenue data:", error);
+        alert("Failed to load revenue data.");
+      }
+    },
+    generateDemoData() {
+      const data = [];
+      const today = new Date();
+      const currentYear = today.getFullYear();
+
+      // Generate data for current year and previous 2 years
+      for (let year = currentYear - 2; year <= currentYear; year++) {
+        // Generate 30 days of data for each year
+        for (let i = 0; i < 365; i += 12) { // Sparse data for demo
+          const date = new Date(year, 0, 1);
+          date.setDate(date.getDate() + i);
+
+          // Generate random revenue between 1M and 10M
+          const revenue = Math.floor(Math.random() * 9000000) + 1000000;
+
+          data.push({
+            date: new Date(date),
+            revenue: revenue
+          });
+        }
+      }
+
+      return data;
     }
+  },
+  mounted() {
+    this.loadSummaryData();
   }
 };
 </script>
@@ -581,6 +613,7 @@ export default {
   transition: all 0.3s ease;
   border-radius: 1rem;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .revenue-card:hover {
@@ -677,6 +710,20 @@ export default {
 .period-selector .btn-check:checked+.btn {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+}
+
+/* Date filter styling */
+.date-filter .form-select {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-color: #dee2e6;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.date-filter .form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 /* Responsive adjustments */

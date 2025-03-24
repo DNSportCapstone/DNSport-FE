@@ -10,7 +10,7 @@
                 <!-- Time Period Quick Filters with improved buttons -->
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">
-                    <i class="bi bi-calendar-range me-2 text-primary"></i>Khoảng thời gian
+                    <i class="bi bi-calendar-range me-2 text-primary"></i> {{ t("TimePeriod") }}
                   </label>
                   <div class="d-flex flex-wrap gap-2">
                     <button v-for="filter in timeFilters" :key="filter.value" @click="applyQuickFilter(filter.value)"
@@ -193,14 +193,6 @@
                 <i class="bi bi-bar-chart-line me-2 text-primary"></i>
                 Số lượng đơn đặt theo {{ getTimeUnitLabel().toLowerCase() }}
               </h5>
-              <div class="dropdown">
-                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
-                  <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-download me-2"></i>Tải xuống</a></li>
-                </ul>
-              </div>
             </div>
             <div class="card-body pt-2" style="height: 300px">
               <div v-if="filteredBookings.length === 0"
@@ -219,15 +211,6 @@
                 <i class="bi bi-pie-chart me-2 text-primary"></i>
                 Số lượng đơn đặt theo thể loại
               </h5>
-              <div class="dropdown">
-                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
-                  <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-download me-2"></i>Tải xuống</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i>Chia sẻ</a></li>
-                </ul>
-              </div>
             </div>
             <div class="card-body pt-2" style="height: 300px">
               <div v-if="filteredBookings.length === 0"
@@ -354,7 +337,7 @@
                 <i class="bi bi-table me-2 text-primary"></i>
                 Tổng số lượng đơn đặt theo {{ getTimeUnitLabel().toLowerCase() }}
               </h5>
-              <button class="btn btn-sm btn-outline-primary">
+              <button class="btn btn-sm btn-outline-primary" @click="exportToExcel">
                 <i class="bi bi-download me-1"></i> Xuất Excel
               </button>
             </div>
@@ -407,10 +390,15 @@
   </div>
 </template>
 
+<script setup>
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+</script>
 <script>
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import API from "@/utils/axios";
+import * as XLSX from 'xlsx';
 
 // Đăng ký các thành phần Chart.js
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
@@ -805,6 +793,35 @@ export default {
       } catch (error) {
         alert("Failed to load booking data.");
       }
+    },
+
+    exportToExcel() {
+      if (this.totalBookingsPerPeriod.length === 0) {
+        return;
+      }
+
+
+      const wsData = [
+        ["Thời gian", "Số lượng đơn", "Tỷ lệ (%)"]
+      ];
+
+      this.totalBookingsPerPeriod.forEach(item => {
+        wsData.push([
+          this.formatPeriodLabel(item.period),
+          item.total,
+          ((item.total / this.filteredBookings.length) * 100).toFixed(1) + "%"
+        ]);
+      });
+
+
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Booking_Report");
+
+
+      XLSX.writeFile(wb, `Booking_Report_${new Date().toISOString().slice(0, 10)}.xlsx`);
     }
   },
   mounted() {

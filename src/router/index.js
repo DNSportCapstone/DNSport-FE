@@ -23,6 +23,9 @@ import EditUserPage from "@/pages/EditUserPage.vue";
 import AdministrantionPage from "@/pages/AdministrantionPage.vue";
 import RevenueReportPage from "@/pages/RevenueReportPage.vue";
 import BookingReportPage from "@/pages/BookingReportPage.vue";
+import AdminUserPage from "@/pages/AdminUserPage.vue";
+import AdminStadiumPage from "@/pages/AdminStadiumPage.vue";
+import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
 
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
@@ -132,6 +135,21 @@ const router = createRouter({
           path: '/booking-report',
           name: 'booking-report',
           component: BookingReportPage
+        },
+        {
+          path: '/users',
+          name: 'users',
+          component: AdminUserPage
+        },
+        {
+          path: '/stadiums',
+          name: 'stadiums',
+          component: AdminStadiumPage
+        },
+        {
+          path: '/manage-complaints',
+          name: 'manage-complaints',
+          component: AdminManageComplaintsPage
         }
       ]
     }
