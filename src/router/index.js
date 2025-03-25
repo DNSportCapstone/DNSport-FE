@@ -17,9 +17,11 @@ import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 import FieldDetails from "@/pages/user/FieldDetails.vue";
 import BookingServices from "@/pages/user/BookingServices.vue";
 import NearbyStadiums from "@/pages/NearbyStadiums.vue";
-
+import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+import RefundApprovalPage from "@/pages/RefundApprovalPage.vue";
+import RefundListPage from "@/pages/RefundListPage.vue";
 
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
@@ -76,7 +78,7 @@ const router = createRouter({
       component: TestPage,
     },
     {
-      path: "/review",
+      path: "/review/:bookingId",
       name: "rate",
       component: ReviewPage,
     },
@@ -115,6 +117,21 @@ const router = createRouter({
       name: "nearby-stadiums",
       component: NearbyStadiums,
     },
+    {
+      path: "/refund-request/:bookingId",
+      name: "refund-request",
+      component: RefundRequestPage,
+    },
+    {
+      path: "/refund-approval",
+      name: "refund-approval",
+      component: RefundApprovalPage,
+    },
+    {
+      path: "/refund-list",
+      name: "refund-list",
+      component: RefundListPage,
+    },
   ],
 });
 export default router;
@@ -145,6 +162,7 @@ router.beforeEach((to, from, next) => {
     "/field-details/:fieldId/:returnPath",
     "/nearby-stadiums",
     "/booking-services",
+    "/refund-request",
   ];
 
   // const userPages = [
