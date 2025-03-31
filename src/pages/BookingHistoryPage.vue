@@ -395,7 +395,7 @@ export default {
   from {
     opacity: 0;
   }
-  to {
+  <<<<<<< HEAD =======>>>>>>>main to {
     opacity: 1;
   }
 }
