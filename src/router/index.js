@@ -20,8 +20,8 @@ import NearbyStadiums from "@/pages/NearbyStadiums.vue";
 import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
-import RefundApprovalPage from "@/pages/RefundApprovalPage.vue";
 import RefundListPage from "@/pages/RefundListPage.vue";
+import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
 
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
@@ -123,14 +123,14 @@ const router = createRouter({
       component: RefundRequestPage,
     },
     {
-      path: "/refund-approval",
-      name: "refund-approval",
-      component: RefundApprovalPage,
-    },
-    {
       path: "/refund-list",
       name: "refund-list",
       component: RefundListPage,
+    },
+    {
+      path: "/refund-tracking",
+      name: "refund-tracking",
+      component: RefundTrackingPage,
     },
   ],
 });
@@ -163,6 +163,8 @@ router.beforeEach((to, from, next) => {
     "/nearby-stadiums",
     "/booking-services",
     "/refund-request",
+    "/refund-list",
+    "/refund-tracking",
   ];
 
   // const userPages = [

@@ -1,91 +1,126 @@
 <template>
-  <div class="section">
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Refund</h2>
-      <div>
-        <span class="description-title">Refund List</span>
+  <div class="section refund-section">
+    <!-- Tiêu đề -->
+    <div class="container section-title text-center" data-aos="fade-up">
+      <h2 class="mb-3">Danh Sách Yêu Cầu Hoàn Tiền</h2>
+      <p class="text-muted">Quản lý các yêu cầu hoàn tiền từ khách hàng</p>
+    </div>
+
+    <!-- Danh sách refund -->
+    <div class="container refund-list-page">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover" v-if="refunds.length">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Người dùng</th>
+              <th scope="col">Số tiền</th>
+              <th scope="col">Trạng thái</th>
+              <th scope="col">Số tài khoản</th>
+              <th scope="col">Thời gian</th>
+              <th scope="col">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="refund in refunds" :key="refund.refundId">
+              <td>{{ refund.userName }}</td>
+              <td>{{ formatCurrency(refund.refundAmount) }}</td>
+              <td>
+                <span :class="getStatusClass(refund.status)">
+                  {{ refund.status }}
+                </span>
+              </td>
+              <td>{{ refund.bankAccountNumber }}</td>
+              <td>{{ formatDate(refund.time) }}</td>
+              <td>
+                <button
+                  v-if="refund.status === 'Processing'"
+                  class="btn btn-success btn-sm"
+                  @click="completeRefund(refund.refundId)"
+                  :disabled="refund.isProcessing"
+                >
+                  <span
+                    v-if="refund.isProcessing"
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  {{ refund.isProcessing ? "Đang xử lý..." : "Done" }}
+                </button>
+                <span v-else class="text-muted"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-else class="alert alert-info text-center mt-4">
+          Không có yêu cầu hoàn tiền nào được tìm thấy
+        </div>
       </div>
     </div>
-    <!-- End Section Title -->
-
-    <div class="refund-list-page">
-      <table v-if="refunds.length">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>User</th>
-            <th>Số tiền</th>
-            <th>Trạng thái</th>
-            <th>Số tài khoản</th>
-            <th>Thời gian</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="refund in refunds" :key="refund.refundId">
-            <td>{{ refund.refundId }}</td>
-            <td>{{ refund.userName }}</td>
-            <td>{{ refund.refundAmount }} VND</td>
-            <td>{{ refund.status }}</td>
-            <td>{{ refund.bankAccountNumber }}</td>
-            <td>{{ formatDate(refund.time) }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else>Không có refund nào được tìm thấy</p>
-    </div>
+    <div style="margin-bottom: 205px"></div>
   </div>
-  <div style="margin-bottom: 205px"></div>
 </template>
 
 <script>
-import axios from "axios";
+import API from "@/utils/axios";
 
 export default {
-  name: "RefundListPage",
   data() {
     return {
       refunds: [],
     };
   },
-  async created() {
-    try {
-      const response = await axios.get("https://localhost:44394/api/refund");
-      this.refunds = response.data;
-    } catch (error) {
-      console.error(
-        "Lỗi khi lấy danh sách refund:",
-        error.response?.data?.message || error.message
-      );
-    }
-  },
   methods: {
-    formatDate(date) {
-      return new Date(date).toLocaleString();
+    async fetchRefunds() {
+      try {
+        const response = await API.get("/Refund");
+        this.refunds = response.data;
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách refund:", error);
+      }
     },
+    async completeRefund(refundId) {
+      const refund = this.refunds.find((r) => r.refundId === refundId);
+      if (!refund) return;
+
+      refund.isProcessing = true; // Hiển thị spinner trong button
+
+      try {
+        await API.put(`Refund/complete/${refundId}`);
+        refund.status = "Completed"; // Cập nhật UI ngay lập tức
+      } catch (error) {
+        console.error("Lỗi khi cập nhật refund:", error);
+        alert("Đã xảy ra lỗi, vui lòng thử lại!");
+      } finally {
+        refund.isProcessing = false; // Ẩn spinner
+      }
+    },
+    getStatusClass(status) {
+      return {
+        "text-warning": status === "Processing",
+        "text-success": status === "Completed",
+      };
+    },
+    formatCurrency(amount) {
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(amount);
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleString("vi-VN");
+    },
+  },
+  mounted() {
+    this.fetchRefunds();
   },
 };
 </script>
 
 <style scoped>
-.refund-list-page {
-  max-width: 1000px;
-  margin: 20px auto;
+.text-warning {
+  color: orange;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f2f2f2;
+.text-success {
+  color: green;
 }
 </style>

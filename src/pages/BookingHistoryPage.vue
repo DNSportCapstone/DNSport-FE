@@ -161,29 +161,35 @@
           <li>
             <i class="fas fa-times-circle"></i> Không hoàn nếu hủy sau 6 giờ.
           </li>
-          <li>
-            <i class="fas fa-clock"></i> Thời gian hoàn tiền: 3-5 ngày làm việc.
+          <li style="font-weight: bold; font-size: 20px">
+            Thời gian hoàn tiền: 3-5 ngày làm việc.
           </li>
         </ul>
         <label>
           <input type="checkbox" v-model="agreedToRefundTerms" />
           Tôi đồng ý với điều khoản hoàn tiền
         </label>
-        <div class="modal-actions">
+        <div class="modal-actions" style="display: flex; gap: 10px">
           <button
             @click="confirmRefund"
             :disabled="!agreedToRefundTerms"
             class="btn btn-success"
+            style="flex: 1"
           >
             Xác nhận
           </button>
-          <button @click="showRefundModal = false" class="btn btn-danger">
+          <button
+            @click="showRefundModal = false"
+            class="btn btn-danger"
+            style="flex: 1"
+          >
             Hủy
           </button>
         </div>
       </div>
     </div>
   </div>
+
   <div style="margin-bottom: 93px"></div>
 </template>
 
