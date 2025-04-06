@@ -273,9 +273,13 @@ export default {
 @keyframes fadeIn {
   from {
     opacity: 0;
+<<<<<<< Updated upstream
   }
 
   to {
+=======
+
+>>>>>>> Stashed changes
     opacity: 1;
   }
 }
