@@ -62,6 +62,7 @@
       </div>
     </div>
   </div>
+  <div style="margin-bottom: 67px"></div>
 </template>
 
 <script>
@@ -76,7 +77,7 @@ export default {
       rating: 0,
       newComment: "",
       hasRated: false,
-      bookingId: 1,
+      bookingId: "",
       userId: null,
       errorMessage: "",
     };
@@ -159,6 +160,10 @@ export default {
   },
   async created() {
     await this.fetchUserAndBooking();
+  },
+  mounted() {
+    console.log("Booking ID:", this.bookingId);
+    this.bookingId = this.$route.params.bookingId;
   },
 };
 </script>

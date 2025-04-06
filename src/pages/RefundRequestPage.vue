@@ -274,7 +274,6 @@ export default {
         "MB Bank",
         "OCB",
       ],
-      shouldRedirect: false,
     };
   },
   methods: {

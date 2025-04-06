@@ -17,9 +17,11 @@ import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 import FieldDetails from "@/pages/user/FieldDetails.vue";
 import BookingServices from "@/pages/user/BookingServices.vue";
 import NearbyStadiums from "@/pages/NearbyStadiums.vue";
-
+import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+import RefundListPage from "@/pages/RefundListPage.vue";
+import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
 import AdministrantionPage from "@/pages/AdministrantionPage.vue";
 import RevenueReportPage from "@/pages/RevenueReportPage.vue";
 import BookingReportPage from "@/pages/BookingReportPage.vue";
@@ -82,7 +84,7 @@ const router = createRouter({
       component: TestPage,
     },
     {
-      path: "/review",
+      path: "/review/:bookingId",
       name: "rate",
       component: ReviewPage,
     },
@@ -122,37 +124,52 @@ const router = createRouter({
       component: NearbyStadiums,
     },
     {
+      path: "/refund-request/:bookingId",
+      name: "refund-request",
+      component: RefundRequestPage,
+    },
+    {
+      path: "/refund-list",
+      name: "refund-list",
+      component: RefundListPage,
+    },
+    {
+      path: "/refund-tracking",
+      name: "refund-tracking",
+      component: RefundTrackingPage,
+    },
+    {
       path: "/administration",
       name: "administration",
       component: AdministrantionPage,
       children: [
         {
-          path: '/revenue-report',
-          name: 'revenue-report',
-          component: RevenueReportPage
+          path: "/revenue-report",
+          name: "revenue-report",
+          component: RevenueReportPage,
         },
         {
-          path: '/booking-report',
-          name: 'booking-report',
-          component: BookingReportPage
+          path: "/booking-report",
+          name: "booking-report",
+          component: BookingReportPage,
         },
         {
-          path: '/users',
-          name: 'users',
-          component: AdminUserPage
+          path: "/users",
+          name: "users",
+          component: AdminUserPage,
         },
         {
-          path: '/stadiums',
-          name: 'stadiums',
-          component: AdminStadiumPage
+          path: "/stadiums",
+          name: "stadiums",
+          component: AdminStadiumPage,
         },
         {
-          path: '/manage-complaints',
-          name: 'manage-complaints',
-          component: AdminManageComplaintsPage
-        }
-      ]
-    }
+          path: "/manage-complaints",
+          name: "manage-complaints",
+          component: AdminManageComplaintsPage,
+        },
+      ],
+    },
   ],
 });
 export default router;
@@ -183,6 +200,9 @@ router.beforeEach((to, from, next) => {
     "/field-details/:fieldId/:returnPath",
     "/nearby-stadiums",
     "/booking-services",
+    "/refund-request",
+    "/refund-list",
+    "/refund-tracking",
   ];
 
   // const userPages = [
