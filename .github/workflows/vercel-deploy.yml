@@ -3,7 +3,7 @@ name: Deploy Vue.js to Vercel
 on:
   push:
     branches:
-      - main # Hoặc nhánh bạn đang deploy
+      - test-deploy # Hoặc nhánh bạn đang deploy
 
 jobs:
   deploy:
