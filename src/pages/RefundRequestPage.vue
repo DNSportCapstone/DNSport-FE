@@ -205,6 +205,7 @@
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
+              @click="handleCloseErrorModal"
             >
               Đóng
             </button>
@@ -281,13 +282,17 @@ export default {
         const response = await API.get(
           `/Refund/preview/${this.refundRequest.bookingId}`
         );
+        if (response.data.error) {
+          this.errorMessage =
+            response.data.message || "Lỗi không xác định từ server";
+          if (this.errorModal) this.errorModal.show();
+          this.refundPreview = null;
+          return;
+        }
         this.refundPreview = response.data;
         this.message = "";
         this.messageType = "";
       } catch (error) {
-        console.log("Full error:", error);
-        console.log("Response:", error.response);
-        console.log("Response data:", error.response?.data);
         const errorMsg =
           error.response?.data?.message ||
           error.response?.data?.error ||
@@ -295,14 +300,15 @@ export default {
           "Đã xảy ra lỗi không xác định";
         this.errorMessage = errorMsg;
         if (this.errorModal) this.errorModal.show();
+        this.refundPreview = null;
       }
     },
-
     async submitRefundRequest() {
       this.submitted = true;
       this.message = "";
       this.messageType = "";
 
+      // Kiểm tra các trường bắt buộc
       if (
         !this.refundRequest.userName ||
         !this.refundRequest.bankAccountNumber ||
@@ -321,6 +327,7 @@ export default {
 
       this.isSubmitting = true;
 
+      // Lấy refundPreview nếu chưa có
       if (!this.refundPreview) {
         await this.fetchRefundPreview();
         if (!this.refundPreview) {
@@ -329,20 +336,26 @@ export default {
         }
       }
 
+      // Hiển thị modal xác nhận nếu không có lỗi
       this.modalMessage = `Họ và tên: ${this.refundRequest.userName}. Thời gian còn lại: ${this.refundPreview.timeRemaining}, bạn sẽ được hoàn ${this.refundPreview.refundPercentage}% số tiền: ${this.refundPreview.refundAmount} VND vào ngân hàng ${this.refundRequest.bank}. Bạn có muốn tiếp tục không?`;
       if (this.refundModal) this.refundModal.show();
-
       this.isSubmitting = false;
     },
-
     async confirmRefund() {
       this.isConfirming = true;
       this.message = "";
       this.messageType = "";
 
       try {
-        await API.post("/Refund/request", this.refundRequest);
-        this.message = `Yêu cầu hoàn tiền đã được gửi thành công. `;
+        const response = await API.post("/Refund/request", this.refundRequest);
+        if (response.data.error) {
+          this.errorMessage =
+            response.data.message || "Lỗi không xác định từ server";
+          if (this.errorModal) this.errorModal.show();
+          if (this.refundModal) this.refundModal.hide();
+          return;
+        }
+        this.message = "Yêu cầu hoàn tiền đã được gửi thành công.";
         this.messageType = "success";
         if (this.refundModal) this.refundModal.hide();
         this.refundRequest = {
@@ -353,10 +366,10 @@ export default {
         };
         this.refundPreview = null;
         this.submitted = false;
+
+        // Chuyển hướng sau khi thành công
+        setTimeout(() => this.redirectToBookingHistory(), 1000); // Chờ 1 giây để người dùng thấy thông báo thành công
       } catch (error) {
-        console.log("Full error:", error);
-        console.log("Response:", error.response);
-        console.log("Response data:", error.response?.data);
         const errorMsg =
           error.response?.data?.message ||
           error.response?.data?.error ||
@@ -364,44 +377,51 @@ export default {
           "Đã xảy ra lỗi không xác định";
         this.errorMessage = errorMsg;
         if (this.errorModal) this.errorModal.show();
+        if (this.refundModal) this.refundModal.hide();
       } finally {
         this.isConfirming = false;
       }
     },
-
     cancelRefund() {
       if (this.refundModal) this.refundModal.hide();
       this.isSubmitting = false;
     },
-
     redirectToBookingHistory() {
       this.$router.push("/booking-history");
+    },
+    handleCloseErrorModal() {
+      // Set a flag that we want to redirect
+      this.shouldRedirect = true;
+
+      // Get the modal element
+      const errorModalElement = document.getElementById("errorModal");
+
+      // Add event listener for when the modal is hidden
+      if (errorModalElement) {
+        errorModalElement.addEventListener(
+          "hidden.bs.modal",
+          this.onModalHidden,
+          { once: true }
+        );
+      }
+    },
+    onModalHidden() {
+      // Only redirect if the flag is set
+      if (this.shouldRedirect) {
+        this.shouldRedirect = false;
+        this.$router.push("/booking-history");
+      }
     },
   },
   mounted() {
     this.refundRequest.bookingId = this.$route.params.bookingId;
-    console.log("Booking ID:", this.refundRequest.bookingId);
-
     const refundModalElement = document.getElementById("refundModal");
     const errorModalElement = document.getElementById("errorModal");
-
-    if (!refundModalElement) {
-      console.error("Refund modal element not found!");
-    }
-    if (!errorModalElement) {
-      console.error("Error modal element not found!");
-    }
 
     this.refundModal = refundModalElement
       ? new Modal(refundModalElement)
       : null;
     this.errorModal = errorModalElement ? new Modal(errorModalElement) : null;
-
-    if (this.errorModal) {
-      errorModalElement.addEventListener("hidden.bs.modal", () => {
-        this.redirectToBookingHistory();
-      });
-    }
 
     if (this.refundRequest.bookingId) {
       this.fetchRefundPreview();
@@ -409,10 +429,40 @@ export default {
       this.errorMessage = "Không tìm thấy mã booking. Vui lòng kiểm tra lại.";
       if (this.errorModal) this.errorModal.show();
     }
+
+    // Add event listeners for modal events
+    if (errorModalElement) {
+      errorModalElement.addEventListener("hidden.bs.modal", () => {
+        // Only redirect if the flag is set
+        if (this.shouldRedirect) {
+          this.shouldRedirect = false;
+          this.$nextTick(() => {
+            this.$router.push("/booking-history");
+          });
+        }
+      });
+    }
   },
   beforeUnmount() {
-    if (this.refundModal) this.refundModal.dispose();
-    if (this.errorModal) this.errorModal.dispose();
+    // Clean up modal instances
+    if (this.refundModal) {
+      this.refundModal.dispose();
+      this.refundModal = null;
+    }
+
+    if (this.errorModal) {
+      this.errorModal.dispose();
+      this.errorModal = null;
+    }
+
+    // Remove event listeners
+    const errorModalElement = document.getElementById("errorModal");
+    if (errorModalElement) {
+      errorModalElement.removeEventListener(
+        "hidden.bs.modal",
+        this.onModalHidden
+      );
+    }
   },
 };
 </script>
@@ -421,40 +471,33 @@ export default {
 .refund-section {
   padding: 60px 0;
 }
-
 .refund-card {
   border-radius: 12px;
   background: #ffffff;
   border: none;
 }
-
 .form-label {
   color: #333;
 }
-
 .input-group-text {
   background: #f8f9fa;
   border: 1px solid #ced4da;
   border-right: none;
 }
-
 .form-control,
 .form-select {
   border: 1px solid #ced4da;
   padding: 10px;
   transition: all 0.3s ease;
 }
-
 .form-control:focus,
 .form-select:focus {
   border-color: #28a745;
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
-
 .custom-icon {
   color: #28a745;
 }
-
 .btn-custom {
   color: #ffffff;
   background-color: #28a745;
@@ -462,28 +505,23 @@ export default {
   padding: 6px 12px;
   transition: all 0.3s ease;
 }
-
 .btn-custom:disabled {
   background-color: #6c757d;
   opacity: 0.8;
 }
-
 .alert-success {
   background-color: #d4edda;
   color: #155724;
   border-color: #c3e6cb;
 }
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s;
 }
-
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
-
 .modal-footer .btn {
   flex: 1;
   margin: 0 5px;

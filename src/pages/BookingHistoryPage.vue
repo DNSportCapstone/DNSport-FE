@@ -250,7 +250,7 @@ export default {
     },
     getStatusBadgeClass(status) {
       switch (status?.toLowerCase()) {
-        case "success":
+        case "confirmed":
         case "đã thanh toán":
         case "đã xác nhận":
           return "bg-success";
@@ -258,7 +258,7 @@ export default {
         case "chờ xác nhận":
         case "đang xử lý":
           return "bg-warning text-dark";
-        case "Fail":
+        case "cancelled":
         case "đã hủy":
           return "bg-danger";
         default:
@@ -316,7 +316,7 @@ export default {
 };
 </script>
 
-<style sc>
+<style>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
 /* Custom styles */
 .table th {
@@ -394,9 +394,6 @@ export default {
 @keyframes fadeIn {
   from {
     opacity: 0;
-  }
-  <<<<<<< HEAD =======>>>>>>>main to {
-    opacity: 1;
   }
 }
 
