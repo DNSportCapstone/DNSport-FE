@@ -2,7 +2,8 @@ import axios from "axios";
 import store from "@/store";
 
 const API = axios.create({
-  baseURL: "https://localhost:44394/api",
+  // baseURL: "https://localhost:44394/api",
+  baseURL: "http://dnsport.somee.com/api",
 });
 
 API.interceptors.request.use(

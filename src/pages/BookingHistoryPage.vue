@@ -13,7 +13,12 @@
         </h2>
         <div class="d-flex gap-2">
           <div class="input-group">
-            <input type="text" v-model="searchQuery" class="form-control" placeholder='' />
+            <input
+              type="text"
+              v-model="searchQuery"
+              class="form-control"
+              placeholder=""
+            />
             <button class="btn btn-outline-primary" type="button">
               <i class="bi bi-search"></i>
             </button>
@@ -32,7 +37,10 @@
         </div>
 
         <!-- Empty state -->
-        <div v-else-if="paginatedBookings.length === 0" class="text-center py-5">
+        <div
+          v-else-if="paginatedBookings.length === 0"
+          class="text-center py-5"
+        >
           <i class="bi bi-calendar-x display-1 text-muted"></i>
           <p class="mt-3 text-muted">{{ t("NoBookingHistory") }}</p>
         </div>
@@ -42,23 +50,32 @@
           <table class="table table-hover mb-0">
             <thead class="table-light">
               <tr>
-                <th class="fw-semibold border-0">{{ t('BookingDate') }}</th>
-                <th class="fw-semibold border-0">{{ t('Status') }}</th>
-                <th class="fw-semibold border-0">{{ t('TotalAmount') }}</th>
-                <th class="fw-semibold border-0">{{ t('Field') }}</th>
-                <th class="fw-semibold border-0">{{ t('Time') }}</th>
-                <th class="fw-semibold border-0">{{ t('Stadium') }}</th>
+                <th class="fw-semibold border-0">{{ t("BookingDate") }}</th>
+                <th class="fw-semibold border-0">{{ t("Status") }}</th>
+                <th class="fw-semibold border-0">{{ t("TotalAmount") }}</th>
+                <th class="fw-semibold border-0">{{ t("Field") }}</th>
+                <th class="fw-semibold border-0">{{ t("Time") }}</th>
+                <th class="fw-semibold border-0">{{ t("Stadium") }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="booking in paginatedBookings" :key="booking.BookingId" class="align-middle">
+              <tr
+                v-for="booking in paginatedBookings"
+                :key="booking.BookingId"
+                class="align-middle"
+              >
                 <td>{{ formatDate(booking.BookingDate) }}</td>
                 <td>
-                  <span class="badge" :class="getStatusBadgeClass(booking.Status)">
+                  <span
+                    class="badge"
+                    :class="getStatusBadgeClass(booking.Status)"
+                  >
                     {{ booking.Status }}
                   </span>
                 </td>
-                <td class="fw-semibold">{{ formatCurrency(booking.TotalPrice) }}</td>
+                <td class="fw-semibold">
+                  {{ formatCurrency(booking.TotalPrice) }}
+                </td>
                 <td>{{ booking.FieldId }}</td>
                 <td>
                   <div class="d-flex align-items-center">
@@ -75,20 +92,35 @@
         <!-- Pagination footer -->
         <div class="card-footer bg-white py-3 border-0">
           <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted">{{ t('Show') }} {{ paginatedBookings.length }} {{ t('On') }} {{ bookings.length }}
-              {{ t('Result') }}</small>
+            <small class="text-muted"
+              >{{ t("Show") }} {{ paginatedBookings.length }} {{ t("On") }}
+              {{ bookings.length }} {{ t("Result") }}</small
+            >
 
             <nav aria-label="Điều hướng trang">
               <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                  <button class="page-link rounded-start" @click="currentPage--">
+                  <button
+                    class="page-link rounded-start"
+                    @click="currentPage--"
+                  >
                     <i class="bi bi-chevron-left"></i> Trước
                   </button>
                 </li>
-                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
-                  <button class="page-link" @click="currentPage = page">{{ page }}</button>
+                <li
+                  v-for="page in totalPages"
+                  :key="page"
+                  class="page-item"
+                  :class="{ active: currentPage === page }"
+                >
+                  <button class="page-link" @click="currentPage = page">
+                    {{ page }}
+                  </button>
                 </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                <li
+                  class="page-item"
+                  :class="{ disabled: currentPage === totalPages }"
+                >
                   <button class="page-link rounded-end" @click="currentPage++">
                     Tiếp <i class="bi bi-chevron-right"></i>
                   </button>
@@ -108,7 +140,7 @@ const { t } = useI18n();
 </script>
 
 <script>
-import API from '@/utils/axios';
+import API from "@/utils/axios";
 import CommonHelper from "@/utils/common";
 
 export default {
@@ -118,14 +150,14 @@ export default {
       loading: true,
       currentPage: 1,
       itemsPerPage: 10,
-      searchQuery: ''
+      searchQuery: "",
     };
   },
   computed: {
     filteredBookings() {
       if (!this.searchQuery.trim()) return this.bookings;
-      return this.bookings.filter(booking =>
-        Object.values(booking).some(value =>
+      return this.bookings.filter((booking) =>
+        Object.values(booking).some((value) =>
           String(value).toLowerCase().includes(this.searchQuery.toLowerCase())
         )
       );
@@ -137,32 +169,32 @@ export default {
     },
     totalPages() {
       return Math.ceil(this.filteredBookings.length / this.itemsPerPage);
-    }
+    },
   },
   methods: {
     formatDate(dateString) {
-      if (!dateString) return '';
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString('vi-VN', options);
+      if (!dateString) return "";
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return new Date(dateString).toLocaleDateString("vi-VN", options);
     },
     formatCurrency(value) {
       return CommonHelper.formatVND(value);
     },
     getStatusBadgeClass(status) {
       switch (status?.toLowerCase()) {
-        case 'confirmed':
-        case 'đã thanh toán':
-        case 'đã xác nhận':
-          return 'bg-success';
-        case 'pending':
-        case 'chờ xác nhận':
-        case 'đang xử lý':
-          return 'bg-warning text-dark';
-        case 'cancelled':
-        case 'đã hủy':
-          return 'bg-danger';
+        case "confirmed":
+        case "đã thanh toán":
+        case "đã xác nhận":
+          return "bg-success";
+        case "pending":
+        case "chờ xác nhận":
+        case "đang xử lý":
+          return "bg-warning text-dark";
+        case "cancelled":
+        case "đã hủy":
+          return "bg-danger";
         default:
-          return 'bg-secondary';
+          return "bg-secondary";
       }
     },
     async fetchBookings() {
@@ -170,29 +202,30 @@ export default {
       try {
         const userId = CommonHelper.getCurrentUserId();
         const response = await API.get(`Booking/history/${userId}`);
-        this.bookings = this.bookings.concat(response.data.map(b => ({
-          BookingId: b.bookingId,
-          TotalPrice: b.totalPrice,
-          BookingDate: b.BookingDate,
-          Status: b.Status,
-          FieldId: b.FieldId,
-          StartTime: b.StartTime,
-          EndTime: b.EndTime,
-          StadiumName: b.StadiumName
-        })));
+        this.bookings = this.bookings.concat(
+          response.data.map((b) => ({
+            BookingId: b.bookingId,
+            TotalPrice: b.totalPrice,
+            BookingDate: b.BookingDate,
+            Status: b.Status,
+            FieldId: b.FieldId,
+            StartTime: b.StartTime,
+            EndTime: b.EndTime,
+            StadiumName: b.StadiumName,
+          }))
+        );
       } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
+        console.error("Lỗi khi tải dữ liệu:", error);
       } finally {
         this.loading = false;
       }
-    }
+    },
   },
   mounted() {
     this.fetchBookings();
-  }
+  },
 };
 </script>
-
 
 <style>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
@@ -272,10 +305,6 @@ export default {
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
-  }
-
-  to {
     opacity: 1;
   }
 }
