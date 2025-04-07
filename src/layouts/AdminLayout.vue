@@ -1,5 +1,5 @@
 <template>
-    <div class="admin-container">
+    <div class="admin-container" v-if="isAdminRoute">
         <!-- Sidebar -->
         <div class="sidebar" :class="{ 'sidebar-open': isSidebarOpen }">
             <div class="sidebar-header">
@@ -42,11 +42,18 @@
                             {{ t('Vouchers') }}
                         </router-link>
                     </li>
-                    <li>
+                    <!-- <li>
                         <router-link :to="{ name: 'manage-complaints' }"
                             :class="{ active: currentRoute === 'manage-complaints' }" @click="navigateTo">
                             <i class="bi bi-exclamation-triangle"></i>
                             {{ t('ManageComplaints') }}
+                        </router-link>
+                    </li> -->
+                    <li>
+                        <router-link :to="{ name: 'refund-requests' }"
+                            :class="{ active: currentRoute === 'refund-requests' }" @click="navigateTo">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            {{ t('RefundRequests') }}
                         </router-link>
                     </li>
                     <li>
@@ -76,6 +83,7 @@
             </div>
         </div>
     </div>
+    <router-view v-else></router-view>
 </template>
 
 <script>
@@ -90,6 +98,10 @@ export default {
         const route = useRoute();
         const { t } = useI18n();
         const isSidebarOpen = ref(true);
+
+        const isAdminRoute = computed(() => {
+            return route.path.startsWith('/administration');
+        });
 
         onMounted(() => {
             if (route.path === '/administration') {
@@ -125,6 +137,8 @@ export default {
                     return 'Vouchers';
                 case 'manage-complaints':
                     return 'ManageComplaints';
+                case 'refund-requests':
+                    return 'RefundRequests';
                 default:
                     return 'AdminDashboard';
             }
@@ -136,7 +150,8 @@ export default {
             currentRoute,
             isSidebarOpen,
             toggleSidebar,
-            getPageTitle
+            getPageTitle,
+            isAdminRoute
         };
     }
 };

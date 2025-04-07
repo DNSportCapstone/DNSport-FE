@@ -31,6 +31,7 @@ import AdminStadiumPage from "@/pages/AdminStadiumPage.vue";
 import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
 import AdminUserPage from "@/pages/AdminUserPage.vue";
 import AdminVoucherPage from "@/pages/AdminVoucherPage.vue";
+import AdminRefundRequestsPage from "@/pages/AdminRefundRequestsPage.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -199,6 +200,12 @@ const adminRoutes = [
         path: "manage-complaints",
         name: "manage-complaints",
         component: AdminManageComplaintsPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: "refund-requests",
+        name: "refund-requests",
+        component: AdminRefundRequestsPage,
         meta: { requiresAuth: true, requiresAdmin: true }
       }
     ]

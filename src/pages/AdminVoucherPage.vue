@@ -61,9 +61,9 @@
                     sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                   ]"></i>
                 </th>
-                <th @click="sortBy('expireDate')" class="sortable-header">
+                <th @click="sortBy('expirationDate')" class="sortable-header">
                   Expire Date
-                  <i v-if="sortColumn === 'expireDate'" :class="[
+                  <i v-if="sortColumn === 'expirationDate'" :class="[
                     'bi',
                     sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                   ]"></i>
@@ -77,10 +77,10 @@
                 <td>{{ voucher.voucherId }}</td>
                 <td><strong>{{ voucher.voucherCode }}</strong></td>
                 <td>{{ voucher.discountPercentage }}%</td>
-                <td>{{ formatDate(voucher.expireDate) }}</td>
+                <td>{{ formatDate(voucher.expirationDate) }}</td>
                 <td>
-                  <span :class="getStatusBadgeClass(isExpired(voucher.expireDate))">
-                    {{ isExpired(voucher.expireDate) ? 'Expired' : 'Active' }}
+                  <span :class="getStatusBadgeClass(isExpired(voucher.expirationDate))">
+                    {{ isExpired(voucher.expirationDate) ? 'Expired' : 'Active' }}
                   </span>
                 </td>
                 <td>
@@ -88,9 +88,9 @@
                     <button class="btn btn-sm btn-outline-primary" @click="openEditVoucherModal(voucher)">
                       <i class="bi bi-pencil"></i> Edit
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" @click="confirmDeleteVoucher(voucher)">
+                    <!-- <button class="btn btn-sm btn-outline-danger" @click="confirmDeleteVoucher(voucher)">
                       <i class="bi bi-trash"></i> Delete
-                    </button>
+                    </button> -->
                   </div>
                 </td>
               </tr>
@@ -166,9 +166,10 @@
               </div>
 
               <div class="mb-3">
-                <label for="expireDate" class="form-label">Expire Date*</label>
-                <input type="date" class="form-control" id="expireDate" v-model="voucherForm.expireDate" required
-                  :min="minDate">
+                <label for="expirationDate" class="form-label">Expiration Date*</label>
+                <div class="form-text">Current expiration date: {{ formatDate(voucherForm.expirationDate) }}</div>
+                <input type="date" class="form-control" id="expirationDate" v-model="voucherForm.expirationDate"
+                  required :min="minDate">
               </div>
             </form>
           </div>
@@ -211,6 +212,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { Modal } from 'bootstrap';
 import { useToast } from 'vue-toastification';
+import API from '@/utils/axios';
 
 export default {
   name: 'VoucherManagement',
@@ -231,7 +233,7 @@ export default {
       voucherId: null,
       voucherCode: '',
       discountPercentage: 10,
-      expireDate: ''
+      expirationDate: ''
     });
 
     // Modal references
@@ -261,7 +263,7 @@ export default {
         let bValue = b[sortColumn.value];
 
         // Special handling for dates
-        if (sortColumn.value === 'expireDate') {
+        if (sortColumn.value === 'expirationDate') {
           aValue = new Date(aValue).getTime();
           bValue = new Date(bValue).getTime();
         }
@@ -342,13 +344,8 @@ export default {
     // Methods
     const fetchVouchers = async () => {
       try {
-        loading.value = true;
-        // In a real application, you would fetch data from your API
-        // For this example, we'll use mock data
-        setTimeout(() => {
-          vouchers.value = generateMockVouchers();
-          loading.value = false;
-        }, 500);
+        const response = await API.get(`Admin/get-voucher`);
+        vouchers.value = response.data;
       } catch (error) {
         console.error('Error fetching vouchers:', error);
         toast.error('Failed to load vouchers');
@@ -399,8 +396,8 @@ export default {
       if (!dateString) return false;
 
       const today = new Date();
-      const expireDate = new Date(dateString);
-      return today > expireDate;
+      const expirationDate = new Date(dateString);
+      return today > expirationDate;
     };
 
     const getStatusBadgeClass = (isExpired) => {
@@ -408,7 +405,7 @@ export default {
     };
 
     const getRowClass = (voucher) => {
-      return isExpired(voucher.expireDate) ? 'table-danger' : '';
+      return isExpired(voucher.expirationDate) ? 'table-danger' : '';
     };
 
     const openCreateVoucherModal = () => {
@@ -425,7 +422,7 @@ export default {
         voucherId: voucher.voucherId,
         voucherCode: voucher.voucherCode,
         discountPercentage: voucher.discountPercentage,
-        expireDate: voucher.expireDate
+        expirationDate: voucher.expirationDate
       };
 
       voucherModal.show();
@@ -441,7 +438,7 @@ export default {
         voucherId: null,
         voucherCode: '',
         discountPercentage: 10,
-        expireDate: minDate.value
+        expirationDate: minDate.value
       };
     };
 
@@ -450,47 +447,22 @@ export default {
         // Validate form
         if (!voucherForm.value.voucherCode ||
           !voucherForm.value.discountPercentage ||
-          !voucherForm.value.expireDate) {
+          !voucherForm.value.expirationDate) {
           toast.error('Please fill in all required fields');
           return;
         }
 
         loading.value = true;
-
-        // In a real application, you would call your API
-        // For this example, we'll simulate an API call
-        await new Promise(resolve => setTimeout(resolve, 800));
-
-        if (isEditMode.value) {
-          // Update existing voucher
-          const index = vouchers.value.findIndex(v => v.voucherId === voucherForm.value.voucherId);
-          if (index !== -1) {
-            // Update the voucher
-            vouchers.value[index] = { ...voucherForm.value };
-            toast.success(`Voucher ${voucherForm.value.voucherCode} has been updated`);
-          }
-        } else {
-          // Create new voucher
-          // Check if voucher code already exists
-          const existingVoucher = vouchers.value.find(v =>
-            v.voucherCode.toLowerCase() === voucherForm.value.voucherCode.toLowerCase()
-          );
-
-          if (existingVoucher) {
-            toast.error('Voucher code already exists. Please use a different code.');
-            loading.value = false;
-            return;
-          }
-
-          // Add new voucher
-          const newVoucher = {
-            ...voucherForm.value,
-            voucherId: Date.now() // Generate a unique ID
-          };
-
-          vouchers.value.push(newVoucher);
-          toast.success(`Voucher ${newVoucher.voucherCode} has been created`);
+        const data = {
+          voucherId: voucherForm.value.voucherId,
+          voucherCode: voucherForm.value.voucherCode,
+          discountPercentage: voucherForm.value.discountPercentage,
+          expirationDate: voucherForm.value.expirationDate,
         }
+        await API.post(`Admin/create-or-update-voucher`, data);
+        toast.success(`Voucher ${voucherForm.value.voucherCode} has been ${isEditMode.value ? 'updated' : 'created'}`);
+        loading.value = false;
+        fetchVouchers();
 
         // Close the modal
         voucherModal.hide();
@@ -531,42 +503,6 @@ export default {
         toast.error('Failed to delete voucher');
         loading.value = false;
       }
-    };
-
-    // Mock data generator
-    const generateMockVouchers = () => {
-      return [
-        {
-          voucherId: 1,
-          voucherCode: 'SUMMER10',
-          discountPercentage: 10,
-          expireDate: '2025-06-30'
-        },
-        {
-          voucherId: 2,
-          voucherCode: 'WELCOME20',
-          discountPercentage: 20,
-          expireDate: '2025-05-15'
-        },
-        {
-          voucherId: 3,
-          voucherCode: 'SPECIAL15',
-          discountPercentage: 15,
-          expireDate: '2024-12-31'
-        },
-        {
-          voucherId: 4,
-          voucherCode: 'NEWYEAR25',
-          discountPercentage: 25,
-          expireDate: '2025-01-31'
-        },
-        {
-          voucherId: 5,
-          voucherCode: 'HOLIDAY5',
-          discountPercentage: 5,
-          expireDate: '2024-11-30'
-        }
-      ];
     };
 
     // Initialize modals and fetch data on component mount
