@@ -9,43 +9,60 @@
     </div>
     <!-- End Section Title -->
 
-    <div class="review-container">
-      <!-- Show error messages from API -->
-      <div v-if="errorMessage" class="alert-message error">
-        {{ errorMessage }}
-      </div>
+    <!-- Main Content -->
+    <div class="container">
+      <div class="review-form-container">
+        <div class="review-form-card">
+          <!-- Error Message -->
+          <div v-if="errorMessage" class="alert-message error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ errorMessage }}
+          </div>
 
-      <!-- If the user has already rated, show a success message -->
-      <div v-if="hasRated" class="alert-message success">
-        You have already rated this booking.
-      </div>
+          <!-- Success Message -->
+          <div v-if="hasRated" class="alert-message success">
+            <i class="bi bi-check-circle-fill"></i>
+            You have already rated this booking.
+          </div>
 
-      <!-- If not rated yet, show the rating form -->
-      <div v-else>
-        <!-- Star Rating -->
-        <div class="rating-section">
-          <StarRating @rating-selected="handleRatingSelected" />
+          <!-- Review Form -->
+          <div v-else class="review-form">
+            <div class="form-header">
+              <h2>Your Review</h2>
+              <p>Share your experience with us</p>
+            </div>
+
+            <!-- Star Rating -->
+            <div class="rating-section">
+              <StarRating @rating-selected="handleRatingSelected" />
+            </div>
+
+            <!-- Comment Input -->
+            <div class="comment-section">
+              <label for="comment">Your Comment</label>
+              <textarea
+                id="comment"
+                v-model="newComment"
+                placeholder="Write your review..."
+                rows="4"
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              class="submit-btn"
+              :disabled="rating === 0 && newComment.trim() === ''"
+              @click="submitReview"
+            >
+              <span v-if="isSubmitting" class="spinner"></span>
+              {{ isSubmitting ? "Submitting..." : "Submit Review" }}
+            </button>
+          </div>
         </div>
-
-        <!-- Comment Input -->
-        <div class="comment-box">
-          <textarea
-            v-model="newComment"
-            placeholder="Write your review..."
-          ></textarea>
-        </div>
-
-        <!-- Submit Button -->
-        <button
-          class="submit-btn"
-          :disabled="rating === 0 && newComment.trim() === ''"
-          @click="submitReview"
-        >
-          Submit Review
-        </button>
       </div>
     </div>
   </div>
+  <div style="margin-bottom: 67px"></div>
 </template>
 
 <script>
@@ -60,7 +77,7 @@ export default {
       rating: 0,
       newComment: "",
       hasRated: false,
-      bookingId: 1,
+      bookingId: "",
       userId: null,
       errorMessage: "",
     };
@@ -70,7 +87,6 @@ export default {
       try {
         // Get userId from CommonHelper instead of calling API
         this.userId = CommonHelper.getCurrentUserId();
-        console.log("User ID:", this.userId);
 
         if (!this.userId) {
           throw new Error("User ID not found.");
@@ -145,76 +161,123 @@ export default {
   async created() {
     await this.fetchUserAndBooking();
   },
+  mounted() {
+    console.log("Booking ID:", this.bookingId);
+    this.bookingId = this.$route.params.bookingId;
+  },
 };
 </script>
 
 <style scoped>
-.review-container {
-  max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.review-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.review-form-card {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
   text-align: center;
+  margin-bottom: 30px;
 }
 
-.title {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.alert-message {
-  font-size: 16px;
-  font-weight: bold;
-  padding: 10px;
-  border-radius: 8px;
+.form-header h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
   margin-bottom: 10px;
 }
 
+.form-header p {
+  color: #6c757d;
+}
+
+.alert-message {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .alert-message.error {
-  color: red;
-  background: #ffe6e6;
+  background: #fff3f3;
+  color: #dc3545;
 }
 
 .alert-message.success {
-  color: green;
-  background: #e6ffe6;
+  background: #f0fff4;
+  color: #28a745;
 }
 
 .rating-section {
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.comment-box textarea {
+.comment-section {
+  margin-bottom: 30px;
+}
+
+.comment-section label {
+  display: block;
+  margin-bottom: 10px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.comment-section textarea {
   width: 100%;
-  height: 80px;
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 15px;
+  border: 2px solid #e9ecef;
   border-radius: 8px;
-  font-size: 14px;
-  resize: none;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+}
+
+.comment-section textarea:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  outline: none;
 }
 
 .submit-btn {
-  background-color: #007bff;
+  width: 100%;
+  padding: 12px;
+  background: #28a745;
   color: white;
   border: none;
-  padding: 10px 20px;
-  margin-top: 15px;
   border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.3s;
-  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .submit-btn:hover {
-  background-color: #0056b3;
+  background: #218838;
 }
 
 .submit-btn:disabled {
-  background-color: #adb5bd;
+  background: #6c757d;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .review-form-card {
+    padding: 30px;
+  }
+
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
 }
 </style>

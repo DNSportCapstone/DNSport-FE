@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { jwtDecode } from "jwt-decode";
 import store from "@/store";
 
+// Import all pages
 import HomePage from "@/pages/HomePage.vue";
 import ShopPage from "@/pages/ShopPage.vue";
 import BookingByDatePage from "@/pages/BookingByDatePage.vue";
@@ -17,9 +18,12 @@ import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 import FieldDetails from "@/pages/user/FieldDetails.vue";
 import BookingServices from "@/pages/user/BookingServices.vue";
 import NearbyStadiums from "@/pages/NearbyStadiums.vue";
-
+import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+import RefundListPage from "@/pages/RefundListPage.vue";
+import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
+import AdminLayout from '@/layouts/AdminLayout.vue';
 import AdministrantionPage from "@/pages/AdministrantionPage.vue";
 import RevenueReportPage from "@/pages/RevenueReportPage.vue";
 import BookingReportPage from "@/pages/BookingReportPage.vue";
@@ -27,9 +31,9 @@ import AdminStadiumPage from "@/pages/AdminStadiumPage.vue";
 import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
 import AdminUserPage from "@/pages/AdminUserPage.vue";
 import AdminVoucherPage from "@/pages/AdminVoucherPage.vue";
-import AdminLayout from '@/layouts/AdminLayout.vue';
 
-const routes = [
+// Public routes that don't require authentication
+const publicRoutes = [
   {
     path: "/",
     name: "home",
@@ -46,24 +50,46 @@ const routes = [
     component: BookingByDatePage,
   },
   {
+    path: "/login",
+    name: "login-sso",
+    component: LoginSSO,
+  },
+  {
+    path: "/test",
+    name: "test-page",
+    component: TestPage,
+  },
+  {
+    path: "/field-list",
+    name: "field-list",
+    component: FieldList,
+  },
+  {
+    path: "/nearby-stadiums",
+    name: "nearby-stadiums",
+    component: NearbyStadiums,
+  },
+];
+
+// Protected routes that require authentication
+const protectedRoutes = [
+  {
     path: "/checkout",
     name: "checkout",
     component: CheckoutPage,
+    meta: { requiresAuth: true }
   },
   {
     path: "/cart",
     name: "cart",
     component: CartPage,
+    meta: { requiresAuth: true }
   },
   {
     path: "/booking-list",
     name: "booking-list",
     component: BookingList,
-  },
-  {
-    path: "/login",
-    name: "login-sso",
-    component: LoginSSO,
+    meta: { requiresAuth: true }
   },
   {
     path: "/edit-user",
@@ -72,50 +98,63 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/test",
-    name: "test-page",
-    component: TestPage,
-  },
-  {
-    path: "/review",
+    path: "/review/:bookingId",
     name: "rate",
     component: ReviewPage,
-  },
-  {
-    path: "/field-list",
-    name: "field-list",
-    component: FieldList,
+    meta: { requiresAuth: true }
   },
   {
     path: "/booking-history",
     name: "booking-history",
     component: BookingHistoryPage,
+    meta: { requiresAuth: true }
   },
   {
     path: "/payment",
     name: "payment",
     component: PaymentPage,
+    meta: { requiresAuth: true }
   },
   {
     path: "/payment-success",
     name: "PaymentSuccess",
     component: PaymentSuccessPage,
+    meta: { requiresAuth: true }
   },
   {
     path: "/field-details/:fieldId/:returnPath",
     name: "field-details",
     component: FieldDetails,
+    meta: { requiresAuth: true }
   },
   {
     path: "/booking-services",
     name: "booking-services",
     component: BookingServices,
+    meta: { requiresAuth: true }
   },
   {
-    path: "/nearby-stadiums",
-    name: "nearby-stadiums",
-    component: NearbyStadiums,
+    path: "/refund-request/:bookingId",
+    name: "refund-request",
+    component: RefundRequestPage,
+    meta: { requiresAuth: true }
   },
+  {
+    path: "/refund-list",
+    name: "refund-list",
+    component: RefundListPage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/refund-tracking",
+    name: "refund-tracking",
+    component: RefundTrackingPage,
+    meta: { requiresAuth: true }
+  },
+];
+
+// Admin routes that require admin privileges
+const adminRoutes = [
   {
     path: "/administration",
     component: AdminLayout,
@@ -166,29 +205,28 @@ const routes = [
   }
 ];
 
+// Combine all routes
+const routes = [...publicRoutes, ...protectedRoutes, ...adminRoutes];
+
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
 
+// Navigation guard
 router.beforeEach(async (to, from, next) => {
   const accessToken = store.getters.accessToken || localStorage.getItem("accessToken");
-
-  // Check if route requires auth
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
 
-  // If route requires authentication
   if (requiresAuth) {
     if (!accessToken) {
       localStorage.setItem('redirectPath', to.fullPath);
       return next('/login');
     }
 
-    // Check token expiration
     try {
       const accessTokenDecoded = jwtDecode(accessToken);
-      console.log('Router Guard - Decoded Token:', accessTokenDecoded);
       const currentTime = Math.floor(Date.now() / 1000);
 
       if (accessTokenDecoded.exp < currentTime) {
@@ -197,10 +235,8 @@ router.beforeEach(async (to, from, next) => {
         return next('/login');
       }
 
-      // Check admin permission - convert roleId to number for comparison
       if (requiresAdmin && Number(accessTokenDecoded.roleId) !== 1) {
-        console.log('Access Denied - User roleId:', accessTokenDecoded.roleId);
-        return next('/'); // Redirect non-admins to home
+        return next('/');
       }
     } catch (error) {
       console.error('Token decode error:', error);
@@ -209,7 +245,6 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // Prevent authenticated users from accessing login page
   if (to.path === '/login' && accessToken) {
     return next('/');
   }
@@ -217,6 +252,7 @@ router.beforeEach(async (to, from, next) => {
   next();
 });
 
+// After navigation hook
 router.afterEach(() => {
   const accessToken = store.getters.accessToken || localStorage.getItem("accessToken");
   const refreshToken = store.getters.refreshToken || localStorage.getItem("refreshToken");
@@ -225,8 +261,8 @@ router.afterEach(() => {
     try {
       const accessTokenDecoded = jwtDecode(accessToken);
       const identity = {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
+        accessToken,
+        refreshToken,
         userId: accessTokenDecoded.userId,
         emailAddress: accessTokenDecoded.emailAddress,
         fullName: accessTokenDecoded.fullName,
