@@ -1,10 +1,15 @@
 <template>
   <LoadingOverlay />
-  <HeaderPage />
-  <div class="mt-100">
+  <template v-if="!isAdminRoute">
+    <HeaderPage />
+    <div class="mt-100">
+      <router-view></router-view>
+    </div>
+    <FooterPage />
+  </template>
+  <template v-else>
     <router-view></router-view>
-  </div>
-  <FooterPage />
+  </template>
 </template>
 
 <script>
@@ -19,5 +24,10 @@ export default {
     FooterPage,
     LoadingOverlay,
   },
+  computed: {
+    isAdminRoute() {
+      return this.$route.path.startsWith('/administration');
+    }
+  }
 };
 </script>

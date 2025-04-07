@@ -712,13 +712,15 @@ export default {
 
     getChartColor(type) {
       const colorMap = {
-        'bóng đá': 'rgba(25, 135, 84, 0.7)',
-        'bóng chuyền': 'rgba(13, 110, 253, 0.7)',
-        'cầu lông': 'rgba(220, 53, 69, 0.7)',
-        'bóng rổ': 'rgba(255, 193, 7, 0.7)'
+        'Bóng đá': 'rgba(25, 135, 84, 0.7)',
+        'Cầu Lông': 'rgba(13, 110, 253, 0.7)',
+        'Bóng chuyền': 'rgba(220, 53, 69, 0.7)',
+        'Bóng rổ': 'rgba(255, 193, 7, 0.7)',
+        'Tennis': 'rgba(25, 193, 7, 0.7)',
+        'Pickleball': 'rgba(130, 110, 253, 0.7)',
       };
 
-      return colorMap[type] || 'rgba(108, 117, 125, 0.7)';
+      return colorMap[type.trim()] || 'rgba(108, 117, 125, 0.7)';
     },
 
     applyQuickFilter(filter) {
