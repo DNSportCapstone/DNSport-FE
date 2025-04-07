@@ -64,7 +64,7 @@
           </svg>
           <span>Danh Sách Sân</span>
         </li>
-        <!-- <li @click="navigateTo('users')" :class="{ active: currentRoute === 'users' }">
+        <li @click="navigateTo('users')" :class="{ active: currentRoute === 'users' }">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -73,6 +73,16 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
           <span>Người dùng</span>
+        </li>
+        <li @click="navigateTo('vouchers')" :class="{ active: currentRoute === 'vouchers' }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Vouchers</span>
         </li>
         <li @click="navigateTo('manage-complaints')" :class="{ active: currentRoute === 'manage-complaints' }">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -83,6 +93,20 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
           <span>Complaints</span>
+        </li>
+        <!-- <li @click="navigateTo('home')" :class="{ active: currentRoute === 'home' }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <line x1="9" y1="22" x2="9" y2="12"></line>
+            <line x1="15" y1="22" x2="15" y2="12"></line>
+            <line x1="3" y1="22" x2="21" y2="22"></line>
+            <line x1="9" y1="2" x2="9" y2="12"></line>
+            <line x1="15" y1="2" x2="15" y2="12"></line>
+            <line x1="3" y1="2" x2="21" y2="2"></line>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Home</span>
         </li> -->
       </ul>
     </div>
@@ -90,8 +114,18 @@
     <!-- Main Content -->
     <div class="main-content">
       <div class="header">
-        <div class="page-title">
-          {{ getPageTitle() }}
+        <div class="header-left">
+          <button @click="navigateTo('home')" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Home</span>
+          </button>
+          <div class="page-title">
+            {{ getPageTitle() }}
+          </div>
         </div>
       </div>
 
@@ -296,6 +330,33 @@ export default {
   justify-content: space-between;
   padding: 0 30px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #2c3e50;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #f1f1f1;
+}
+
+.back-button svg {
+  color: #3498db;
 }
 
 .page-title {

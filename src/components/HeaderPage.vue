@@ -1,8 +1,6 @@
 <template>
   <header id="header" class="header d-flex align-items-center fixed-top">
-    <div
-      class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between"
-    >
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <img src="assets/img/logo.png" alt="" />
@@ -12,19 +10,12 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li>
-            <a
-              @click="changeMenu('hpl-home')"
-              :class="currentHeaderMenu == 'hpl-home' ? 'active' : ''"
-              ><router-link to="/">Home</router-link></a
-            >
+            <a @click="changeMenu('hpl-home')" :class="currentHeaderMenu == 'hpl-home' ? 'active' : ''"><router-link
+                to="/">Home</router-link></a>
           </li>
           <li>
-            <a
-              href="field-list"
-              @click="changeMenu('hpl-field-list')"
-              :class="currentHeaderMenu == 'hpl-field-list' ? 'active' : ''"
-              >Field</a
-            >
+            <a href="field-list" @click="changeMenu('hpl-field-list')"
+              :class="currentHeaderMenu == 'hpl-field-list' ? 'active' : ''">Field</a>
           </li>
 
           <!-- <li>
@@ -93,10 +84,7 @@
             <ul>
               <li>
                 <router-link to="/edit-user">
-                  <font-awesome-icon
-                    class="pr-5"
-                    :icon="['fas', 'address-card']"
-                  />
+                  <font-awesome-icon class="pr-5" :icon="['fas', 'address-card']" />
                   <span>My Profile</span>
                 </router-link>
               </li>
@@ -113,21 +101,15 @@
                   <li><router-link to="#">Deep Dropdown 5</router-link></li>
                 </ul>
               </li> -->
-              <li  v-if="isAdmin">
+              <li v-if="isAdmin">
                 <router-link to="/administration">Administration</router-link>
               </li>
               <li>
                 <router-link to="/booking-history">Booking History</router-link>
               </li>
               <li>
-                <a href="" @click="handleLogout()"
-                  ><span
-                    ><font-awesome-icon
-                      class="pr-5"
-                      :icon="['fas', 'power-off']"
-                    />Logout</span
-                  ></a
-                >
+                <a href="" @click="handleLogout()"><span><font-awesome-icon class="pr-5"
+                      :icon="['fas', 'power-off']" />Logout</span></a>
               </li>
             </ul>
           </li>
@@ -190,7 +172,8 @@ export default {
       return fullName;
     },
     isAdmin() {
-      return CommonHelper.getCurentRole() == 1;
+      const role = CommonHelper.getCurentRole();
+      return role == 1;
     }
   },
   methods: {
@@ -199,7 +182,6 @@ export default {
       this.count++;
     },
     changeMenu(menu) {
-      console.log(CommonHelper.getCurrentUserId());
       this.currentHeaderMenu = menu;
     },
     handleLogout() {
