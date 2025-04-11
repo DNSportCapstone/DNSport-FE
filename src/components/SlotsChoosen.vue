@@ -12,7 +12,7 @@
       </span>
     </div>
     <div class="tab-content" v-if="isTabOpen">
-      <div v-for="field in selectedFields" :key="field.fieldId">
+      <div v-for="field in multipleBookingModel" :key="field.fieldId">
         <h3>{{ field.fieldName }}</h3>
         <div
           v-for="(slot, index) in field.selectedSlots"
@@ -53,20 +53,20 @@ import CommonHelper from "@/utils/common";
 
 export default {
   props: {
-    selectedFields: {
+    multipleBookingModel: {
       type: Array,
       required: true,
     },
   },
   computed: {
     totalSlots() {
-      return this.selectedFields.reduce(
+      return this.multipleBookingModel.reduce(
         (sum, field) => sum + field.selectedSlots.length,
         0
       );
     },
     totalPrice() {
-      return this.selectedFields.reduce(
+      return this.multipleBookingModel.reduce(
         (sum, field) =>
           sum + field.selectedSlots.reduce((s, slot) => s + slot.price, 0),
         0
@@ -86,10 +86,7 @@ export default {
       return CommonHelper.formatVND(number);
     },
     goToServicePage() {
-      this.$router.push({
-        name: "booking-services",
-        query: { selectedFields: JSON.stringify(this.selectedFields) },
-      });
+      this.$emit("goToServicePage");
     },
   },
 };

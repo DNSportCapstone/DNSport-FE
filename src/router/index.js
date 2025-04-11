@@ -20,6 +20,7 @@ import NearbyStadiums from "@/pages/NearbyStadiums.vue";
 import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+import MultipleBookingPaymentSuccess from "@/pages/user/multiple-booking/PaymentSuccess.vue";
 import RefundListPage from "@/pages/RefundListPage.vue";
 import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
 import AdministrantionPage from "@/pages/AdministrantionPage.vue";
@@ -49,9 +50,10 @@ const router = createRouter({
       component: ShopPage,
     },
     {
-      path: "/booking-by-date",
+      path: "/booking-by-date/:stadiumId",
       name: "booking-by-date",
       component: BookingByDatePage,
+      props: true,
     },
     {
       path: "/checkout",
@@ -109,7 +111,7 @@ const router = createRouter({
       component: PaymentSuccessPage,
     },
     {
-      path: "/field-details/:fieldId/:returnPath",
+      path: "/field-details",
       name: "field-details",
       component: FieldDetails,
     },
@@ -122,6 +124,11 @@ const router = createRouter({
       path: "/nearby-stadiums",
       name: "nearby-stadiums",
       component: NearbyStadiums,
+    },
+    {
+      path: "/multiple-booking/payment-success",
+      name: "multiple-booking-success",
+      component: MultipleBookingPaymentSuccess,
     },
     {
       path: "/refund-request/:bookingId",
@@ -197,9 +204,11 @@ router.beforeEach((to, from, next) => {
     "/payment",
     "/payment-success",
     "/booking-history",
-    "/field-details/:fieldId/:returnPath",
+    //"/field-details/:fieldId/:returnPath",
+    "/field-details",
     "/nearby-stadiums",
     "/booking-services",
+    "/multiple-booking/payment-success",
     "/refund-request",
     "/refund-list",
     "/refund-tracking",

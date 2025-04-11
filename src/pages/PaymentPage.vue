@@ -30,7 +30,7 @@ export default {
     // Gọi API để tạo thanh toán
     const handlePayment = async () => {
       try {
-          // API.get(`Booking/history/${userId}`)
+        // API.get(`Booking/history/${userId}`)
         const response = await API.post(`payment/create-payment-url`, {
           amount: amount.value,
         });
@@ -43,12 +43,13 @@ export default {
 
     // Kiểm tra trạng thái thanh toán khi quay về từ VNPAY
     onMounted(async () => {
+      console.log(route.query);
       if (route.query.vnp_ResponseCode) {
         try {
           const response = await API.get(`payment/vnpay-return`, {
             params: route.query,
           });
-          if(response.status == 200){
+          if (response.status == 200) {
             router.push({ path: "/payment-success" });
           }
         } catch (error) {
@@ -58,7 +59,13 @@ export default {
       }
     });
 
-    return { amount, handlePayment, paymentStatus, paymentMessage, statusClass };
+    return {
+      amount,
+      handlePayment,
+      paymentStatus,
+      paymentMessage,
+      statusClass,
+    };
   },
 };
 </script>

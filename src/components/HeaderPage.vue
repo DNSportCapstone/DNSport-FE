@@ -84,7 +84,7 @@
               <li><a href="#">Dropdown 4</a></li>
             </ul>
           </li> -->
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact" @click="increment()">Contact</a></li>
           <li v-if="isLogin" class="dropdown">
             <a href="#">
               <font-awesome-icon class="pr-5" :icon="['far', 'user']" />
@@ -113,7 +113,7 @@
                   <li><router-link to="#">Deep Dropdown 5</router-link></li>
                 </ul>
               </li> -->
-              <li  v-if="isAdmin">
+              <li v-if="isAdmin">
                 <router-link to="/administration">Administration</router-link>
               </li>
               <li>
@@ -147,8 +147,8 @@
 </template>
 
 <script>
-import CommonHelper from "@/utils/common";
 import ChooseLanguage from "@/components/ChooseLanguage.vue";
+import CommonHelper from "@/utils/common";
 
 export default {
   name: "HeaderPage", // 1. Tên component
@@ -191,7 +191,7 @@ export default {
     },
     isAdmin() {
       return CommonHelper.getCurentRole() == 1;
-    }
+    },
   },
   methods: {
     // 9. Phương thức
@@ -199,7 +199,6 @@ export default {
       this.count++;
     },
     changeMenu(menu) {
-      console.log(CommonHelper.getCurrentUserId());
       this.currentHeaderMenu = menu;
     },
     handleLogout() {

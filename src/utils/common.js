@@ -11,10 +11,13 @@ const CommonHelper = {
   },
 
   getCurrentUserId() {
-    const accessTokenDecoded = jwtDecode(
-      store.getters.accessToken ?? localStorage.getItem("accessToken")
-    );
-    return accessTokenDecoded.userId;
+    if (store.getters.accessToken || localStorage.getItem("accessToken")) {
+      const accessTokenDecoded = jwtDecode(
+        store.getters.accessToken ?? localStorage.getItem("accessToken")
+      );
+      return accessTokenDecoded.userId;
+    }
+    return 0;
   },
 
   getCurentRole() {
