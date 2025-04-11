@@ -113,7 +113,7 @@
                   <li><router-link to="#">Deep Dropdown 5</router-link></li>
                 </ul>
               </li> -->
-              <li  v-if="isAdmin">
+              <li v-if="isAdmin">
                 <router-link to="/administration">Administration</router-link>
               </li>
               <li>
@@ -148,6 +148,7 @@
 
 <script>
 import ChooseLanguage from "@/components/ChooseLanguage.vue";
+import CommonHelper from "@/utils/common";
 
 export default {
   name: "HeaderPage", // 1. Tên component
@@ -190,7 +191,7 @@ export default {
     },
     isAdmin() {
       return CommonHelper.getCurentRole() == 1;
-    }
+    },
   },
   methods: {
     // 9. Phương thức
