@@ -45,6 +45,26 @@
   "Book Your Sports Field with DNSports": "Book Your Sports Field with DNSports",
   "Find and book the best sports fields in your area with ease.": "Find and book the best sports fields in your area with ease.",
   "Find Stadium": "Find Stadium",
-  "ChooseServices": "Choose services"
-
+  "ChooseServices": "Choose services",
+  "RevenueReportTitle": "Revenue Report",
+  "totalRevenue": "Total Revenue",
+  "ownerPayment": "Payment to Owner",
+  "commissionRevenue": "Commission Revenue",
+  "timeReport": "Time-based Report",
+  "revenueChart": "Revenue Trend Chart",
+  "options": "Options",
+  "switchToLine": "Switch to Line Chart",
+  "switchToBar": "Switch to Bar Chart",
+  "numberOfOrders": "Number of Orders",
+  "highestRevenue": "Highest Revenue",
+  "lowestRevenue": "Lowest Revenue",
+  "daily": "Daily",
+  "monthly": "Monthly",
+  "yearly": "Yearly",
+  "showDetails": "Show Details",
+  "collapse": "Collapse",
+  "totalItems": "Total Items",
+  "time": "Time",
+  "revenue": "Revenue",
+  "TimePeriod": "Time Period"
 }

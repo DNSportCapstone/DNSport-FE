@@ -1,309 +1,296 @@
 <template>
-  <div>
-    <!-- Hero Section -->
-    <HeroSection> </HeroSection>
-
-    <!-- About Section -->
-    <section id="about" class="about section">
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row align-items-xl-center gy-5">
-          <div class="col-xl-5 content">
-            <h3>About Us</h3>
-            <h2>Your Premier Sports Field Booking Platform</h2>
-            <p>
-              {{ t("AboutUsDescription") }}
-            </p>
-          </div>
-          <div class="col-xl-7">
-            <div class="row gy-4 icon-boxes">
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="icon-box">
-                  <i class="bi bi-calendar-check"></i>
-                  <h3>Easy Booking</h3>
-                  <p>
-                    Book your preferred sports field with just a few clicks.
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="icon-box">
-                  <i class="bi bi-geo-alt"></i>
-                  <h3>Convenient Locations</h3>
-                  <p>Find sports fields in convenient locations near you.</p>
-                </div>
-              </div>
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="icon-box">
-                  <i class="bi bi-people"></i>
-                  <h3>Community Events</h3>
-                  <p>
-                    Join community events and meet other sports enthusiasts.
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
-                <div class="icon-box">
-                  <i class="bi bi-shield"></i>
-                  <h3>Secure Payments</h3>
-                  <p>Make secure payments through our platform.</p>
-                </div>
-              </div>
+  <div class="home-page">
+    <!-- Hero Section with Carousel -->
+    <section class="hero-section">
+      <div class="carousel">
+        <div
+          class="carousel-inner"
+          :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
+        >
+          <div
+            class="carousel-item"
+            v-for="(slide, index) in slides"
+            :key="index"
+          >
+            <img
+              :src="slide.image"
+              :alt="slide.alt"
+              @error="handleImageError(index)"
+            />
+            <div class="carousel-caption">
+              <h2>{{ slide.title }}</h2>
+              <p>{{ slide.subtitle }}</p>
             </div>
+          </div>
+        </div>
+        <button class="carousel-control prev" @click="prevSlide">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="carousel-control next" @click="nextSlide">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+        <div class="carousel-indicators">
+          <button
+            v-for="(slide, index) in slides"
+            :key="index"
+            :class="{ active: currentSlide === index }"
+            @click="goToSlide(index)"
+          ></button>
+        </div>
+      </div>
+      <div class="search-overlay">
+        <div class="search-container">
+          <h1>Find Your Perfect Sports Field</h1>
+          <p>Book sports facilities instantly with our easy-to-use platform</p>
+          <div class="search-box">
+            <input
+              type="text"
+              placeholder="Search by location or sport type..."
+            />
+            <button class="search-btn">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+          <div class="quick-filters">
+            <button class="filter-btn">Football</button>
+            <button class="filter-btn">Basketball</button>
+            <button class="filter-btn">Tennis</button>
+            <button class="filter-btn">Badminton</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features section">
+    <!-- Featured Sports Section -->
+    <section class="featured-sports">
       <div class="container">
-        <div class="row gy-4">
-          <div
-            class="col-lg-3 col-md-4"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
-            <div class="features-item">
-              <i class="bi bi-trophy" style="color: #ffbb2c"></i>
-              <h3><a href="" class="stretched-link">Top Facilities</a></h3>
+        <div class="section-header">
+          <h2>Popular Sports</h2>
+          <p>Find your favorite sport and start booking</p>
+        </div>
+        <div class="sports-grid">
+          <div class="sport-card">
+            <div class="sport-icon">
+              <i class="bi bi-trophy"></i>
             </div>
+            <h3>Football</h3>
+            <p>20+ Fields Available</p>
+            <button class="sport-btn">View Fields</button>
           </div>
-          <div
-            class="col-lg-3 col-md-4"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            <div class="features-item">
-              <i class="bi bi-clock" style="color: #5578ff"></i>
-              <h3><a href="" class="stretched-link">Flexible Scheduling</a></h3>
+          <div class="sport-card">
+            <div class="sport-icon">
+              <i class="bi bi-basketball"></i>
             </div>
+            <h3>Basketball</h3>
+            <p>15+ Courts Available</p>
+            <button class="sport-btn">View Courts</button>
           </div>
-          <div
-            class="col-lg-3 col-md-4"
-            data-aos="fade-up"
-            data-aos-delay="300"
-          >
-            <div class="features-item">
-              <i class="bi bi-heart" style="color: #e80368"></i>
-              <h3><a href="" class="stretched-link">Customer Support</a></h3>
+          <div class="sport-card">
+            <div class="sport-icon">
+              <i class="bi bi-circle"></i>
             </div>
+            <h3>Tennis</h3>
+            <p>10+ Courts Available</p>
+            <button class="sport-btn">View Courts</button>
           </div>
+          <div class="sport-card">
+            <div class="sport-icon">
+              <i class="bi bi-circle-half"></i>
+            </div>
+            <h3>Badminton</h3>
+            <p>12+ Courts Available</p>
+            <button class="sport-btn">View Courts</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Stadiums Section -->
+    <section class="featured-stadiums">
+      <div class="container">
+        <div class="section-header">
+          <h2>Featured Stadiums</h2>
+          <p>Discover our top-rated sports facilities</p>
+        </div>
+        <div class="stadium-grid">
           <div
-            class="col-lg-3 col-md-4"
-            data-aos="fade-up"
-            data-aos-delay="400"
+            v-for="stadium in stadiums"
+            :key="stadium.stadiumId"
+            class="stadium-card"
           >
-            <div class="features-item">
-              <i class="bi bi-star" style="color: #e361ff"></i>
-              <h3><a href="" class="stretched-link">User Reviews</a></h3>
+            <div class="stadium-image">
+              <img :src="stadium.image" :alt="stadium.stadiumName" />
+              <div class="stadium-badge">Popular</div>
+            </div>
+            <div class="stadium-content">
+              <h3>{{ stadium.stadiumName }}</h3>
+              <p class="location">
+                <i class="bi bi-geo-alt"></i> {{ stadium.address }}
+              </p>
+              <div class="stadium-features">
+                <span><i class="bi bi-people"></i> Up to 20 players</span>
+                <span><i class="bi bi-clock"></i> 24/7 Available</span>
+              </div>
+              <div class="stadium-actions">
+                <button class="btn-view">View Details</button>
+                <button class="btn-book">Book Now</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Stats Section -->
-    <section id="stats" class="stats section light-background">
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row gy-4">
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-emoji-smile"></i>
-            <div class="stats-item">
-              <span
-                data-purecounter-start="0"
-                data-purecounter-end="500"
-                data-purecounter-duration="1"
-                class="purecounter"
-              ></span>
-              <p>Happy Clients</p>
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+      <div class="container">
+        <div class="section-header">
+          <h2>How It Works</h2>
+          <p>Book your sports field in three simple steps</p>
+        </div>
+        <div class="steps-container">
+          <div class="step">
+            <div class="step-icon">
+              <i class="bi bi-search"></i>
             </div>
+            <h3>Search</h3>
+            <p>Find your preferred sports field by location or sport type</p>
           </div>
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-journal-richtext"></i>
-            <div class="stats-item">
-              <span
-                data-purecounter-start="0"
-                data-purecounter-end="1000"
-                data-purecounter-duration="1"
-                class="purecounter"
-              ></span>
-              <p>Bookings</p>
+          <div class="step">
+            <div class="step-icon">
+              <i class="bi bi-calendar-check"></i>
             </div>
+            <h3>Book</h3>
+            <p>Select your preferred date and time slot</p>
           </div>
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-headset"></i>
-            <div class="stats-item">
-              <span
-                data-purecounter-start="0"
-                data-purecounter-end="2000"
-                data-purecounter-duration="1"
-                class="purecounter"
-              ></span>
-              <p>Hours Of Support</p>
+          <div class="step">
+            <div class="step-icon">
+              <i class="bi bi-credit-card"></i>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-people"></i>
-            <div class="stats-item">
-              <span
-                data-purecounter-start="0"
-                data-purecounter-end="50"
-                data-purecounter-duration="1"
-                class="purecounter"
-              ></span>
-              <p>Sports Fields</p>
-            </div>
+            <h3>Pay</h3>
+            <p>Complete your booking with secure payment</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section id="gallery" class="gallery section">
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Stadium</h2>
-        <div>
-          <span>Our</span> <span class="description-title">Stadium</span>
+    <!-- Special Offers Section -->
+    <section class="special-offers">
+      <div class="container">
+        <div class="section-header">
+          <h2>Special Offers</h2>
+          <p>Exclusive deals for sports enthusiasts</p>
         </div>
-      </div>
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row g-0">
-          <div>
-            <div v-if="stadiums.length" class="stadium-grid">
-              <div
-                v-for="stadium in stadiums"
-                :key="stadium.stadiumId"
-                class="stadium-card"
-              >
-                <img
-                  :src="stadium.image"
-                  alt="Stadium Image"
-                  class="stadium-image"
-                  loading="lazy"
-                  @error="onImageError"
-                />
-                <div class="stadium-info">
-                  <h3>{{ stadium.stadiumName }}</h3>
-                  <p>{{ stadium.address }}</p>
-                  <button class="btn btn-dns-primary">View Detail</button>
-                  <button
-                    class="btn btn-dns-secondary"
-                    @click="bookingMultiSlots(stadium.stadiumId)"
-                  >
-                    Booking Now
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div v-else>
-              <p>Loading...</p>
-            </div>
+        <div class="offers-grid">
+          <div class="offer-card">
+            <div class="offer-badge">20% OFF</div>
+            <h3>Early Bird Booking</h3>
+            <p>Book morning slots before 10 AM</p>
+            <button class="offer-btn">Learn More</button>
+          </div>
+          <div class="offer-card">
+            <div class="offer-badge">15% OFF</div>
+            <h3>Weekend Package</h3>
+            <p>Special rates for weekend bookings</p>
+            <button class="offer-btn">Learn More</button>
+          </div>
+          <div class="offer-card">
+            <div class="offer-badge">25% OFF</div>
+            <h3>Group Booking</h3>
+            <p>Discounts for group reservations</p>
+            <button class="offer-btn">Learn More</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section">
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Contact</h2>
-        <div>
-          <span>Get In</span> <span class="description-title">Touch</span>
-        </div>
-      </div>
-      <div class="container" data-aos="fade" data-aos-delay="100">
-        <div class="row gy-4">
-          <!-- Phần thông tin liên hệ bên trái -->
-          <div class="col-lg-4">
-            <div
-              class="info-item d-flex"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <i class="bi bi-geo-alt flex-shrink-0"></i>
-              <div>
-                <h3>Address</h3>
-                <p>
-                  137 Nguyễn Thị Thập street, Liên Chiểu district, Đà Nẵng city.
-                </p>
-              </div>
-            </div>
-            <div
-              class="info-item d-flex"
-              data-aos="fade-up"
-              data-aos-delay="300"
-            >
-              <i class="bi bi-telephone flex-shrink-0"></i>
-              <div>
-                <h3>Call Us</h3>
-                <p>+1 234 567 890</p>
-              </div>
-            </div>
-            <div
-              class="info-item d-flex"
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              <i class="bi bi-envelope flex-shrink-0"></i>
-              <div>
-                <h3>Email Us</h3>
-                <p>dnsport2025@gmail.com</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Phần bản đồ bên phải -->
-          <div class="col-lg-8">
-            <div class="map-container" data-aos="fade-up" data-aos-delay="200">
-              <iframe
-                width="100%"
-                height="400"
-                style="border: 0"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.7925869653195!2d108.25067467600928!3d16.02116673909486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219e3fddf5e3b%3A0x815aebebf1293ae5!2sFPT%20City%20Da%20Nang!5e0!3m2!1sen!2s!4v1709833456789"
-              ></iframe>
-            </div>
-          </div>
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Ready to Book Your Sports Field?</h2>
+          <p>Join thousands of sports enthusiasts who trust our platform</p>
+          <button class="cta-button">Get Started Now</button>
         </div>
       </div>
     </section>
   </div>
 </template>
 
-<script setup>
-import { useI18n } from "vue-i18n";
-const { t } = useI18n();
-</script>
-
 <script>
-import HeroSection from "@/components/HeroSection.vue";
 import API from "@/utils/axios";
 
 export default {
-  components: {
-    HeroSection,
-  },
   data() {
     return {
       stadiums: [],
-      defaultImage:
-        "data:image/jpeg;base64,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",
+      currentSlide: 0,
+      autoplayInterval: null,
+      slides: [
+        {
+          image: require("@/assets/hero1.png"), // Đảm bảo file tồn tại trong src/assets/
+          alt: "Sports Field 1",
+          title: "Premium Sports Facilities",
+          subtitle: "Book your favorite sports field today",
+        },
+        {
+          image: require("@/assets/hero2.png"),
+          alt: "Sports Field 2",
+          title: "Professional Courts",
+          subtitle: "Experience top-notch sports venues",
+        },
+        {
+          image: require("@/assets/hero3.png"),
+          alt: "Sports Field 3",
+          title: "24/7 Booking Available",
+          subtitle: "Book anytime, anywhere",
+        },
+      ],
     };
   },
   async mounted() {
     await this.fetchStadiums();
+    this.startAutoplay();
+  },
+  beforeUnmount() {
+    this.stopAutoplay();
   },
   methods: {
     async fetchStadiums() {
       try {
         const response = await API.get("/Stadium");
-        this.stadiums = response.data;
+        this.stadiums = response.data || []; // Đảm bảo dữ liệu trả về là mảng
         console.log("List of stadiums:", this.stadiums);
       } catch (error) {
         console.error("Error fetching stadium data:", error);
+        this.stadiums = []; // Đặt mặc định là mảng rỗng nếu có lỗi
       }
+    },
+    nextSlide() {
+      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    },
+    prevSlide() {
+      this.currentSlide =
+        (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    },
+    goToSlide(index) {
+      this.currentSlide = index;
+    },
+    startAutoplay() {
+      this.autoplayInterval = setInterval(() => {
+        this.nextSlide();
+      }, 5000);
+    },
+    stopAutoplay() {
+      if (this.autoplayInterval) {
+        clearInterval(this.autoplayInterval);
+      }
+    },
+    handleImageError(index) {
+      // Xử lý lỗi khi ảnh không tải được, thay bằng ảnh dự phòng
+      console.warn(`Không thể tải ảnh cho slide ${index + 1}`);
+      this.slides[index].image =
+        "https://via.placeholder.com/1200x600?text=Image+Not+Found"; // Ảnh dự phòng
     },
     bookingMultiSlots(stadiumId) {
       this.$router.push({
@@ -319,93 +306,597 @@ export default {
 </script>
 
 <style>
-.hero-content {
+/* Global Styles */
+:root {
+  --primary-color: #28a745;
+  --primary-dark: #218838;
+  --primary-light: #34ce57;
+  --primary-bg: rgba(40, 167, 69, 0.1);
+  --text-dark: #2c3e50;
+  --text-light: #6c757d;
+  --white: #ffffff;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+}
+
+.home-page {
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-header {
   text-align: center;
-  padding: 100px 20px;
-  background: rgba(0, 0, 0, 0.5);
+  margin-bottom: 50px;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+}
+
+.section-header p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100%;
+  z-index: 0;
+}
+
+.carousel-item {
+  min-width: 100%;
+  /* position: relative; */
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* display: block !important; */
+}
+
+.carousel-caption {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
   color: white;
+  z-index: 2;
 }
 
-.search-bar {
-  margin-top: 20px;
+.carousel-caption h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.search-bar input {
-  padding: 10px;
-  width: 300px;
+.carousel-caption p {
+  font-size: 1.5rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.3);
   border: none;
-  border-radius: 5px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 3;
 }
 
-.search-bar button {
-  padding: 10px 20px;
+.carousel-control:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-control.prev {
+  left: 20px;
+}
+
+.carousel-control.next {
+  right: 20px;
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+
+.carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.search-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.search-container {
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.search-container h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.search-container p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-btn {
+  padding: 15px 30px;
   background: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-btn:hover {
+  background: #0056b3;
+}
+
+.quick-filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Featured Sports Section */
+.featured-sports {
+  padding: 80px 0;
+  background: var(--white);
+}
+
+.sports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.sport-card {
+  background: var(--white);
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.sport-card:hover {
+  transform: translateY(-5px);
+}
+
+.sport-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--primary-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.sport-icon i {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.sport-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: var(--text-dark);
+}
+
+.sport-card p {
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.sport-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sport-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Featured Stadiums Section */
+.featured-stadiums {
+  padding: 80px 0;
+  background: var(--gray-100);
 }
 
 .stadium-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
 }
 
 .stadium-card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+  background: var(--white);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
 .stadium-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-10px);
 }
 
 .stadium-image {
+  position: relative;
+  height: 200px;
+}
+
+.stadium-image img {
   width: 100%;
-  height: 150px;
+  height: 100%;
   object-fit: cover;
 }
 
-.stadium-info {
-  margin-top: 10px;
+.stadium-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--primary-color);
+  color: var(--white);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
+.stadium-content {
+  padding: 20px;
+}
+
+.stadium-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--text-dark);
+}
+
+.location {
+  color: var(--text-light);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stadium-features {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.stadium-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-view,
+.btn-book {
+  flex: 1;
+  padding: 10px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
+.btn-view {
+  background: var(--gray-100);
+  color: var(--text-dark);
 }
 
-.promo-form {
+.btn-book {
+  background: var(--primary-color);
+  color: var(--white);
+}
+
+.btn-view:hover {
+  background: var(--gray-200);
+}
+
+.btn-book:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* How It Works Section */
+.how-it-works {
+  padding: 80px 0;
+  background: var(--white);
+}
+
+.steps-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  text-align: center;
+}
+
+.step {
+  padding: 30px;
+}
+
+.step-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--primary-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.step-icon i {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.step h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+}
+
+.step p {
+  color: var(--text-light);
+}
+
+/* Special Offers Section */
+.special-offers {
+  padding: 80px 0;
+  background: var(--gray-100);
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.offer-card {
+  background: var(--white);
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.offer-badge {
+  position: absolute;
+  top: 20px;
+  right: -30px;
+  background: var(--primary-color);
+  color: white;
+  padding: 5px 30px;
+  transform: rotate(45deg);
+  font-weight: 600;
+}
+
+.offer-card h3 {
+  font-size: 1.4rem;
+  margin: 20px 0 10px;
+  color: var(--text-dark);
+}
+
+.offer-card p {
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.offer-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.offer-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 80px 0;
+  background: linear-gradient(rgba(40, 167, 69, 0.9), rgba(40, 167, 69, 0.9));
+  background-size: cover;
+  background-position: center;
+  color: var(--white);
+  text-align: center;
+}
+
+.cta-content {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
-  background: #f9f9f9;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.cta-content p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.cta-button {
+  padding: 15px 40px;
+  background: var(--white);
+  color: var(--primary-color);
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.promo-form .form-control {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.cta-button:hover {
+  transform: translateY(-3px);
+  background: var(--gray-100);
 }
 
-.promo-form .btn-primary {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .carousel-caption h2 {
+    font-size: 2rem;
+  }
+
+  .carousel-caption p {
+    font-size: 1.2rem;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .stadium-actions {
+    flex-direction: column;
+  }
+
+  .steps-container,
+  .sports-grid,
+  .offers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .carousel-control {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .search-container h1 {
+    font-size: 2.5rem;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-btn {
+    width: 100%;
+  }
 }
 </style>

@@ -17,10 +17,18 @@ import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 import FieldDetails from "@/pages/user/FieldDetails.vue";
 import BookingServices from "@/pages/user/BookingServices.vue";
 import NearbyStadiums from "@/pages/NearbyStadiums.vue";
-
+import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
 import MultipleBookingPaymentSuccess from "@/pages/user/multiple-booking/PaymentSuccess.vue";
+import RefundListPage from "@/pages/RefundListPage.vue";
+import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
+import AdministrantionPage from "@/pages/AdministrantionPage.vue";
+import RevenueReportPage from "@/pages/RevenueReportPage.vue";
+import BookingReportPage from "@/pages/BookingReportPage.vue";
+import AdminUserPage from "@/pages/AdminUserPage.vue";
+import AdminStadiumPage from "@/pages/AdminStadiumPage.vue";
+import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
 
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
@@ -78,7 +86,7 @@ const router = createRouter({
       component: TestPage,
     },
     {
-      path: "/review",
+      path: "/review/:bookingId",
       name: "rate",
       component: ReviewPage,
     },
@@ -122,6 +130,53 @@ const router = createRouter({
       name: "multiple-booking-success",
       component: MultipleBookingPaymentSuccess,
     },
+    {
+      path: "/refund-request/:bookingId",
+      name: "refund-request",
+      component: RefundRequestPage,
+    },
+    {
+      path: "/refund-list",
+      name: "refund-list",
+      component: RefundListPage,
+    },
+    {
+      path: "/refund-tracking",
+      name: "refund-tracking",
+      component: RefundTrackingPage,
+    },
+    {
+      path: "/administration",
+      name: "administration",
+      component: AdministrantionPage,
+      children: [
+        {
+          path: "/revenue-report",
+          name: "revenue-report",
+          component: RevenueReportPage,
+        },
+        {
+          path: "/booking-report",
+          name: "booking-report",
+          component: BookingReportPage,
+        },
+        {
+          path: "/users",
+          name: "users",
+          component: AdminUserPage,
+        },
+        {
+          path: "/stadiums",
+          name: "stadiums",
+          component: AdminStadiumPage,
+        },
+        {
+          path: "/manage-complaints",
+          name: "manage-complaints",
+          component: AdminManageComplaintsPage,
+        },
+      ],
+    },
   ],
 });
 export default router;
@@ -154,6 +209,9 @@ router.beforeEach((to, from, next) => {
     "/nearby-stadiums",
     "/booking-services",
     "/multiple-booking/payment-success",
+    "/refund-request",
+    "/refund-list",
+    "/refund-tracking",
   ];
 
   // const userPages = [
@@ -170,7 +228,7 @@ router.beforeEach((to, from, next) => {
   // trying to access a restricted page + not logged in
   // redirect to login page
   if (authRequired && !loggedIn) {
-    next("/");
+    next("/login");
   } else {
     next();
   }

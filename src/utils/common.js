@@ -20,6 +20,13 @@ const CommonHelper = {
     return 0;
   },
 
+  getCurentRole() {
+    const accessTokenDecoded = jwtDecode(
+      store.getters.accessToken ?? localStorage.getItem("accessToken")
+    );
+    return accessTokenDecoded.roleId;
+  }
+
   // convertToDate(isoString) {
   //   const { locale } = useI18n();
   //   const date = new Date(isoString);

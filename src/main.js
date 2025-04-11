@@ -4,6 +4,8 @@ import router from "./router";
 import vue3GoogleLogin from "vue3-google-login";
 import store from "./store";
 import i18n from "./locales";
+import Toast, { POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -38,4 +40,21 @@ app.use(vue3GoogleLogin, {
 app.use(i18n);
 app.use(router);
 app.use(store);
+
+const toastOptions = {
+    position: POSITION.TOP_RIGHT,
+    timeout: 3000,
+    closeOnClick: true,
+    pauseOnFocusLoss: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: false,
+    closeButton: "button",
+    icon: true,
+    rtl: false
+};
+
+app.use(Toast, toastOptions);
 app.mount("#app");
