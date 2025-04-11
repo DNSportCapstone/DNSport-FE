@@ -27,6 +27,7 @@
               src="@/assets/hero1.png"
               class="d-block w-100"
               alt="Sports Field 1"
+              loading="lazy"
             />
           </div>
           <div class="carousel-item">
@@ -34,6 +35,7 @@
               src="@/assets/hero2.png"
               class="d-block w-100"
               alt="Sports Field 2"
+              loading="lazy"
             />
           </div>
           <div class="carousel-item">
@@ -41,6 +43,7 @@
               src="@/assets/hero3.png"
               class="d-block w-100"
               alt="Sports Field 3"
+              loading="lazy"
             />
           </div>
         </div>
@@ -217,7 +220,7 @@
             class="stadium-card"
           >
             <div class="stadium-image">
-              <img :src="stadium.image" :alt="stadium.stadiumName" />
+              <img :src="stadium.image" :alt="stadium.stadiumName" loading="lazy" />
             </div>
             <div class="stadium-content">
               <h3>{{ stadium.stadiumName }}</h3>
