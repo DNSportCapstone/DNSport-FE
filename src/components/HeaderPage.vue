@@ -84,7 +84,7 @@
               <li><a href="#">Dropdown 4</a></li>
             </ul>
           </li> -->
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact" @click="increment()">Contact</a></li>
           <li v-if="isLogin" class="dropdown">
             <a href="#">
               <font-awesome-icon class="pr-5" :icon="['far', 'user']" />
@@ -144,7 +144,6 @@
 </template>
 
 <script>
-import CommonHelper from "@/utils/common";
 import ChooseLanguage from "@/components/ChooseLanguage.vue";
 
 export default {
@@ -193,7 +192,6 @@ export default {
       this.count++;
     },
     changeMenu(menu) {
-      console.log(CommonHelper.getCurrentUserId());
       this.currentHeaderMenu = menu;
     },
     handleLogout() {

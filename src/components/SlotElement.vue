@@ -91,6 +91,7 @@ export default {
         isChoose: this.isChoose,
         fieldId: this.fieldId,
         fieldName: this.fieldName,
+        services: [],
       });
     },
     formatCurrency(value) {

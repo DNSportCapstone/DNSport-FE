@@ -26,7 +26,6 @@ export default {
         const response = await API.post("/auth/google-login", {
           token: credential,
         });
-
         if (response.status == 200) {
           var accessTokenDecoded = jwtDecode(response.data.accessToken);
 
