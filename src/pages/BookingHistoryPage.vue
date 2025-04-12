@@ -9,12 +9,7 @@
         </h2>
         <div class="d-flex gap-2">
           <div class="input-group">
-            <input
-              type="text"
-              v-model="searchQuery"
-              class="form-control"
-              placeholder=""
-            />
+            <input type="text" v-model="searchQuery" class="form-control" placeholder="Search bookings..." />
             <button class="btn btn-outline-primary" type="button">
               <i class="bi bi-search"></i>
             </button>
@@ -33,47 +28,51 @@
         </div>
 
         <!-- Empty state -->
-        <div
-          v-else-if="paginatedBookings.length === 0"
-          class="text-center py-5"
-        >
+        <div v-else-if="paginatedBookings.length === 0" class="text-center py-5">
           <i class="bi bi-calendar-x display-1 text-muted"></i>
           <p class="mt-3 text-muted">{{ t("NoBookingHistory") }}</p>
         </div>
 
         <!-- Table with data -->
         <div v-else class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover mb-0 align-middle">
             <thead class="table-light">
               <tr>
-                <th class="fw-semibold border-0">{{ t("BookingDate") }}</th>
-                <th class="fw-semibold border-0">{{ t("Status") }}</th>
-                <th class="fw-semibold border-0">{{ t("TotalAmount") }}</th>
-                <th class="fw-semibold border-0">{{ t("Field") }}</th>
-                <th class="fw-semibold border-0">{{ t("Time") }}</th>
-                <th class="fw-semibold border-0">{{ t("Stadium") }}</th>
-                <th class="fw-semibold border-0">{{ t("Hành động") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("BookingDate") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Status") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("TotalAmount") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Field") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Time") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Stadium") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Hành động") }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="booking in paginatedBookings"
-                :key="booking.BookingId"
-                class="align-middle"
-              >
-                <td>{{ formatDate(booking.BookingDate) }}</td>
+              <tr v-for="booking in paginatedBookings" :key="booking.BookingId" class="align-middle border-bottom">
                 <td>
-                  <span
-                    class="badge"
-                    :class="getStatusBadgeClass(booking.Status)"
-                  >
+                  <div class="d-flex align-items-center">
+                    <div
+                      class="date-icon bg-light rounded-circle p-2 me-2 d-flex align-items-center justify-content-center"
+                      style="width: 40px; height: 40px;">
+                      <i class="bi bi-calendar-date text-primary"></i>
+                    </div>
+                    <span>{{ formatDate(booking.BookingDate) }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge rounded-pill" :class="getStatusBadgeClass(booking.Status)">
                     {{ booking.Status }}
                   </span>
                 </td>
-                <td class="fw-semibold">
+                <td class="fw-semibold text-primary">
                   {{ formatCurrency(booking.TotalPrice) }}
                 </td>
-                <td>{{ booking.FieldId }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-geo-alt me-1 text-muted"></i>
+                    {{ booking.FieldId }}
+                  </div>
+                </td>
                 <td>
                   <div class="d-flex align-items-center">
                     <i class="bi bi-clock me-1 text-muted"></i>
@@ -81,20 +80,36 @@
                     {{ formatTime(booking.EndTime) }}
                   </div>
                 </td>
-                <td>{{ booking.StadiumName }}</td>
                 <td>
-                  <button
-                    class="btn btn-outline-primary btn-sm me-2"
-                    @click="openRefundModal(booking.BookingId)"
-                  >
-                    Refund
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary btn-sm"
-                    @click="goToFeedback(booking.BookingId)"
-                  >
-                    Feedback
-                  </button>
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-building me-1 text-muted"></i>
+                    {{ booking.StadiumName }}
+                  </div>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-outline-primary btn-sm dropdown-toggle rounded-pill px-3" type="button"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots-vertical me-1"></i> Actions
+                    </button>
+                    <ul class="dropdown-menu shadow border-0">
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center" @click="getInvoice(booking.BookingId)">
+                          <i class="bi bi-file-earmark-text me-2 text-primary"></i> Get invoice
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center" @click="openRefundModal(booking.BookingId)">
+                          <i class="bi bi-arrow-counterclockwise me-2 text-warning"></i> Refund
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center" @click="goToFeedback(booking.BookingId)">
+                          <i class="bi bi-chat-square-text me-2 text-success"></i> Feedback
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -104,34 +119,21 @@
         <!-- Pagination footer -->
         <div class="card-footer bg-white py-3 border-0">
           <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted"
-              >{{ t("Show") }} {{ paginatedBookings.length }} {{ t("On") }}
-              {{ bookings.length }} {{ t("Result") }}</small
-            >
+            <small class="text-muted">{{ t("Show") }} {{ paginatedBookings.length }} {{ t("On") }}
+              {{ bookings.length }} {{ t("Result") }}</small>
             <nav aria-label="Điều hướng trang">
               <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                  <button
-                    class="page-link rounded-start"
-                    @click="currentPage--"
-                  >
+                  <button class="page-link rounded-start" @click="currentPage--">
                     <i class="bi bi-chevron-left"></i> Trước
                   </button>
                 </li>
-                <li
-                  v-for="page in totalPages"
-                  :key="page"
-                  class="page-item"
-                  :class="{ active: currentPage === page }"
-                >
+                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
                   <button class="page-link" @click="currentPage = page">
                     {{ page }}
                   </button>
                 </li>
-                <li
-                  class="page-item"
-                  :class="{ disabled: currentPage === totalPages }"
-                >
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
                   <button class="page-link rounded-end" @click="currentPage++">
                     Tiếp <i class="bi bi-chevron-right"></i>
                   </button>
@@ -170,19 +172,10 @@
           Tôi đồng ý với điều khoản hoàn tiền
         </label>
         <div class="modal-actions" style="display: flex; gap: 10px">
-          <button
-            @click="confirmRefund"
-            :disabled="!agreedToRefundTerms"
-            class="btn btn-success"
-            style="flex: 1"
-          >
+          <button @click="confirmRefund" :disabled="!agreedToRefundTerms" class="btn btn-success" style="flex: 1">
             Xác nhận
           </button>
-          <button
-            @click="showRefundModal = false"
-            class="btn btn-danger"
-            style="flex: 1"
-          >
+          <button @click="showRefundModal = false" class="btn btn-danger" style="flex: 1">
             Hủy
           </button>
         </div>
@@ -297,7 +290,26 @@ export default {
     openRefundModal(bookingId) {
       this.bookingId = bookingId;
       this.showRefundModal = true;
-      this.agreedToRefundTerms = false; // Reset checkbox khi mở modal
+      this.agreedToRefundTerms = false;
+    },
+    async getInvoice(bookingId) {
+      try {
+        const response = await API.get(`Invoice/download/${bookingId}`, {
+          responseType: 'blob',
+        });
+
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `invoice_${bookingId}.pdf`;
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Failed to download invoice:', error);
+      }
     },
     confirmRefund() {
       if (!this.agreedToRefundTerms) return;
@@ -318,6 +330,7 @@ export default {
 
 <style>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
+
 /* Custom styles */
 .table th {
   font-weight: 600;
@@ -430,7 +443,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Đảm bảo modal nằm trên các phần tử khác */
+  z-index: 1000;
+  /* Đảm bảo modal nằm trên các phần tử khác */
 }
 
 .modal-background {
@@ -439,20 +453,30 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền tối với độ trong suốt */
-  z-index: 999; /* Đặt nền dưới nội dung modal */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Màu nền tối với độ trong suốt */
+  z-index: 999;
+  /* Đặt nền dưới nội dung modal */
 }
 
 .modal-content {
-  background-color: white !important; /* Màu nền trắng cho modal */
-  border-radius: 8px; /* Bo góc cho modal */
+  background-color: white !important;
+  /* Màu nền trắng cho modal */
+  border-radius: 8px;
+  /* Bo góc cho modal */
   padding: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng cho modal */
-  max-width: 500px; /* Chiều rộng tối đa của modal */
-  width: 90%; /* Chiều rộng 90% cho các màn hình nhỏ */
-  position: relative; /* Để nội dung nằm trên nền */
-  z-index: 1000; /* Đảm bảo nội dung nằm trên nền */
-  animation: fadeIn 0.3s; /* Hiệu ứng xuất hiện */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  /* Đổ bóng cho modal */
+  max-width: 500px;
+  /* Chiều rộng tối đa của modal */
+  width: 90%;
+  /* Chiều rộng 90% cho các màn hình nhỏ */
+  position: relative;
+  /* Để nội dung nằm trên nền */
+  z-index: 1000;
+  /* Đảm bảo nội dung nằm trên nền */
+  animation: fadeIn 0.3s;
+  /* Hiệu ứng xuất hiện */
 }
 
 @keyframes fadeIn {
@@ -460,6 +484,7 @@ export default {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -468,73 +493,152 @@ export default {
 
 h3 {
   margin-bottom: 15px;
-  text-align: center; /* Căn giữa tiêu đề */
-  font-size: 24px; /* Kích thước chữ tiêu đề */
-  color: #333; /* Màu chữ tiêu đề */
+  text-align: center;
+  /* Căn giữa tiêu đề */
+  font-size: 24px;
+  /* Kích thước chữ tiêu đề */
+  color: #333;
+  /* Màu chữ tiêu đề */
 }
 
 ul {
-  list-style-type: none; /* Bỏ dấu đầu dòng */
-  padding: 0; /* Bỏ khoảng cách bên trong */
-  margin-bottom: 20px; /* Khoảng cách dưới cho danh sách */
+  list-style-type: none;
+  /* Bỏ dấu đầu dòng */
+  padding: 0;
+  /* Bỏ khoảng cách bên trong */
+  margin-bottom: 20px;
+  /* Khoảng cách dưới cho danh sách */
 }
 
 ul li {
-  margin-bottom: 10px; /* Khoảng cách giữa các mục trong danh sách */
-  font-size: 16px; /* Kích thước chữ cho các mục */
-  display: flex; /* Sử dụng flexbox để căn giữa biểu tượng và văn bản */
-  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-bottom: 10px;
+  /* Khoảng cách giữa các mục trong danh sách */
+  font-size: 16px;
+  /* Kích thước chữ cho các mục */
+  display: flex;
+  /* Sử dụng flexbox để căn giữa biểu tượng và văn bản */
+  align-items: center;
+  /* Căn giữa theo chiều dọc */
 }
+
 ul li i {
-  margin-right: 10px; /* Khoảng cách giữa biểu tượng và văn bản */
-  color: #28a745; /* Màu sắc cho biểu tượng thành công */
-  font-size: 18px; /* Kích thước biểu tượng */
+  margin-right: 10px;
+  /* Khoảng cách giữa biểu tượng và văn bản */
+  color: #28a745;
+  /* Màu sắc cho biểu tượng thành công */
+  font-size: 18px;
+  /* Kích thước biểu tượng */
 }
 
 ul li i.fa-times-circle {
-  color: #dc3545; /* Màu sắc cho biểu tượng không thành công */
+  color: #dc3545;
+  /* Màu sắc cho biểu tượng không thành công */
 }
 
 label {
   display: flex;
-  align-items: center; /* Căn giữa các phần tử trong label */
-  margin-bottom: 20px; /* Khoảng cách dưới cho label */
+  align-items: center;
+  /* Căn giữa các phần tử trong label */
+  margin-bottom: 20px;
+  /* Khoảng cách dưới cho label */
 }
 
 label input {
-  margin-right: 10px; /* Khoảng cách giữa checkbox và văn bản */
+  margin-right: 10px;
+  /* Khoảng cách giữa checkbox và văn bản */
 }
 
 .modal-actions {
   display: flex;
-  justify-content: space-between; /* Căn giữa các nút */
+  justify-content: space-between;
+  /* Căn giữa các nút */
 }
 
 .btn {
-  padding: 10px 15px; /* Khoảng cách cho nút */
+  padding: 10px 15px;
+  /* Khoảng cách cho nút */
   border: none;
-  border-radius: 5px; /* Bo góc cho nút */
-  cursor: pointer; /* Hiệu ứng con trỏ khi hover */
-  transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển màu nền và hiệu ứng nhấn */
+  border-radius: 5px;
+  /* Bo góc cho nút */
+  cursor: pointer;
+  /* Hiệu ứng con trỏ khi hover */
+  transition: background-color 0.3s, transform 0.2s;
+  /* Hiệu ứng chuyển màu nền và hiệu ứng nhấn */
 }
 
 .btn-success {
-  background-color: #28a745; /* Màu nền cho nút xác nhận */
-  color: white; /* Màu chữ cho nút xác nhận */
+  background-color: #28a745;
+  /* Màu nền cho nút xác nhận */
+  color: white;
+  /* Màu chữ cho nút xác nhận */
 }
 
 .btn-danger {
-  background-color: #dc3545; /* Màu nền cho nút hủy */
-  color: white; /* Màu chữ cho nút hủy */
+  background-color: #dc3545;
+  /* Màu nền cho nút hủy */
+  color: white;
+  /* Màu chữ cho nút hủy */
 }
 
 .btn-success:disabled {
-  background-color: #c6e1b6; /* Màu nền cho nút xác nhận khi bị vô hiệu hóa */
-  cursor: not-allowed; /* Hiệu ứng con trỏ khi nút bị vô hiệu hóa */
+  background-color: #c6e1b6;
+  /* Màu nền cho nút xác nhận khi bị vô hiệu hóa */
+  cursor: not-allowed;
+  /* Hiệu ứng con trỏ khi nút bị vô hiệu hóa */
 }
 
 .btn:hover:not(:disabled) {
-  opacity: 0.9; /* Hiệu ứng mờ khi hover */
-  transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
+  opacity: 0.9;
+  /* Hiệu ứng mờ khi hover */
+  transform: scale(1.05);
+  /* Hiệu ứng phóng to khi hover */
+}
+
+/* Additional styles for enhanced table */
+.border-bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, .05) !important;
+}
+
+.rounded-pill {
+  border-radius: 50rem !important;
+}
+
+.text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.dropdown-menu {
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  border-radius: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.date-icon {
+  transition: all 0.3s ease;
+}
+
+tr:hover .date-icon {
+  background-color: #e9ecef !important;
 }
 </style>

@@ -11,19 +11,18 @@ const CommonHelper = {
   },
 
   getCurrentUserId() {
-    if (store.getters.accessToken || localStorage.getItem("accessToken")) {
-      const accessTokenDecoded = jwtDecode(
-        store.getters.accessToken ?? localStorage.getItem("accessToken")
-      );
-      return accessTokenDecoded.userId;
-    }
-    return 0;
+    const token = store.getters.accessToken ?? localStorage.getItem("accessToken");
+    if (!token) return null;
+
+    const accessTokenDecoded = jwtDecode(token);
+    return accessTokenDecoded.userId;
   },
 
   getCurentRole() {
-    const accessTokenDecoded = jwtDecode(
-      store.getters.accessToken ?? localStorage.getItem("accessToken")
-    );
+    const token = store.getters.accessToken ?? localStorage.getItem("accessToken");
+    if (!token) return null;
+
+    const accessTokenDecoded = jwtDecode(token);
     return accessTokenDecoded.roleId;
   }
 
