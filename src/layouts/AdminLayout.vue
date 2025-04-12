@@ -8,6 +8,13 @@
             <nav class="sidebar-nav">
                 <ul>
                     <li>
+                        <router-link :to="{ name: 'home' }" :class="{ active: currentRoute === '' }"
+                            @click="navigateTo">
+                            <i class="bi bi-house"></i>
+                            {{ t('Home') }}
+                        </router-link>
+                    </li>
+                    <li>
                         <router-link :to="{ name: 'revenue-report' }"
                             :class="{ active: currentRoute === 'revenue-report' }" @click="navigateTo">
                             <i class="bi bi-graph-up"></i>
@@ -54,13 +61,6 @@
                             :class="{ active: currentRoute === 'refund-requests' }" @click="navigateTo">
                             <i class="bi bi-arrow-counterclockwise"></i>
                             {{ t('RefundRequests') }}
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'home' }" :class="{ active: currentRoute === '' }"
-                            @click="navigateTo">
-                            <i class="bi bi-house"></i>
-                            {{ t('Home') }}
                         </router-link>
                     </li>
                 </ul>
