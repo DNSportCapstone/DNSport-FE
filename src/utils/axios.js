@@ -1,9 +1,9 @@
 import axios from "axios";
 import store from "@/store";
 
+const apiUrl = process.env.VUE_APP_API_URL;
 const API = axios.create({
-  // baseURL: "https://localhost:44394/api",
-  baseURL: "http://dnsport.somee.com/api",
+  baseURL: apiUrl + "/api",
 });
 
 API.interceptors.request.use(

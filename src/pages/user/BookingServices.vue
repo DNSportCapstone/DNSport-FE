@@ -13,7 +13,11 @@
     </div>
 
     <div class="container mt-4">
-      <div v-for="field in selectedFields" :key="field.fieldId" class="mb-4">
+      <div
+        v-for="field in multipleBookingModel"
+        :key="field.fieldId"
+        class="mb-4"
+      >
         <h4 class="field-name">
           Sân: <strong>{{ field.fieldName }}</strong>
         </h4>
@@ -28,7 +32,7 @@
               Thời gian: {{ slot.time }} - Giá: {{ formatCurrency(slot.price) }}
             </span>
             <span class="service-count">
-              ({{ selectedServices[field.fieldId][slot.time]?.length || 0 }})
+              ({{ slot.services?.length || 0 }})
             </span>
             <font-awesome-icon
               :icon="
@@ -57,35 +61,28 @@
                   <label class="dropdown-item">
                     <input
                       type="checkbox"
-                      :value="service.id"
-                      v-model="selectedServices[field.fieldId][slot.time]"
+                      :value="service"
+                      v-model="slot.services"
+                      @click="handleChooseService()"
                     />
                     {{ service.name }} - {{ formatCurrency(service.price) }}
                   </label>
                 </li>
               </ul>
             </div>
-            <div
-              v-if="selectedServices[field.fieldId][slot.time]?.length"
-              class="mt-2"
-            >
+            <div v-if="slot.services?.length" class="mt-2">
               <strong>Dịch vụ đã chọn:</strong>
               <ul>
-                <li
-                  v-for="serviceId in selectedServices[field.fieldId][
-                    slot.time
-                  ]"
-                  :key="serviceId"
-                >
-                  {{ getServiceName(serviceId) }} -
-                  {{ formatCurrency(getServicePrice(serviceId)) }}
+                <li v-for="service in slot.services" :key="service.id">
+                  {{ service.name }} -
+                  {{ formatCurrency(service.price) }}
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" @click="goToCheckout">Xác nhận</button>
+      <button class="btn btn-primary" @click="goToCheckout">Continue</button>
     </div>
   </div>
 </template>
@@ -111,51 +108,45 @@ export default {
   components: { ProgressSteps },
   data() {
     return {
-      selectedFields: [],
+      multipleBookingModel: [],
       services: [
         { id: 1, name: "Nước uống", price: 10000 },
         { id: 2, name: "Trọng tài", price: 50000 },
         { id: 3, name: "Bóng đá", price: 30000 },
       ],
-      selectedServices: {},
       isDropdownOpen: {},
       collapsedSlots: {},
     };
   },
   created() {
-    this.getSelectedFieldsFromQuery();
     document.addEventListener("click", this.closeDropdowns);
   },
   beforeUnmount() {
     document.removeEventListener("click", this.closeDropdowns);
   },
   methods: {
-    getSelectedFieldsFromQuery() {
-      const queryData = this.$route.query.selectedFields;
-      if (queryData) {
-        try {
-          this.selectedFields = JSON.parse(queryData);
-          this.initializeSelectedServices();
-        } catch (error) {
-          console.error("Lỗi khi parse selectedFields:", error);
-        }
+    fetchFields() {
+      this.multipleBookingModel = this.$store.getters.multipleBookingModel;
+      if (this.multipleBookingModel.length == 0) {
+        this.$router.push({
+          path: "/booking-by-date",
+        });
       }
     },
     initializeSelectedServices() {
-      this.selectedServices = {};
       this.isDropdownOpen = {};
       this.collapsedSlots = {};
-
-      this.selectedFields.forEach((field) => {
-        this.selectedServices[field.fieldId] = {};
-        this.isDropdownOpen[field.fieldId] = {};
-        this.collapsedSlots[field.fieldId] = {};
-        field.selectedSlots.forEach((slot) => {
-          this.selectedServices[field.fieldId][slot.time] = [];
-          this.isDropdownOpen[field.fieldId][slot.time] = false;
-          this.collapsedSlots[field.fieldId][slot.time] = true;
+      if (this.multipleBookingModel) {
+        this.multipleBookingModel.forEach((field) => {
+          this.isDropdownOpen[field.fieldId] = {};
+          this.collapsedSlots[field.fieldId] = {};
+          field.selectedSlots.forEach((slot) => {
+            slot.services = [];
+            this.isDropdownOpen[field.fieldId][slot.time] = false;
+            this.collapsedSlots[field.fieldId][slot.time] = true;
+          });
         });
-      });
+      }
     },
     formatCurrency(number) {
       return new Intl.NumberFormat("vi-VN", {
@@ -179,18 +170,19 @@ export default {
     goToCheckout() {
       this.$router.push({
         path: "/checkout",
-        query: {
-          selectedFields: JSON.stringify(this.selectedFields),
-          selectedServices: JSON.stringify(this.selectedServices),
-        },
       });
     },
-    getServiceName(serviceId) {
-      return this.services.find((s) => s.id === serviceId)?.name || "";
+    handleChooseService() {
+      this.$store.dispatch(
+        "setMultipleBookingModel",
+        this.multipleBookingModel
+      );
     },
-    getServicePrice(serviceId) {
-      return this.services.find((s) => s.id === serviceId)?.price || 0;
-    },
+  },
+  async mounted() {
+    this.fetchFields();
+    this.initializeSelectedServices();
+    this.todayDate = new Date().toISOString();
   },
 };
 </script>

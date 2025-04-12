@@ -75,7 +75,7 @@
               <li><a href="#">Dropdown 4</a></li>
             </ul>
           </li> -->
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact" @click="increment()">Contact</a></li>
           <li v-if="isLogin" class="dropdown">
             <a href="#">
               <font-awesome-icon class="pr-5" :icon="['far', 'user']" />
@@ -129,8 +129,8 @@
 </template>
 
 <script>
-import CommonHelper from "@/utils/common";
 import ChooseLanguage from "@/components/ChooseLanguage.vue";
+import CommonHelper from "@/utils/common";
 
 export default {
   name: "HeaderPage", // 1. Tên component
@@ -172,9 +172,8 @@ export default {
       return fullName;
     },
     isAdmin() {
-      const role = CommonHelper.getCurentRole();
-      return role == 1;
-    }
+      return CommonHelper.getCurentRole() == 1;
+    },
   },
   methods: {
     // 9. Phương thức

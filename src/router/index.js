@@ -21,6 +21,7 @@ import NearbyStadiums from "@/pages/NearbyStadiums.vue";
 import RefundRequestPage from "@/pages/RefundRequestPage.vue";
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
+import MultipleBookingPaymentSuccess from "@/pages/user/multiple-booking/PaymentSuccess.vue";
 import RefundListPage from "@/pages/RefundListPage.vue";
 import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
 import AdminLayout from '@/layouts/AdminLayout.vue';
@@ -69,6 +70,11 @@ const publicRoutes = [
     path: "/nearby-stadiums",
     name: "nearby-stadiums",
     component: NearbyStadiums,
+  },
+  {
+    path: "/multiple-booking/payment-success",
+    name: "multiple-booking-success",
+    component: MultipleBookingPaymentSuccess,
   },
 ];
 
@@ -152,6 +158,13 @@ const protectedRoutes = [
     component: RefundTrackingPage,
     meta: { requiresAuth: true }
   },
+  {
+    path: "/booking-by-date/:stadiumId",
+    name: "booking-by-date",
+    component: BookingByDatePage,
+    props: true,
+    meta: { requiresAuth: true }
+  },
 ];
 
 // Admin routes that require admin privileges
@@ -207,7 +220,13 @@ const adminRoutes = [
         name: "refund-requests",
         component: AdminRefundRequestsPage,
         meta: { requiresAuth: true, requiresAdmin: true }
-      }
+      },
+      // {
+      //   path: "booking-cancel",
+      //   name: "booking-cancel",
+      //   component: BookingCancelPage,
+      //   meta: { requiresAuth: true, requiresAdmin: true }
+      // }
     ]
   }
 ];
