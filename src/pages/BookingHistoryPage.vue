@@ -115,7 +115,7 @@
                         </a>
                       </li>
                       <!-- Report Booking option - only for past bookings -->
-                      <li v-if="isPastBooking(booking) && !booking.IsReport">
+                      <li v-if="isPastBooking(booking)">
                         <a class="dropdown-item d-flex align-items-center" @click="openReportModal(booking)">
                           <i class="bi bi-exclamation-triangle me-2 text-danger"></i> Report Issue
                         </a>
@@ -466,19 +466,30 @@ export default {
       this.agreedToRefundTerms = false;
     },
     openReportModal(booking) {
-      this.selectedBooking = booking;
-      this.reportData = {
-        bookingId: booking.BookingId,
-        reasonType: "",
-        otherReason: "",
-        description: "",
-        image: null,
-        imagePreview: null
-      };
+      if(booking.IsReport) {
+        showMessageBox({
+          title: "",
+          description: "You have already reported this booking.",
+          type: "info",
+          confirmText: "OK",
+        });
+        return;
+      }
+      else{
+        this.selectedBooking = booking;
+        this.reportData = {
+          bookingId: booking.BookingId,
+          reasonType: "",
+          otherReason: "",
+          description: "",
+          image: null,
+          imagePreview: null
+        };
 
-      // Show the modal
-      if (this.reportModal) {
-        this.reportModal.show();
+        // Show the modal
+        if (this.reportModal) {
+          this.reportModal.show();
+        }
       }
     },
     triggerFileInput() {
