@@ -86,5 +86,7 @@
   "Yearly": "Hàng năm",
   "ShowDetails": "Xem chi tiết",
   "Collapse": "Thu gọn",
-  "TotalItems": "Tổng số mục"
+  "TotalItems": "Tổng số mục",
+  "StartTime": "Thời gian bắt đầu",
+  "EndTime": "Thời gian kết thúc"
 }

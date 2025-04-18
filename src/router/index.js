@@ -33,6 +33,7 @@ import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
 import AdminUserPage from "@/pages/AdminUserPage.vue";
 import AdminVoucherPage from "@/pages/AdminVoucherPage.vue";
 import AdminRefundRequestsPage from "@/pages/AdminRefundRequestsPage.vue";
+import PaymentHistoryPage from "@/pages/PaymentHistoryPage.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -165,6 +166,12 @@ const protectedRoutes = [
     props: true,
     meta: { requiresAuth: true }
   },
+  {
+    path: "/payment-history",
+    name: "payment-history",
+    component: PaymentHistoryPage,
+    meta: { requiresAuth: true }
+  }
 ];
 
 // Admin routes that require admin privileges
