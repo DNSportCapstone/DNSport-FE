@@ -704,7 +704,7 @@ export default {
                 }
                 const data = {
                     fieldId: selectedField.value.fieldId,
-                    status: 'disable',
+                    status: 'InActive',
                 };
                 await API.post(`Admin/set-field-status`,data)
                 toast.success(`Field "${selectedField.value.fieldName}" has been disabled`);
@@ -729,7 +729,7 @@ export default {
                 loading.value = true;
                 const data = {
                     fieldId: field.fieldId,
-                    status: 'active',
+                    status: 'Active',
                 };
                 await API.post(`Admin/set-field-status`,data)
 
