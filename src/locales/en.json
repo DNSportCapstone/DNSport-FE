@@ -86,5 +86,7 @@
   "Yearly": "Yearly",
   "ShowDetails": "Show Details",
   "Collapse": "Collapse",
-  "TotalItems": "Total Items"
+  "TotalItems": "Total Items",
+  "StartTime": "Start Time",
+  "EndTime": "End Time"
 }

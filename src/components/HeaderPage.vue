@@ -108,6 +108,9 @@
                 <router-link to="/booking-history">Booking History</router-link>
               </li>
               <li>
+                <router-link to="/payment-history">Payment History</router-link>
+              </li>
+              <li>
                 <a href="" @click="handleLogout()"><span><font-awesome-icon class="pr-5"
                       :icon="['fas', 'power-off']" />Logout</span></a>
               </li>

@@ -91,14 +91,14 @@
                         </thead>
                         <tbody>
                             <tr v-for="report in paginatedReports" :key="report.reportId">
-                                <td>#{{ report.reportId }}</td>
-                                <td>{{ report.fieldName }}</td>
-                                <td>{{ report.reportedBy }}</td>
+                                <td>#{{ report.denounceId }}</td>
+                                <td>{{ report.stadiumName }}</td>
+                                <td>{{ report.userName }}</td>
                                 <td>
                                     <span class="text-truncate d-inline-block" style="max-width: 200px;">{{
-                                        report.reason }}</span>
+                                        report.description }}</span>
                                 </td>
-                                <td>{{ formatDate(report.dateSubmitted) }}</td>
+                                <td>{{ formatDate(report.denounceTime) }}</td>
                                 <td>
                                     <span :class="getStatusBadgeClass(report.status)">
                                         {{ report.status }}
@@ -112,11 +112,11 @@
                                         </button>
                                         <button class="btn btn-sm btn-outline-warning"
                                             @click="openSendWarningModal(report)"
-                                            :disabled="report.status === 'Handled'">
+                                            :disabled="report.status == 'handled'">
                                             <i class="bi bi-exclamation-triangle"></i> Warning
                                         </button>
                                         <button class="btn btn-sm btn-outline-success" @click="markAsHandled(report)"
-                                            :disabled="report.status === 'Handled'">
+                                            :disabled="report.status == 'handled'">
                                             <i class="bi bi-check-circle"></i> Mark Handled
                                         </button>
                                     </div>
@@ -167,7 +167,7 @@
         <!-- Field Violation Summary Card -->
         <div class="card mt-4">
             <div class="card-header bg-white">
-                <h4 class="mb-0">Field Violation Summary (Current Month)</h4>
+                <h4 class="mb-0">Field Violation Summary</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -176,9 +176,9 @@
                             <tr>
                                 <th>Field ID</th>
                                 <th>Field Name</th>
+                                <th>Stadium Name</th>
                                 <th>Owner</th>
-                                <th>Violation Reports</th>
-                                <th>Status</th>
+                                <th>Total Reports</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -186,14 +186,10 @@
                             <tr v-for="field in fieldSummary" :key="field.fieldId">
                                 <td>#{{ field.fieldId }}</td>
                                 <td>{{ field.fieldName }}</td>
+                                <td>{{ field.stadiumName }}</td>
                                 <td>{{ field.ownerName }}</td>
                                 <td>
                                     <span class="badge bg-danger">{{ field.violationCount }}</span>
-                                </td>
-                                <td>
-                                    <span :class="field.isActive ? 'badge bg-success' : 'badge bg-secondary'">
-                                        {{ field.isActive ? 'Active' : 'Disabled' }}
-                                    </span>
                                 </td>
                                 <td>
                                     <button v-if="field.isActive" class="btn btn-sm btn-danger"
@@ -234,15 +230,11 @@
                                 <h6 class="text-muted mb-3">Report Information</h6>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Report ID</label>
-                                    <p>#{{ selectedReport.reportId }}</p>
+                                    <p>#{{ selectedReport.denounceId }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Field Name</label>
-                                    <p>{{ selectedReport.fieldName }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Reason</label>
-                                    <p>{{ selectedReport.reason }}</p>
+                                    <p>{{ selectedReport.stadiumName }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Description</label>
@@ -250,7 +242,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Date Submitted</label>
-                                    <p>{{ formatDate(selectedReport.dateSubmitted, true) }}</p>
+                                    <p>{{ formatDate(selectedReport.denounceTime, true) }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Status</label>
@@ -265,39 +257,40 @@
                                 <h6 class="text-muted mb-3">Reporter Information</h6>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Reported By</label>
-                                    <p>{{ selectedReport.reportedBy }}</p>
+                                    <p>{{ selectedReport.userName }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Email</label>
-                                    <p>{{ selectedReport.reporterEmail }}</p>
+                                    <p>{{ selectedReport.email }}</p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Phone</label>
-                                    <p>{{ selectedReport.reporterPhone || 'N/A' }}</p>
+                                    <p>{{ selectedReport.phoneNumber || 'N/A' }}</p>
                                 </div>
 
                                 <h6 class="text-muted mb-3 mt-4">Evidence</h6>
-                                <div v-if="selectedReport.images && selectedReport.images.length > 0" class="mb-3">
-                                    <div class="row g-2">
-                                        <div v-for="(image, index) in selectedReport.images" :key="index" class="col-6">
-                                            <img :src="image" class="img-fluid rounded cursor-pointer"
-                                                @click="openImagePreview(image)" alt="Violation evidence">
-                                        </div>
+                                <div v-if="selectedReport.imageUrl" class="mb-3">
+                                    <img
+                                        :src="selectedReport.imageUrl"
+                                        class="img-fluid rounded cursor-pointer"
+                                        @click="openImagePreview(selectedReport.imageUrl)"
+                                        alt="Violation evidence"
+                                    />
                                     </div>
-                                </div>
-                                <div v-else class="mb-3">
+                                    <div v-else class="mb-3">
                                     <p class="text-muted">No images attached</p>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button v-if="selectedReport && selectedReport.status !== 'Handled'" type="button"
+                        <button v-if="selectedReport && selectedReport.status != 'handled'" type="button"
                             class="btn btn-warning" @click="openSendWarningModal(selectedReport)">
                             <i class="bi bi-exclamation-triangle"></i> Send Warning
                         </button>
-                        <button v-if="selectedReport && selectedReport.status !== 'Handled'" type="button"
+                        <button v-if="selectedReport && selectedReport.status != 'handled'" type="button"
                             class="btn btn-success" @click="markAsHandled(selectedReport)">
                             <i class="bi bi-check-circle"></i> Mark as Handled
                         </button>
@@ -317,26 +310,12 @@
                     </div>
                     <div class="modal-body" v-if="selectedReport">
                         <div class="mb-3">
-                            <label class="form-label">Field</label>
-                            <input type="text" class="form-control" :value="selectedReport.fieldName" disabled>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Owner</label>
-                            <input type="text" class="form-control" :value="selectedReport.fieldOwner" disabled>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Warning Message</label>
                             <textarea class="form-control" rows="4" v-model="warningMessage"
                                 placeholder="Enter warning message..."></textarea>
                             <div class="form-text">
                                 This message will be sent to the field owner along with the violation details.
                             </div>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" v-model="sendEmail" id="sendEmailCheck">
-                            <label class="form-check-label" for="sendEmailCheck">
-                                Send email notification to owner
-                            </label>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -377,18 +356,6 @@
                             <label class="form-label">Violation Count (This Month)</label>
                             <input type="text" class="form-control" :value="selectedField.violationCount" disabled>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Reason for Disabling</label>
-                            <textarea class="form-control" rows="3" v-model="disableReason"
-                                placeholder="Enter reason for disabling..."></textarea>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" v-model="notifyOwner" id="notifyOwnerCheck"
-                                checked>
-                            <label class="form-check-label" for="notifyOwnerCheck">
-                                Notify field owner
-                            </label>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -422,6 +389,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { Modal } from 'bootstrap';
 import { useToast } from 'vue-toastification';
+import API from '@/utils/axios';
 
 export default {
     name: 'ViolationReportManagement',
@@ -562,13 +530,9 @@ export default {
         // Methods
         const fetchReports = async () => {
             try {
-                loading.value = true;
-                // In a real application, you would fetch data from your API
-                // For this example, we'll use mock data
-                setTimeout(() => {
-                    reports.value = generateMockReports();
-                    loading.value = false;
-                }, 500);
+                const response = await API.get(`Admin/denounce-report`);
+                reports.value = response.data;
+                console.log('Fetched reports:', reports.value);
             } catch (error) {
                 console.error('Error fetching reports:', error);
                 toast.error('Failed to load violation reports');
@@ -578,11 +542,8 @@ export default {
 
         const fetchFieldSummary = async () => {
             try {
-                // In a real application, you would fetch data from your API
-                // For this example, we'll use mock data
-                setTimeout(() => {
-                    fieldSummary.value = generateMockFieldSummary();
-                }, 700);
+                const response = await API.get(`Admin/get-feild-report`);
+                fieldSummary.value = response.data;
             } catch (error) {
                 console.error('Error fetching field summary:', error);
                 toast.error('Failed to load field violation summary');
@@ -656,7 +617,7 @@ export default {
 
         const openSendWarningModal = (report) => {
             selectedReport.value = report;
-            warningMessage.value = `Your field "${report.fieldName}" has received a violation report: ${report.reason}. Please resolve this issue to avoid field suspension.`;
+            warningMessage.value = `Your field "${report.stadiumName}" has received a violation report: ${report.description}. Please resolve this issue to avoid field suspension.`;
 
             // If we're coming from the details modal, hide it first
             if (reportDetailsModal._isShown) {
@@ -681,24 +642,13 @@ export default {
 
         const markAsHandled = async (report) => {
             try {
-                loading.value = true;
+                console.log('Marking report as handled:', report.denounceId);
+                await API.post(`Admin/set-report-status/${report.denounceId}`, 'handled', {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                toast.success(`Report ${report.denounceId} has been marked as handled`);
 
-                // In a real application, you would call your API
-                // For this example, we'll simulate an API call
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Update the report status locally
-                const index = reports.value.findIndex(r => r.reportId === report.reportId);
-                if (index !== -1) {
-                    reports.value[index].status = 'Handled';
-
-                    // If this is the selected report, update it too
-                    if (selectedReport.value && selectedReport.value.reportId === report.reportId) {
-                        selectedReport.value.status = 'Handled';
-                    }
-                }
-
-                toast.success(`Report #${report.reportId} has been marked as handled`);
+                fetchReports(); // Refresh the reports list
 
                 // If the details modal is open, close it
                 if (reportDetailsModal._isShown) {
@@ -720,13 +670,16 @@ export default {
                     return;
                 }
 
-                loading.value = true;
+                //loading.value = true;
+                const data = {
+                    message: warningMessage.value,
+                    bookingId: selectedReport.value.bookingId,
+                };
 
-                // In a real application, you would call your API
-                // For this example, we'll simulate an API call
-                await new Promise(resolve => setTimeout(resolve, 800));
+                await API.post("Admin/warning-lessor", data);
 
-                toast.success(`Warning sent to the owner of ${selectedReport.value.fieldName}`);
+
+                toast.success(`Warning sent to the owner of ${selectedReport.value.stadiumName}`);
 
                 // Close the modal
                 sendWarningModal.hide();
@@ -749,25 +702,13 @@ export default {
                     toast.error('Please enter a reason for disabling the field');
                     return;
                 }
-
-                loading.value = true;
-
-                // In a real application, you would call your API
-                // For this example, we'll simulate an API call
-                await new Promise(resolve => setTimeout(resolve, 800));
-
-                // Update the field status locally
-                const index = fieldSummary.value.findIndex(f => f.fieldId === selectedField.value.fieldId);
-                if (index !== -1) {
-                    fieldSummary.value[index].isActive = false;
-                }
-
+                const data = {
+                    fieldId: selectedField.value.fieldId,
+                    status: 'disable',
+                };
+                await API.post(`Admin/set-field-status`,data)
                 toast.success(`Field "${selectedField.value.fieldName}" has been disabled`);
-
-                if (notifyOwner.value) {
-                    toast.info(`Notification sent to ${selectedField.value.ownerName}`);
-                }
-
+                fetchFieldSummary();
                 // Close the modal
                 disableFieldModal.hide();
 
@@ -786,16 +727,18 @@ export default {
         const enableField = async (field) => {
             try {
                 loading.value = true;
-
-                // In a real application, you would call your API
-                // For this example, we'll simulate an API call
-                await new Promise(resolve => setTimeout(resolve, 800));
+                const data = {
+                    fieldId: field.fieldId,
+                    status: 'active',
+                };
+                await API.post(`Admin/set-field-status`,data)
 
                 // Update the field status locally
                 const index = fieldSummary.value.findIndex(f => f.fieldId === field.fieldId);
                 if (index !== -1) {
                     fieldSummary.value[index].isActive = true;
                 }
+                fetchFieldSummary();
 
                 toast.success(`Field "${field.fieldName}" has been enabled`);
                 loading.value = false;
@@ -803,98 +746,6 @@ export default {
                 console.error('Error enabling field:', error);
                 toast.error('Failed to enable field');
                 loading.value = false;
-            }
-        };
-
-        // Mock data generators
-        const generateMockReports = () => {
-            const statuses = ['Pending', 'Handled'];
-            const reasons = [
-                'Field not maintained properly',
-                'Facilities not as advertised',
-                'Double booking issue',
-                'Safety hazard',
-                'Unclean facilities',
-                'Lighting issues',
-                'Equipment missing',
-                'Staff was rude',
-                'Field dimensions incorrect',
-                'Overcharging for services'
-            ];
-
-            const mockReports = [];
-
-            for (let i = 1; i <= 25; i++) {
-                const dateSubmitted = new Date();
-                dateSubmitted.setDate(dateSubmitted.getDate() - Math.floor(Math.random() * 30));
-
-                const images = [];
-                const imageCount = Math.floor(Math.random() * 3);
-                for (let j = 0; j < imageCount; j++) {
-                    images.push(`https://picsum.photos/id/${Math.floor(Math.random() * 100)}/800/600`);
-                }
-
-                mockReports.push({
-                    reportId: i,
-                    fieldId: Math.floor(Math.random() * 10) + 1,
-                    fieldName: `Soccer Field ${Math.floor(Math.random() * 10) + 1}`,
-                    fieldOwner: `Owner ${Math.floor(Math.random() * 5) + 1}`,
-                    reportedBy: `User ${Math.floor(Math.random() * 20) + 1}`,
-                    reporterEmail: `user${Math.floor(Math.random() * 20) + 1}@example.com`,
-                    reporterPhone: Math.random() > 0.3 ? `+1 555-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}` : null,
-                    reason: reasons[Math.floor(Math.random() * reasons.length)],
-                    description: `Detailed description of the issue: ${Lorem.generateSentences(3)}`,
-                    dateSubmitted: dateSubmitted.toISOString(),
-                    status: statuses[Math.floor(Math.random() * statuses.length)],
-                    images: images
-                });
-            }
-
-            return mockReports;
-        };
-
-        const generateMockFieldSummary = () => {
-            const mockFieldSummary = [];
-
-            for (let i = 1; i <= 8; i++) {
-                mockFieldSummary.push({
-                    fieldId: i,
-                    fieldName: `Soccer Field ${i}`,
-                    ownerName: `Owner ${Math.floor(Math.random() * 5) + 1}`,
-                    ownerEmail: `owner${Math.floor(Math.random() * 5) + 1}@example.com`,
-                    violationCount: Math.floor(Math.random() * 5),
-                    isActive: Math.random() > 0.2
-                });
-            }
-
-            return mockFieldSummary;
-        };
-
-        // Lorem ipsum generator for mock data
-        const Lorem = {
-            words: [
-                'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
-                'field', 'violation', 'report', 'issue', 'problem', 'maintenance', 'facility',
-                'booking', 'customer', 'service', 'quality', 'safety', 'cleanliness', 'equipment',
-                'staff', 'management', 'condition', 'expectation', 'advertisement', 'reality'
-            ],
-
-            generateSentences(count) {
-                let result = '';
-                for (let i = 0; i < count; i++) {
-                    const wordCount = Math.floor(Math.random() * 10) + 5;
-                    let sentence = '';
-
-                    for (let j = 0; j < wordCount; j++) {
-                        const word = this.words[Math.floor(Math.random() * this.words.length)];
-                        sentence += j === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word;
-                        sentence += j < wordCount - 1 ? ' ' : '.';
-                    }
-
-                    result += sentence + ' ';
-                }
-
-                return result.trim();
             }
         };
 
