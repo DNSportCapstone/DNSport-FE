@@ -19,7 +19,7 @@
           <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
       </button>
-      <div class="logo-mobile">Admin Dashboard</div>
+      <div class="logo-mobile">Lessor Dashboard</div>
     </div>
 
     <!-- Sidebar -->
@@ -83,8 +83,8 @@
           <span>Revenue Report</span>
         </li>
         <li
-          @click="navigateTo('vouchers')"
-          :class="{ active: currentRoute === 'vouchers' }"
+          @click="navigateTo('manage-vouchers')"
+          :class="{ active: currentRoute === 'manage-vouchers' }"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

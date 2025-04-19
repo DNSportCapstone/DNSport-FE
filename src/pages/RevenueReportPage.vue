@@ -8,7 +8,7 @@
               <div class="badge bg-primary bg-opacity-10 p-2 rounded-circle me-3">
                 <i class="bi bi-graph-up-arrow text-primary fs-4"></i>
               </div>
-              <h2 class="card-title mb-0 fw-bold">Doanh thu báo cáo</h2>
+              <h2 class="card-title mb-0 fw-bold">{{ t("RevenueReportTitle") }}</h2>
             </div>
 
             <!-- Thông tin doanh thu chính -->
@@ -19,7 +19,7 @@
                     <div class="icon-box bg-primary bg-opacity-10 mx-auto mb-3 pulse-animation">
                       <i class="bi bi-currency-dollar text-primary"></i>
                     </div>
-                    <h5 class="card-subtitle text-muted mb-2">Tổng doanh thu</h5>
+                    <h5 class="card-subtitle text-muted mb-2">{{ t("TotalRevenue") }}</h5>
                     <h3 class="card-title mb-0 fw-bold text-primary currency-value">{{
                       formatCurrency(revenueData.totalRevenue) }}
                     </h3>
@@ -33,10 +33,10 @@
                     <div class="icon-box bg-success bg-opacity-10 mx-auto mb-3 pulse-animation">
                       <i class="bi bi-wallet2 text-success"></i>
                     </div>
-                    <h5 class="card-subtitle text-muted mb-2">Số tiền trả cho chủ sân</h5>
+                    <h5 class="card-subtitle text-muted mb-2">{{ t("StadiumOwner") }}</h5>
                     <h3 class="card-title mb-0 fw-bold text-success currency-value">{{
                       formatCurrency(revenueData.totalRevenue * 90
-                      / 100) }}</h3>
+                        / 100) }}</h3>
                   </div>
                 </div>
               </div>
@@ -47,10 +47,10 @@
                     <div class="icon-box bg-info bg-opacity-10 mx-auto mb-3 pulse-animation">
                       <i class="bi bi-percent text-info"></i>
                     </div>
-                    <h5 class="card-subtitle text-muted mb-2">Doanh thu hoa hồng</h5>
+                    <h5 class="card-subtitle text-muted mb-2">{{ t("CommissionRevenue") }}</h5>
                     <h3 class="card-title mb-0 fw-bold text-info currency-value">{{
                       formatCurrency(revenueData.totalRevenue * 10 /
-                      100) }}</h3>
+                        100) }}</h3>
                   </div>
                 </div>
               </div>
@@ -64,7 +64,7 @@
                     <div class="badge bg-primary bg-opacity-10 p-2 rounded-circle me-3">
                       <i class="bi bi-calendar-range text-primary"></i>
                     </div>
-                    <h4 class="mb-0 fw-bold">Báo cáo theo thời gian</h4>
+                    <h4 class="mb-0 fw-bold">{{ t("TimePeriod") }}</h4>
                   </div>
                   <div class="d-flex align-items-center">
                     <div class="input-group date-filter me-3">
@@ -80,19 +80,19 @@
                   <input type="radio" class="btn-check" name="reportPeriod" id="daily" autocomplete="off"
                     :checked="selectedPeriod === 'daily'" @change="selectReportPeriod('daily')">
                   <label class="btn btn-outline-primary rounded-start" for="daily">
-                    <i class="bi bi-calendar-day me-1"></i> Hàng ngày
+                    <i class="bi bi-calendar-day me-1"></i> {{ t("Daily") }}
                   </label>
 
                   <input type="radio" class="btn-check" name="reportPeriod" id="monthly" autocomplete="off"
                     :checked="selectedPeriod === 'monthly'" @change="selectReportPeriod('monthly')">
                   <label class="btn btn-outline-primary" for="monthly">
-                    <i class="bi bi-calendar-month me-1"></i> Hàng tháng
+                    <i class="bi bi-calendar-month me-1"></i> {{ t("Monthly") }}
                   </label>
 
                   <input type="radio" class="btn-check" name="reportPeriod" id="yearly" autocomplete="off"
                     :checked="selectedPeriod === 'yearly'" @change="selectReportPeriod('yearly')">
                   <label class="btn btn-outline-primary rounded-end" for="yearly">
-                    <i class="bi bi-calendar me-1"></i> Hàng năm
+                    <i class="bi bi-calendar me-1"></i> {{ t("Yearly") }}
                   </label>
                 </div>
 
@@ -102,11 +102,11 @@
                       <span class="badge bg-success p-2 rounded-circle me-2">
                         <i class="bi bi-cash-stack text-white"></i>
                       </span>
-                      {{ periodTitle }} Doanh thu
+                      {{ t("Revenue") }}
                     </h5>
                     <button @click="toggleDataList" class="btn btn-sm btn-primary rounded-pill">
                       <i :class="isDataListExpanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down'" class="me-1"></i>
-                      {{ isDataListExpanded ? 'Thu gọn' : 'Xem chi tiết' }}
+                      {{ isDataListExpanded ? t("Collapse") : t("ShowDetails") }}
                     </button>
                   </div>
 
@@ -116,7 +116,7 @@
                         <div class="card-body py-3">
                           <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted d-flex align-items-center">
-                              <i class="bi bi-list-ol me-2 text-primary"></i>Tổng số mục:
+                              <i class="bi bi-list-ol me-2 text-primary"></i>{{ t("TotalItems") }}:
                             </span>
                             <span class="badge bg-primary rounded-pill fs-6 px-3">{{ selectedPeriodData.length }}</span>
                           </div>
@@ -128,11 +128,11 @@
                         <div class="card-body py-3">
                           <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted d-flex align-items-center">
-                              <i class="bi bi-cash me-2 text-success"></i>Tổng doanh thu:
+                              <i class="bi bi-cash me-2 text-success"></i>{{ t("TotalRevenue") }}:
                             </span>
                             <span class="badge bg-success rounded-pill fs-6 px-3 currency-value">{{
                               formatCurrency(totalPeriodRevenue)
-                              }}</span>
+                            }}</span>
                           </div>
                         </div>
                       </div>
@@ -144,8 +144,8 @@
                       <table class="table table-hover table-striped">
                         <thead class="table-light">
                           <tr>
-                            <th>Thời gian</th>
-                            <th class="text-end">Doanh thu</th>
+                            <th>{{ t("Time") }}</th>
+                            <th class="text-end">{{ t("Revenue") }}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -171,19 +171,19 @@
                   <div class="badge bg-primary bg-opacity-10 p-2 rounded-circle me-3">
                     <i class="bi bi-bar-chart-line-fill text-primary"></i>
                   </div>
-                  <h4 class="mb-0 fw-bold">Biểu đồ xu hướng doanh thu</h4>
+                  <h4 class="mb-0 fw-bold">{{ t("RevenueTrendChart") }}</h4>
                 </div>
                 <div class="dropdown">
                   <button class="btn btn-sm btn-light rounded-pill dropdown-toggle" type="button"
                     id="chartOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-sliders me-1"></i> Tùy chọn
+                    <i class="bi bi-sliders me-1"></i> {{ t("ChartOptions") }}
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="chartOptionsDropdown">
                     <li><a class="dropdown-item" href="#" @click.prevent="toggleChartType"><i
                           :class="isBarChart ? 'bi bi-graph-up' : 'bi bi-bar-chart'" class="me-2"></i>{{ isBarChart ?
-                            'Chuyển sang biểu đồ đường' : 'Chuyển sang biểu đồ cột' }}</a></li>
+                            t("SwitchToLineChart") : t("SwitchToBarChart") }}</a></li>
                     <li><a class="dropdown-item" href="#" @click.prevent="downloadChart"><i
-                          class="bi bi-download me-2"></i>Tải xuống</a></li>
+                          class="bi bi-download me-2"></i>{{ t("Download") }}</a></li>
                   </ul>
                 </div>
               </div>
@@ -202,7 +202,7 @@
                     <div class="icon-box bg-warning bg-opacity-10 mx-auto mb-3 pulse-animation">
                       <i class="bi bi-file-earmark-text text-warning"></i>
                     </div>
-                    <h5 class="card-subtitle text-muted mb-2">Số lượng đơn</h5>
+                    <h5 class="card-subtitle text-muted mb-2">{{ t("TotalBookings") }}</h5>
                     <h3 class="card-title mb-0 fw-bold text-warning">{{ revenueData.totalBookings }}</h3>
                     <div class="progress mt-3" style="height: 6px;">
                       <div class="progress-bar bg-warning" role="progressbar"
@@ -219,7 +219,7 @@
                     <div class="icon-box bg-success bg-opacity-10 mx-auto mb-3 pulse-animation">
                       <i class="bi bi-graph-up-arrow text-success"></i>
                     </div>
-                    <h5 class="card-subtitle text-muted mb-2">Doanh thu cao nhất</h5>
+                    <h5 class="card-subtitle text-muted mb-2">{{ t("HighestRevenue") }}</h5>
                     <h3 class="card-title mb-0 fw-bold text-success currency-value">{{ formatCurrency(highestRevenue) }}
                     </h3>
                     <p class="text-muted mt-2 small">
@@ -237,7 +237,7 @@
                     <div class="icon-box bg-danger bg-opacity-10 mx-auto mb-3 pulse-animation">
                       <i class="bi bi-graph-down-arrow text-danger"></i>
                     </div>
-                    <h5 class="card-subtitle text-muted mb-2">Doanh thu thấp nhất</h5>
+                    <h5 class="card-subtitle text-muted mb-2">{{ t("LowestRevenue") }}</h5>
                     <h3 class="card-title mb-0 fw-bold text-danger currency-value">{{ formatCurrency(lowestRevenue) }}
                     </h3>
                     <p class="text-muted mt-2 small">
@@ -260,11 +260,16 @@
 import { Bar, Line } from 'vue-chartjs';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import API from "@/utils/axios";
+import { useI18n } from "vue-i18n";
 
 // Register chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 export default {
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   components: {
     Bar,
     Line
@@ -351,14 +356,15 @@ export default {
       return this.selectedPeriodData.find(item => item.revenue === this.lowestRevenue)?.date;
     },
     periodTitle() {
+      const t = this.t;
       switch (this.selectedPeriod) {
         case "monthly":
-          return "Hàng tháng";
+          return t("Monthly");
         case "yearly":
-          return "Hàng năm";
+          return t("Yearly");
         case "daily":
         default:
-          return "Hàng ngày";
+          return t("Daily");
       }
     },
     chartData() {
@@ -367,7 +373,7 @@ export default {
         : "rgba(13, 110, 253, 0.2)";
 
       const borderColor = "rgba(13, 110, 253, 1)";
-
+      const t = this.t;
       return {
         labels: this.selectedPeriodData.map(item => {
           if (this.selectedPeriod === "yearly") {
@@ -380,7 +386,7 @@ export default {
         }),
         datasets: [
           {
-            label: "Doanh thu",
+            label: t("Revenue"),
             data: this.selectedPeriodData.map(item => item.revenue),
             backgroundColor: backgroundColor,
             borderColor: borderColor,
@@ -394,6 +400,7 @@ export default {
       };
     },
     chartOptions() {
+      const t = this.t;
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -408,7 +415,7 @@ export default {
           },
           title: {
             display: true,
-            text: `Doanh thu ${this.periodTitle}`,
+            text: `${t("Revenue")} ${this.periodTitle}`,
             font: {
               size: 16,
               weight: 'bold'
@@ -433,7 +440,7 @@ export default {
             callbacks: {
               label: function (context) {
                 let value = context.raw;
-                return 'Doanh thu: ' + new Intl.NumberFormat("vi-VN", {
+                return t("Revenue") + ': ' + new Intl.NumberFormat("vi-VN", {
                   style: "currency",
                   currency: "VND"
                 }).format(value);

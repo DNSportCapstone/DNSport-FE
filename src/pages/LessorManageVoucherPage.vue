@@ -149,7 +149,7 @@ export default {
             <th>Voucher Code</th>
             <th>Discount</th>
             <th>Expiry Date</th>
-            <!-- <th>Conditions</th> -->
+            <th>Conditions</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -158,7 +158,7 @@ export default {
             <td>{{ voucher.voucherCode }}</td>
             <td>{{ voucher.discountPercentage }}%</td>
             <td>{{ formatDate(voucher.expiryDate) }}</td>
-            <!-- <td>{{ voucher.conditions }}</td> -->
+            <td>{{ voucher.conditions }}</td>
             <td>
               <button @click="editVoucher(voucher)" class="btn edit">
                 Edit

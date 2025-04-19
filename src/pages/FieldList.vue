@@ -1,45 +1,39 @@
 <template>
-  <section id="team" class="team section">
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Fields</h2>
-      <div><span>Our</span> <span class="description-title">Fields</span></div>
+  <section class="field-list">
+    <div class="header-section" data-aos="fade-up">
+      <h1>Our Fields</h1>
+      <p class="subtitle">Discover and book our premium sports fields</p>
     </div>
 
-    <div class="container">
-      <div class="row gy-5">
-        <div
-          v-for="field in fields"
-          :key="field.id"
-          class="col-lg-4 col-md-6"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <div class="member">
-            <div class="pic">
-              <img :src="field.imageUrl" class="img-fluid" alt="Field Image" />
+    <div class="fields-grid">
+      <div
+        v-for="field in fields"
+        :key="field.id"
+        class="field-card"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <div class="field-image">
+          <img :src="field.imageUrl" :alt="field.name" />
+          <div class="field-status" v-if="field.isOpen">Booking</div>
+        </div>
+
+        <div class="field-content">
+          <h3>{{ field.name }}</h3>
+          <div class="field-details">
+            <div class="detail-item">
+              <i class="bi bi-geo-alt"></i>
+              <span>Location A</span>
             </div>
-            <div class="member-info">
-              <h4>{{ field.name }}</h4>
-              <span
-                :class="
-                  field.isOpen ? 'field-status-open' : 'field-status-closed'
-                "
-              >
-                {{ field.isOpen ? "Open" : "Closed" }}
-              </span>
-              <button
-                class="btn btn-dns-primary mt-2"
-                @click="bookNow(field.id)"
-              >
-                Booking Now
-              </button>
-              <div class="social">
-                <a href=""><i class="bi bi-twitter-x"></i></a>
-                <a href=""><i class="bi bi-facebook"></i></a>
-                <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
-              </div>
+            <div class="detail-item">
+              <i class="bi bi-clock"></i>
+              <span>Open 6:00 - 22:00</span>
             </div>
+          </div>
+
+          <div class="field-actions">
+            <button class="view-details-btn">View Details</button>
+            <button class="book-now-btn">Booking</button>
           </div>
         </div>
       </div>
@@ -83,14 +77,150 @@ export default {
 };
 </script>
 
-<style>
-.field-status-open {
-  color: green;
-  font-weight: bold;
+<style scoped>
+.field-list {
+  padding: 4rem 2rem;
+  background-color: #f8f9fa;
 }
 
-.field-status-closed {
-  color: red;
-  font-weight: bold;
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header-section h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.field-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.field-card:hover {
+  transform: translateY(-5px);
+}
+
+.field-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.field-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.field-status {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: rgba(40, 167, 69, 0.9);
+  color: white;
+}
+
+.field-content {
+  padding: 1.5rem;
+}
+
+.field-content h3 {
+  margin: 0 0 1rem;
+  color: #2c3e50;
+  font-size: 1.25rem;
+}
+
+.field-details {
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: #6c757d;
+}
+
+.detail-item i {
+  margin-right: 0.5rem;
+}
+
+.field-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.view-details-btn,
+.book-now-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.view-details-btn {
+  background: #f8f9fa;
+  color: #2c3e50;
+  border: 1px solid #dee2e6;
+}
+
+.view-details-btn:hover:not(.disabled) {
+  background: #e9ecef;
+}
+
+.book-now-btn {
+  background: #28a745;
+  color: white;
+}
+
+.book-now-btn:hover:not(.disabled) {
+  background: #218838;
+}
+
+.disabled {
+  background-color: #6c757d !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .field-list {
+    padding: 2rem 1rem;
+  }
+
+  .header-section h1 {
+    font-size: 2rem;
+  }
+
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
