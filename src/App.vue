@@ -5,6 +5,7 @@
     <div class="mt-100">
       <router-view></router-view>
     </div>
+    <AISuggestion />
     <FooterPage />
   </template>
   <template v-else>
@@ -16,6 +17,7 @@
 import HeaderPage from "@/components/HeaderPage.vue";
 import FooterPage from "@/components/FooterPage.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import AISuggestion from "@/components/AISuggestion.vue";
 
 export default {
   name: "App",
@@ -23,11 +25,12 @@ export default {
     HeaderPage,
     FooterPage,
     LoadingOverlay,
+    AISuggestion,
   },
   computed: {
     isAdminRoute() {
-      return this.$route.path.startsWith('/administration');
-    }
-  }
+      return this.$route.path.startsWith("/administration");
+    },
+  },
 };
 </script>

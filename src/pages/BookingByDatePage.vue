@@ -254,15 +254,13 @@ export default {
           `Field/fields-by-stadium-id/${this.stadiumId}`
         );
         this.fields = response.data.map((field) => {
-          const allSlots = this.generateSlots(); // Tạo danh sách slot
-          // **Lấy danh sách slot đã đặt trong ngày hôm nay**
+          const allSlots = this.generateSlots();
           const bookedSlots = field.bookingFields
             .filter(
               (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
             )
             .map((b) => this.formatTime(b.startTime));
           console.log(bookedSlots);
-          // **Gán trạng thái đã đặt (isBooked)**
           const bookingSlots = allSlots.map((slot) => ({
             ...slot,
             isBooked: bookedSlots.includes(slot.time),
@@ -270,7 +268,7 @@ export default {
           return {
             fieldId: field.fieldId,
             fieldName: field.description,
-            bookingSlots, // Chứa cả slot đã đặt & chưa đặt
+            bookingSlots,
           };
         });
       } catch (error) {
@@ -285,7 +283,6 @@ export default {
       const { fieldId, fieldName, isChoose, time } = slot;
       slot.date = this.todayDate;
 
-      // Tìm fieldId trong multipleBookingModel
       let field = this.multipleBookingModel.find((f) => f.fieldId === fieldId);
 
       if (!field) {
@@ -299,15 +296,12 @@ export default {
       }
 
       if (isChoose) {
-        // Nếu chọn slot, thêm vào danh sách
         field.selectedSlots.push(slot);
       } else {
-        // Nếu bỏ chọn slot, loại khỏi danh sách
         field.selectedSlots = field.selectedSlots.filter(
           (s) => s.time !== time
         );
 
-        // Nếu không còn slot nào, xóa fieldId khỏi multipleBookingModel
         if (field.selectedSlots && field.selectedSlots.length === 0) {
           this.multipleBookingModel = this.multipleBookingModel.filter(
             (f) => f.fieldId !== fieldId
@@ -334,7 +328,6 @@ export default {
       const [hours, minutes] = time.split(":").map(Number);
       return hours * 60 + minutes;
     },
-    // **Hàm tạo danh sách slot**
     generateSlots() {
       const slots = [];
       const startHour = 0;
@@ -348,7 +341,7 @@ export default {
           time,
           price: pricePerSlot,
           duration,
-          isBooked: false, // Mặc định là chưa đặt
+          isBooked: false,
         });
       }
       return slots;

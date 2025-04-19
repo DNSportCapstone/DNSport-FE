@@ -38,7 +38,12 @@
             </div>
             <div class="stadium-actions mt-auto">
               <button class="view-details-btn">View Details</button>
-              <button class="book-now-btn">Book Now</button>
+              <button
+                class="book-now-btn"
+                @click="bookingMultiSlots(stadium.stadiumId)"
+              >
+                Book Now
+              </button>
             </div>
           </div>
         </div>
@@ -98,6 +103,12 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    bookingMultiSlots(stadiumId) {
+      this.$router.push({
+        name: "booking-by-date",
+        params: { stadiumId: stadiumId },
+      });
     },
   },
   async mounted() {

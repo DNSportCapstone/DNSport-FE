@@ -220,7 +220,11 @@
             class="stadium-card"
           >
             <div class="stadium-image">
-              <img :src="stadium.image" :alt="stadium.stadiumName" loading="lazy" />
+              <img
+                :src="stadium.image"
+                :alt="stadium.stadiumName"
+                loading="lazy"
+              />
             </div>
             <div class="stadium-content">
               <h3>{{ stadium.stadiumName }}</h3>
@@ -229,7 +233,12 @@
               </div>
               <div class="stadium-actions">
                 <button class="view-details-btn">View Details</button>
-                <button class="book-now-btn">Book Now</button>
+                <button
+                  class="book-now-btn"
+                  @click="bookingMultiSlots(stadium.stadiumId)"
+                >
+                  Book Now
+                </button>
               </div>
             </div>
           </div>
