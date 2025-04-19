@@ -36,29 +36,17 @@
           <!-- Thông tin sân bóng -->
           <div class="col-md-6">
             <h2 class="mb-3">{{ field.name }}</h2>
-            <p class="text-muted mb-4">{{ field.address }}</p>
+            <p class="text-muted mb-4">{{ field.stadiumName }}</p>
             <div class="mb-3">
               <span class="h4 me-2"
                 >{{ CommonHelper.formatVND(field.price) }} /giờ</span
               >
             </div>
-            <p class="mb-4">{{ field.description }}</p>
-
-            <!-- <button class="btn btn-primary btn-lg mb-3 me-2" @click="bookField">
-            <i class="bi bi-cart-plus"></i> Đặt sân ngay
-          </button>
-
-          <button class="btn btn-outline-secondary btn-lg mb-3">
-            <i class="bi bi-heart"></i> Yêu thích
-          </button> -->
-
             <div class="mt-4">
               <h5>Thông tin sân:</h5>
               <ul>
-                <li>Diện tích: 40m x 20m</li>
-                <li>Mặt sân: Cỏ nhân tạo cao cấp</li>
-                <li>Hệ thống đèn chiếu sáng</li>
-                <li>Phòng thay đồ, nhà vệ sinh sạch sẽ</li>
+                <li>{{ field.description }}</li>
+                <li>{{ field.address }}</li>
               </ul>
             </div>
           </div>
@@ -267,6 +255,7 @@ import SlotElement from "@/components/SlotElement.vue";
 import ProgressSteps from "@/components/ProgressSteps.vue";
 import API from "@/utils/axios";
 import CommonHelper from "@/utils/common";
+import { showMessageBox } from "@/utils/message-box-service.js";
 
 export default {
   components: { ProgressSteps, SlotElement },
@@ -282,6 +271,8 @@ export default {
         repeatWeeks: 1,
         serviceIds: [],
         fieldId: null,
+        selectedSlots: [],
+        userId: null,
       },
       weekdays: [
         "Chủ nhật",
@@ -294,6 +285,7 @@ export default {
       ],
       services: [],
       field: {},
+      fetchedField: {},
     };
   },
   computed: {
@@ -307,14 +299,13 @@ export default {
           0
         );
 
-        console.log(slotTotal);
-
-        const serviceTotal = (field.serviceIds || []).reduce((sum, id) => {
-          const service = this.services.find((s) => s.id === id);
-          return sum + (service?.price || 0);
-        }, 0);
-
-        console.log(serviceTotal);
+        const serviceTotal = (this.recurring.serviceIds || []).reduce(
+          (sum, id) => {
+            const service = this.services.find((s) => s.id === id);
+            return sum + (service?.price || 0);
+          },
+          0
+        );
 
         total += (slotTotal + serviceTotal) * repeatWeeks;
       }
@@ -324,34 +315,40 @@ export default {
   },
   methods: {
     async fetchField() {
-      try {
-        this.$store.dispatch("clearMultipleBookingModel");
+      const response = await API.get(`field/${5}`);
+      const field = response.data;
 
-        const response = await API.get(`Field/${5}`);
-        const field = response.data;
-        this.field = response.data;
-        const today = this.todayDate.split("T")[0];
+      const today = this.todayDate.split("T")[0];
+      const allSlots = this.generateSlots();
+      const bookedSlots = field.bookingFields
+        .filter((b) => b.startTime?.split("T")[0] === today)
+        .map((b) => this.formatTime(b.startTime));
 
-        const allSlots = this.generateSlots();
-        const bookedSlots = field.bookingFields
-          .filter((b) => b.startTime?.split("T")[0] === today)
-          .map((b) => this.formatTime(b.startTime));
+      const bookingSlots = allSlots.map((slot) => ({
+        ...slot,
+        isBooked: bookedSlots.includes(slot.time),
+      }));
 
-        const bookingSlots = allSlots.map((slot) => ({
-          ...slot,
-          isBooked: bookedSlots.includes(slot.time),
-        }));
+      this.field = {
+        name: `Sân ${field.sport.sportName}`,
+        stadiumName: field.stadium.stadiumName,
+        address: field.stadium.address,
+        price: field.dayPrice,
+        description: field.description,
+        images: field.images.map((img) => img.url),
+      };
+      this.selectedImage = this.field.images[0];
+      this.startSlideshow();
 
-        this.fields = [
-          {
-            fieldId: field.fieldId,
-            fieldName: field.description,
-            bookingSlots,
-          },
-        ];
-      } catch (error) {
-        console.error("Lỗi khi lấy sân:", error);
-      }
+      this.fields = [
+        {
+          fieldId: field.fieldId,
+          fieldName: field.description,
+          bookingSlots,
+        },
+      ];
+
+      this.fetchedField = field;
     },
     handleSlotSelected(slot) {
       const { fieldId, fieldName, isChoose, time } = slot;
@@ -420,58 +417,26 @@ export default {
     goToServicePage() {
       this.$router.push({ name: "booking-services" });
     },
-    submitRecurringBooking() {
-      const start = new Date(this.recurring.startDate);
-      const offset = (this.recurring.weekday - start.getDay() + 7) % 7;
-      const firstDay = new Date(start);
-      firstDay.setDate(start.getDate() + offset);
-
-      for (let i = 0; i < this.recurring.repeatWeeks; i++) {
-        const bookingDate = new Date(firstDay);
-        bookingDate.setDate(firstDay.getDate() + i * 7);
-        const dateStr = bookingDate.toISOString().split("T")[0];
-
-        // Duyệt qua các slot đã chọn hiện tại
-        for (const field of this.multipleBookingModel) {
-          for (const slot of field.selectedSlots) {
-            this.handleSlotSelected({
-              ...slot,
-              date: dateStr,
-              isChoose: true,
-            });
-          }
-        }
-      }
+    async submitRecurringBooking() {
+      this.recurring.fieldId = this.multipleBookingModel[0].fieldId;
+      this.recurring.selectedSlots = this.multipleBookingModel[0].selectedSlots;
+      this.recurring.userId = this.multipleBookingModel[0].userId;
+      await this.createBooking(this.recurring);
     },
-    async fetchServices() {
-      try {
-        //const res = await API.get(`Service/by-field/${5}`);
+    fetchServices() {
+      if (this.fetchedField?.services) {
+        this.services = this.fetchedField.services.map((s) => ({
+          id: s.serviceId,
+          name: s.name,
+          price: s.price,
+        }));
+      } else {
         this.services = [
           { id: 1, name: "Nước uống", price: 10000 },
           { id: 2, name: "Trọng tài", price: 50000 },
           { id: 3, name: "Bóng đá", price: 30000 },
         ];
-      } catch (err) {
-        console.error("Lỗi khi lấy dịch vụ:", err);
       }
-    },
-    fetchFieldDetails(fieldId, returnPath) {
-      // Giả lập dữ liệu, có thể thay bằng API
-      this.returnPath = returnPath;
-      this.field = {
-        name: `Sân Bóng`,
-        address: "Địa chỉ sân",
-        price: 200000,
-        description: "Sân cỏ nhân tạo chất lượng cao, rộng rãi.",
-        images: [
-          `https://munichgroup.vn/wp-content/uploads/2024/11/san-bong-chuyen-dep.webp`,
-          `https://munichgroup.vn/wp-content/uploads/2024/11/san-bong-chuyen-dep-14.webp`,
-          `https://munichgroup.vn/wp-content/uploads/2024/11/san-bong-chuyen-dep-12.webp`,
-          `https://munichgroup.vn/wp-content/uploads/2024/11/san-bong-chuyen-dep-16.webp`,
-        ],
-      };
-      this.selectedImage = this.field.images[0]; // Ảnh đầu tiên làm mặc định
-      this.startSlideshow();
     },
     changeImage(image, manual = false) {
       this.selectedImage = image;
@@ -495,15 +460,40 @@ export default {
     bookField() {
       alert(`Bạn đã đặt sân ${this.field.name} thành công!`);
     },
+    async createBooking(request) {
+      try {
+        const response = await API.post(`booking/recurring`, request);
+        if (response.data.isSuccess) {
+          this.handlePayment(response.data.bookingId);
+        } else {
+          showMessageBox({
+            title: "Warning",
+            description: "Booking failed!",
+            type: "warning",
+            showCancel: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async handlePayment(bookingId) {
+      try {
+        const response = await API.post(
+          `payment/payment-url/recurring-booking`,
+          {
+            bookingId: bookingId,
+          }
+        );
+        window.location.href = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
   async mounted() {
     await this.fetchField();
-    await this.fetchServices();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    this.todayDate = today.toISOString().split("T")[0];
-    const { fieldId, returnPath } = this.$route.params;
-    this.fetchFieldDetails(fieldId, returnPath);
+    this.fetchServices();
   },
   beforeUnmount() {
     clearInterval(this.intervalId);

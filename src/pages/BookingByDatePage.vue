@@ -283,7 +283,6 @@ export default {
       const { fieldId, fieldName, isChoose, time } = slot;
       slot.date = this.todayDate;
 
-      // Tìm fieldId trong multipleBookingModel
       let field = this.multipleBookingModel.find((f) => f.fieldId === fieldId);
 
       if (!field) {
@@ -297,15 +296,12 @@ export default {
       }
 
       if (isChoose) {
-        // Nếu chọn slot, thêm vào danh sách
         field.selectedSlots.push(slot);
       } else {
-        // Nếu bỏ chọn slot, loại khỏi danh sách
         field.selectedSlots = field.selectedSlots.filter(
           (s) => s.time !== time
         );
 
-        // Nếu không còn slot nào, xóa fieldId khỏi multipleBookingModel
         if (field.selectedSlots && field.selectedSlots.length === 0) {
           this.multipleBookingModel = this.multipleBookingModel.filter(
             (f) => f.fieldId !== fieldId
@@ -332,7 +328,6 @@ export default {
       const [hours, minutes] = time.split(":").map(Number);
       return hours * 60 + minutes;
     },
-    // **Hàm tạo danh sách slot**
     generateSlots() {
       const slots = [];
       const startHour = 0;
@@ -346,7 +341,7 @@ export default {
           time,
           price: pricePerSlot,
           duration,
-          isBooked: false, // Mặc định là chưa đặt
+          isBooked: false,
         });
       }
       return slots;
