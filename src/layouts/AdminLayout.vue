@@ -7,13 +7,11 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li>
-                        <router-link :to="{ name: 'home' }" :class="{ active: currentRoute === '' }"
-                            @click="navigateTo">
-                            <i class="bi bi-house"></i>
-                            {{ t('Home') }}
-                        </router-link>
-                    </li>
+                    <a
+                        href="/" :class="{ active: currentRoute === '' }" >
+                        <i class="bi bi-house"></i>
+                        {{ t('Home') }}
+                    </a>
                     <li>
                         <router-link :to="{ name: 'revenue-report' }"
                             :class="{ active: currentRoute === 'revenue-report' }" @click="navigateTo">
