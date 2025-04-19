@@ -254,15 +254,13 @@ export default {
           `Field/fields-by-stadium-id/${this.stadiumId}`
         );
         this.fields = response.data.map((field) => {
-          const allSlots = this.generateSlots(); // Tạo danh sách slot
-          // **Lấy danh sách slot đã đặt trong ngày hôm nay**
+          const allSlots = this.generateSlots();
           const bookedSlots = field.bookingFields
             .filter(
               (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
             )
             .map((b) => this.formatTime(b.startTime));
           console.log(bookedSlots);
-          // **Gán trạng thái đã đặt (isBooked)**
           const bookingSlots = allSlots.map((slot) => ({
             ...slot,
             isBooked: bookedSlots.includes(slot.time),
@@ -270,7 +268,7 @@ export default {
           return {
             fieldId: field.fieldId,
             fieldName: field.description,
-            bookingSlots, // Chứa cả slot đã đặt & chưa đặt
+            bookingSlots,
           };
         });
       } catch (error) {

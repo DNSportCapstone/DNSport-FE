@@ -86,5 +86,10 @@
   "Yearly": "Hàng năm",
   "ShowDetails": "Xem chi tiết",
   "Collapse": "Thu gọn",
-  "TotalItems": "Tổng số mục"
+  "TotalItems": "Tổng số mục",
+  "RecurringBooking": "Đặt sân định kỳ",
+  "SelectWeekday": "Chọn ngày trong tuần",
+  "SelectSlots": "Chọn các slots trong ngày",
+  "RepeatWeeks": "Số tuần lặp lại",
+  "Continue": "Tiếp tục đặt"
 }

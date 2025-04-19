@@ -24,7 +24,7 @@ import EditUserPage from "@/pages/EditUserPage.vue";
 import MultipleBookingPaymentSuccess from "@/pages/user/multiple-booking/PaymentSuccess.vue";
 import RefundListPage from "@/pages/RefundListPage.vue";
 import RefundTrackingPage from "@/pages/RefundTrackingPage.vue";
-import AdminLayout from '@/layouts/AdminLayout.vue';
+import AdminLayout from "@/layouts/AdminLayout.vue";
 import AdministrantionPage from "@/pages/AdministrantionPage.vue";
 import RevenueReportPage from "@/pages/RevenueReportPage.vue";
 import BookingReportPage from "@/pages/BookingReportPage.vue";
@@ -33,6 +33,8 @@ import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
 import AdminUserPage from "@/pages/AdminUserPage.vue";
 import AdminVoucherPage from "@/pages/AdminVoucherPage.vue";
 import AdminRefundRequestsPage from "@/pages/AdminRefundRequestsPage.vue";
+import ScheduleBooking from "@/pages/user/schedule-booking/BookingPage.vue";
+import AIPage from "@/pages/AIPage.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -84,86 +86,99 @@ const protectedRoutes = [
     path: "/checkout",
     name: "checkout",
     component: CheckoutPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/cart",
     name: "cart",
     component: CartPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/booking-list",
     name: "booking-list",
     component: BookingList,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/edit-user",
     name: "edit-user",
     component: EditUserPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/review/:bookingId",
     name: "rate",
     component: ReviewPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/booking-history",
     name: "booking-history",
     component: BookingHistoryPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/payment",
     name: "payment",
     component: PaymentPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/payment-success",
     name: "PaymentSuccess",
     component: PaymentSuccessPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/field-details/:fieldId/:returnPath",
     name: "field-details",
     component: FieldDetails,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/booking-services",
     name: "booking-services",
     component: BookingServices,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/refund-request/:bookingId",
     name: "refund-request",
     component: RefundRequestPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/refund-list",
     name: "refund-list",
     component: RefundListPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/refund-tracking",
     name: "refund-tracking",
     component: RefundTrackingPage,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: "/booking-by-date/:stadiumId",
     name: "booking-by-date",
     component: BookingByDatePage,
     props: true,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/booking-schedule",
+    name: "booking-schedule",
+    component: ScheduleBooking,
+    props: true,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/ai-suggestion",
+    name: "ai-suggestion",
+    component: AIPage,
+    meta: { requiresAuth: true },
   },
 ];
 
@@ -177,49 +192,49 @@ const adminRoutes = [
         path: "",
         name: "administration",
         component: AdministrantionPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "revenue-report",
         name: "revenue-report",
         component: RevenueReportPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "booking-report",
         name: "booking-report",
         component: BookingReportPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "stadiums",
         name: "stadiums",
         component: AdminStadiumPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "users",
         name: "users",
         component: AdminUserPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "vouchers",
         name: "vouchers",
         component: AdminVoucherPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "manage-complaints",
         name: "manage-complaints",
         component: AdminManageComplaintsPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "refund-requests",
         name: "refund-requests",
         component: AdminRefundRequestsPage,
-        meta: { requiresAuth: true, requiresAdmin: true }
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       // {
       //   path: "booking-cancel",
@@ -227,8 +242,8 @@ const adminRoutes = [
       //   component: BookingCancelPage,
       //   meta: { requiresAuth: true, requiresAdmin: true }
       // }
-    ]
-  }
+    ],
+  },
 ];
 
 // Combine all routes
@@ -241,14 +256,15 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
-  const accessToken = store.getters.accessToken || localStorage.getItem("accessToken");
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+  const accessToken =
+    store.getters.accessToken || localStorage.getItem("accessToken");
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 
   if (requiresAuth) {
     if (!accessToken) {
-      localStorage.setItem('redirectPath', to.fullPath);
-      return next('/login');
+      localStorage.setItem("redirectPath", to.fullPath);
+      return next("/login");
     }
 
     try {
@@ -257,22 +273,22 @@ router.beforeEach(async (to, from, next) => {
 
       if (accessTokenDecoded.exp < currentTime) {
         await store.dispatch("logout");
-        localStorage.setItem('redirectPath', to.fullPath);
-        return next('/login');
+        localStorage.setItem("redirectPath", to.fullPath);
+        return next("/login");
       }
 
       if (requiresAdmin && Number(accessTokenDecoded.roleId) !== 1) {
-        return next('/');
+        return next("/");
       }
     } catch (error) {
-      console.error('Token decode error:', error);
+      console.error("Token decode error:", error);
       await store.dispatch("logout");
-      return next('/login');
+      return next("/login");
     }
   }
 
-  if (to.path === '/login' && accessToken) {
-    return next('/');
+  if (to.path === "/login" && accessToken) {
+    return next("/");
   }
 
   next();
@@ -280,8 +296,10 @@ router.beforeEach(async (to, from, next) => {
 
 // After navigation hook
 router.afterEach(() => {
-  const accessToken = store.getters.accessToken || localStorage.getItem("accessToken");
-  const refreshToken = store.getters.refreshToken || localStorage.getItem("refreshToken");
+  const accessToken =
+    store.getters.accessToken || localStorage.getItem("accessToken");
+  const refreshToken =
+    store.getters.refreshToken || localStorage.getItem("refreshToken");
 
   if (accessToken && refreshToken) {
     try {
@@ -296,7 +314,7 @@ router.afterEach(() => {
       };
       store.dispatch("setIdentity", identity);
     } catch (error) {
-      console.error('Error decoding token in afterEach:', error);
+      console.error("Error decoding token in afterEach:", error);
     }
   }
 });
