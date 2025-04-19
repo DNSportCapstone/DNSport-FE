@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { jwtDecode } from "jwt-decode";
 import store from "@/store";
-
 import HomePage from "@/pages/HomePage.vue";
 import ShopPage from "@/pages/ShopPage.vue";
 import BookingByDatePage from "@/pages/BookingByDatePage.vue";
@@ -16,7 +15,6 @@ import PaymentSuccessPage from "@/pages/PaymentSuccessPage.vue";
 import FieldDetails from "@/pages/user/FieldDetails.vue";
 import BookingServices from "@/pages/user/BookingServices.vue";
 import NearbyStadiums from "@/pages/NearbyStadiums.vue";
-
 import BookingHistoryPage from "@/pages/BookingHistoryPage.vue";
 import EditUserPage from "@/pages/EditUserPage.vue";
 import AdministrantionPage from "@/pages/AdministrantionPage.vue";
@@ -25,15 +23,15 @@ import BookingReportPage from "@/pages/BookingReportPage.vue";
 import AdminUserPage from "@/pages/AdminUserPage.vue";
 import AdminStadiumPage from "@/pages/AdminStadiumPage.vue";
 import AdminManageComplaintsPage from "@/pages/AdminManageComplaintsPage.vue";
-import RegisterField from "@/components/RegisterField.vue";
-import UpdateField from "@/components/UpdateField.vue";
-import VoucherManager from "@/components/VoucherManager.vue";
+import RegisterField from "@/pages/RegisterField.vue";
+import UpdateField from "@/pages/UpdateField.vue";
+import VoucherManager from "@/pages/VoucherManager.vue";
+import LessorPage from "@/pages/LessorPage.vue";
+import Lessor from "@/pages/Lessor.vue";
 const accessToken =
   store.getters.accessToken || localStorage.getItem("accessToken");
-
 const refreshToken =
   store.getters.refreshToken || localStorage.getItem("refreshToken");
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -76,16 +74,6 @@ const router = createRouter({
       path: "/edit-user",
       name: "edit-user",
       component: EditUserPage,
-    },
-    {
-      path: "/register-field",
-      name: "RegisterField",
-      component: RegisterField,
-    },
-    {
-      path: "/update-field",
-      name: "UpdateField",
-      component: UpdateField,
     },
     {
       path: "/voucher-manager",
@@ -131,6 +119,33 @@ const router = createRouter({
       path: "/nearby-stadiums",
       name: "nearby-stadiums",
       component: NearbyStadiums,
+    },
+    {
+      path: "/lessor-page",
+      name: "lessor-page",
+      component: LessorPage,
+      children: [
+        {
+          path: "/revenue",
+          name: "revenue",
+          component: Lessor,
+        },
+        {
+          path: "/vouchers",
+          name: "vouchers",
+          component: VoucherManager,
+        },
+        {
+          path: "/update-field",
+          name: "updatefield",
+          component: UpdateField,
+        },
+        {
+          path: "/register-field",
+          name: "registerfield",
+          component: RegisterField,
+        },
+      ],
     },
     {
       path: "/administration",
@@ -193,9 +208,6 @@ router.beforeEach((to, from, next) => {
     "/field-details/:fieldId/:returnPath",
     "/nearby-stadiums",
     "/booking-services",
-    "/register-field",
-    "/update-field",
-    "/voucher-manager",
   ];
 
   // const userPages = [
