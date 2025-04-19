@@ -1,117 +1,206 @@
 <template>
-  <div class="section">
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>{{ t("Nearby Stadiums") }}</h2>
-      <div>
-        <span class="description-title">{{ t("PlanYourGameDay") }}</span>
+  <div class="nearby-stadiums container py-5">
+    <h2 class="text-center mb-5">Sân vận động gần bạn</h2>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Đang tải dữ liệu...</span>
       </div>
+      <p class="mt-3">Đang tải dữ liệu...</p>
     </div>
-    <!-- End Section Title -->
 
-    <div class="container">
-      <div v-if="loading"></div>
-      <div v-else-if="stadiums.length === 0">No stadiums found.</div>
+    <!-- No Stadiums Found -->
+    <div v-else-if="stadiums.length === 0" class="text-center text-muted">
+      <i class="bi bi-emoji-frown display-1"></i>
+      <p class="mt-3">Không tìm thấy sân vận động nào gần bạn.</p>
+    </div>
 
-      <div v-else class="stadium-grid">
-        <div
-          v-for="stadium in stadiums"
-          :key="stadium.stadiumId"
-          class="stadium-card"
-        >
-          <img :src="stadium.image" alt="Stadium Image" class="stadium-image" />
-          <div class="stadium-info">
-            <h3>{{ stadium.stadiumName }}</h3>
-            <p>{{ stadium.address }}</p>
-            <p><strong>Distance:</strong> {{ stadium.distance }}</p>
-            <p><strong>Duration:</strong> {{ stadium.duration }}</p>
+    <!-- Stadiums List -->
+    <div v-else class="row g-4">
+      <div
+        v-for="stadium in stadiums"
+        :key="stadium.stadiumId"
+        class="col-md-6 col-lg-4"
+      >
+        <div class="card stadium-card h-100">
+          <img :src="stadium.image" class="card-img-top" alt="Stadium Image" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-primary">{{ stadium.stadiumName }}</h5>
+            <p class="card-text text-muted mb-3">{{ stadium.address }}</p>
+            <div
+              class="distance-info d-flex justify-content-between text-muted mb-3"
+            >
+              <span>
+                <i class="bi bi-signpost"></i> {{ stadium.distance }}
+              </span>
+              <span> <i class="bi bi-clock"></i> {{ stadium.duration }} </span>
+            </div>
+            <div class="stadium-actions mt-auto">
+              <button class="view-details-btn">View Details</button>
+              <button class="book-now-btn">Book Now</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <div style="margin-bottom: 320px"></div>
   </div>
 </template>
 
-<script setup>
-import { useI18n } from "vue-i18n";
-const { t } = useI18n();
-</script>
 <script>
 import API from "@/utils/axios";
 
 export default {
   data() {
     return {
-      userLocation: "",
       stadiums: [],
       loading: true,
+      userLocation: {
+        lat: 16.0544,
+        lng: 108.2022,
+      },
     };
   },
-  async mounted() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        this.userLocation = `${lat},${lng}`;
-
-        try {
-          const response = await API.get("/GoMaps/nearby-stadiums", {
-            params: { userLocation: this.userLocation },
-          });
-
-          // Sắp xếp stadiums theo distance tăng dần
-          this.stadiums = response.data.sort((a, b) => {
-            return a.distance - b.distance;
-          });
-        } catch (error) {
-          console.error("Error fetching nearby stadiums:", error);
-        } finally {
-          this.loading = false;
+  methods: {
+    async getUserLocation() {
+      return new Promise((resolve) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              this.userLocation.lat = position.coords.latitude;
+              this.userLocation.lng = position.coords.longitude;
+              resolve();
+            },
+            () => {
+              console.warn("Không lấy được vị trí, dùng vị trí mặc định.");
+              resolve(); // fallback to Đà Nẵng
+            }
+          );
+        } else {
+          console.warn("Trình duyệt không hỗ trợ geolocation.");
+          resolve();
         }
       });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-      this.loading = false;
-    }
+    },
+
+    async fetchNearbyStadiums() {
+      try {
+        const location = `${this.userLocation.lat},${this.userLocation.lng}`;
+        const res = await API.get("/GoMaps/nearby-stadiums", {
+          params: { userLocation: location },
+        });
+        this.stadiums = res.data.sort(
+          (a, b) => parseFloat(a.distanceValue) - parseFloat(b.distanceValue)
+        );
+      } catch (err) {
+        console.error("Lỗi khi lấy danh sách sân:", err);
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
+  async mounted() {
+    await this.getUserLocation();
+    await this.fetchNearbyStadiums();
   },
 };
 </script>
 
 <style scoped>
-.stadium-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+/* Container Styles */
+.nearby-stadiums {
+  background-color: #f8f9fa;
+  border-radius: 12px;
   padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Card Styles */
 .stadium-card {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.stadium-image {
-  width: 100%;
-  height: 150px;
+.stadium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+  height: 200px;
   object-fit: cover;
-  border-radius: 10px 10px 0 0;
 }
 
-.stadium-info {
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.distance-info {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stadium-card {
+    margin-bottom: 20px;
+  }
+}
+
+.stadium-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.view-details-btn,
+.book-now-btn {
   padding: 10px;
-  text-align: center;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.stadium-info h3 {
-  margin-bottom: 10px;
+.view-details-btn {
+  background: #f8f9fa;
+  color: #2c3e50;
+  border: 1px solid #dee2e6;
 }
 
-.stadium-info p {
-  margin-bottom: 5px;
+.view-details-btn:hover {
+  background: #e9ecef;
+}
+
+.book-now-btn {
+  background: #28a745;
+  color: white;
+}
+
+.book-now-btn:hover {
+  background: #218838;
 }
 </style>
