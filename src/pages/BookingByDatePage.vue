@@ -206,7 +206,10 @@
       </div>
     </div>
   </div>
-  <SlotsChoosen :selectedFields="selectedFields" />
+  <SlotsChoosen
+    :multipleBookingModel="multipleBookingModel"
+    @goToServicePage="goToServicePage"
+  />
 </template>
 <script setup>
 import { useI18n } from "vue-i18n";
@@ -231,23 +234,27 @@ import SlotsChoosen from "@/components/SlotsChoosen.vue";
 import ProgressSteps from "@/components/ProgressSteps.vue";
 /* import JS functions */
 import API from "@/utils/axios";
+import CommonHelper from "@/utils/common";
 
 export default {
   components: { ProgressSteps, SlotElement, SlotsChoosen },
+  props: ["stadiumId"],
   data() {
     return {
       fields: [],
-      selectedFields: [],
+      multipleBookingModel: [],
       todayDate: "",
     };
   },
   methods: {
     async fetchFields() {
       try {
-        const response = await API.get(`Field/fields-by-stadium-id/${5}`);
+        this.$store.dispatch("clearMultipleBookingModel");
+        const response = await API.get(
+          `Field/fields-by-stadium-id/${this.stadiumId}`
+        );
         this.fields = response.data.map((field) => {
           const allSlots = this.generateSlots(); // Tạo danh sách slot
-          this.todayDate = "2025-02-24";
           // **Lấy danh sách slot đã đặt trong ngày hôm nay**
           const bookedSlots = field.bookingFields
             .filter(
@@ -260,7 +267,6 @@ export default {
             ...slot,
             isBooked: bookedSlots.includes(slot.time),
           }));
-          console.log(bookingSlots);
           return {
             fieldId: field.fieldId,
             fieldName: field.description,
@@ -277,14 +283,19 @@ export default {
     },
     handleSlotSelected(slot) {
       const { fieldId, fieldName, isChoose, time } = slot;
+      slot.date = this.todayDate;
 
-      // Tìm fieldId trong selectedFields
-      let field = this.selectedFields.find((f) => f.fieldId === fieldId);
+      // Tìm fieldId trong multipleBookingModel
+      let field = this.multipleBookingModel.find((f) => f.fieldId === fieldId);
 
       if (!field) {
-        // Nếu fieldId chưa có, thêm mới
-        this.selectedFields.push({ fieldId, fieldName, selectedSlots: [] });
-        field = this.selectedFields.find((f) => f.fieldId === fieldId);
+        this.multipleBookingModel.push({
+          fieldId,
+          fieldName,
+          userId: CommonHelper.getCurrentUserId(),
+          selectedSlots: [],
+        });
+        field = this.multipleBookingModel.find((f) => f.fieldId === fieldId);
       }
 
       if (isChoose) {
@@ -296,15 +307,15 @@ export default {
           (s) => s.time !== time
         );
 
-        // Nếu không còn slot nào, xóa fieldId khỏi selectedFields
+        // Nếu không còn slot nào, xóa fieldId khỏi multipleBookingModel
         if (field.selectedSlots && field.selectedSlots.length === 0) {
-          this.selectedFields = this.selectedFields.filter(
+          this.multipleBookingModel = this.multipleBookingModel.filter(
             (f) => f.fieldId !== fieldId
           );
         }
       }
 
-      this.selectedFields.map((field) => ({
+      this.multipleBookingModel.map((field) => ({
         ...field,
         selectedSlots: field.selectedSlots.sort((a, b) => {
           return (
@@ -313,8 +324,11 @@ export default {
           );
         }),
       }));
-
-      console.log("Danh sách sân và slot đã chọn:", this.selectedFields);
+      console.log(this.multipleBookingModel);
+      this.$store.dispatch(
+        "setMultipleBookingModel",
+        this.multipleBookingModel
+      );
     },
     convertTimeToMinutes(time) {
       const [hours, minutes] = time.split(":").map(Number);
@@ -339,10 +353,16 @@ export default {
       }
       return slots;
     },
+    goToServicePage() {
+      this.$router.push({
+        name: "booking-services",
+      });
+    },
   },
   async mounted() {
     await this.fetchFields();
-    this.todayDate = new Date().toISOString();
+    this.todayDate = new Date();
+    this.todayDate.setHours(0, 0, 0, 0);
   },
 };
 </script>

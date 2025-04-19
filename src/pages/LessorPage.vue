@@ -3,80 +3,100 @@
     <!-- Mobile Menu Toggle -->
     <div class="mobile-header">
       <button @click="toggleSidebar" class="menu-toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
       </button>
-      <div class="logo-mobile">Admin Dashboard</div>
+      <div class="logo-mobile">Lessor Dashboard</div>
     </div>
 
     <!-- Sidebar -->
     <div class="sidebar" :class="{ 'sidebar-open': isSidebarOpen }">
       <div class="sidebar-header">
         <div class="logo">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
             <line x1="8" y1="21" x2="16" y2="21"></line>
             <line x1="12" y1="17" x2="12" y2="21"></line>
           </svg>
-          <span>Admin Dashboard</span>
+          <span>Lessor Dashboard</span>
         </div>
         <button @click="toggleSidebar" class="close-sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
       </div>
-
       <ul class="sidebar-menu">
-        <li @click="navigateTo('booking-report')" :class="{ active: currentRoute === 'booking-report' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-          </svg>
-          <span>Báo cáo đơn đặt</span>
-        </li>
-        <li @click="navigateTo('revenue-report')" :class="{ active: currentRoute === 'revenue-report' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <li
+          @click="navigateTo('revenue')"
+          :class="{ active: currentRoute === 'revenue' }"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="12" y1="20" x2="12" y2="10"></line>
             <line x1="18" y1="20" x2="18" y2="4"></line>
             <line x1="6" y1="20" x2="6" y2="16"></line>
           </svg>
-          <span>Báo cáo doanh thu</span>
+          <span>Revenue Report</span>
         </li>
-        <li @click="navigateTo('stadiums')" :class="{ active: currentRoute === 'stadiums' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-            </path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-          </svg>
-          <span>Danh Sách Sân</span>
-        </li>
-        <li @click="navigateTo('users')" :class="{ active: currentRoute === 'users' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span>Người dùng</span>
-        </li>
-        <li @click="navigateTo('vouchers')" :class="{ active: currentRoute === 'vouchers' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <li
+          @click="navigateTo('manage-vouchers')"
+          :class="{ active: currentRoute === 'manage-vouchers' }"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -84,30 +104,6 @@
           </svg>
           <span>Vouchers</span>
         </li>
-        <li @click="navigateTo('manage-complaints')" :class="{ active: currentRoute === 'manage-complaints' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span>Complaints</span>
-        </li>
-        <!-- <li @click="navigateTo('home')" :class="{ active: currentRoute === 'home' }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <line x1="9" y1="22" x2="9" y2="12"></line>
-            <line x1="15" y1="22" x2="15" y2="12"></line>
-            <line x1="3" y1="22" x2="21" y2="22"></line>
-            <line x1="9" y1="2" x2="9" y2="12"></line>
-            <line x1="15" y1="2" x2="15" y2="12"></line>
-            <line x1="3" y1="2" x2="21" y2="2"></line>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          <span>Home</span>
-        </li> -->
       </ul>
     </div>
 
@@ -116,8 +112,17 @@
       <div class="header">
         <div class="header-left">
           <button @click="navigateTo('home')" class="back-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
@@ -137,8 +142,8 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 export default {
   setup() {
@@ -163,26 +168,14 @@ export default {
 
     const logout = () => {
       // Implement logout logic here
-      alert('Đăng xuất thành công');
-      router.push({ name: 'login' });
+      alert("Đăng xuất thành công");
+      router.push({ name: "login" });
     };
 
     const getPageTitle = () => {
       switch (route.name) {
-        case 'revenue-report':
-          return 'Báo Cáo Doanh Thu';
-        case 'booking-report':
-          return 'Báo cáo đơn đặt';
-        case 'products':
-          return 'Sản Phẩm';
-        case 'customers':
-          return 'Khách Hàng';
-        case 'settings':
-          return 'Cài Đặt Hệ Thống';
-        case 'profile':
-          return 'Hồ Sơ Cá Nhân';
-        default:
-          return 'Admin Dashboard';
+        case "revenue-report":
+          return "Báo Cáo Doanh Thu";
       }
     };
 
@@ -192,9 +185,9 @@ export default {
       isSidebarOpen,
       toggleSidebar,
       logout,
-      getPageTitle
+      getPageTitle,
     };
-  }
+  },
 };
 </script>
 
@@ -203,7 +196,7 @@ export default {
 .admin-container {
   display: flex;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8f9fa;
 }
 

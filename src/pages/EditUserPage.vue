@@ -9,33 +9,57 @@
       <div class="row py-2">
         <div class="col-md-6">
           <label>{{ t("Name") }}</label>
-          <input v-model="user.fullName" type="text" class="bg-light form-control" disabled />
+          <input
+            v-model="user.fullName"
+            type="text"
+            class="bg-light form-control"
+            disabled
+          />
         </div>
         <div class="col-md-6">
           <label>Email</label>
-          <input v-model="user.email" type="email" class="bg-light form-control" disabled />
+          <input
+            v-model="user.email"
+            type="email"
+            class="bg-light form-control"
+            disabled
+          />
         </div>
       </div>
       <div class="row py-2">
         <div class="col-md-6 pt-md-0 pt-3">
           <label>{{ t("PhoneNumber") }}</label>
-          <input v-model="user.phoneNumber" type="tel" class="bg-light form-control" inputmode="numeric" maxlength="20"
+          <input
+            v-model="user.phoneNumber"
+            type="tel"
+            class="bg-light form-control"
+            inputmode="numeric"
+            maxlength="20"
             @input="
               user.phoneNumber = user.phoneNumber
                 .replace(/\D/g, '')
                 .slice(0, 20)
-              " />
+            "
+          />
         </div>
         <div class="col-md-6 pt-md-0 pt-3">
           <label>{{ t("Address") }}</label>
-          <input v-model="user.address" type="text" class="bg-light form-control" />
+          <input
+            v-model="user.address"
+            type="text"
+            class="bg-light form-control"
+          />
         </div>
       </div>
       <div class="row py-2">
         <div class="col-md-6 pt-md-0 pt-3">
           <label>{{ t("ReceiveNotifications") }}</label>
-          <input v-model="user.receiveNotification" type="checkbox" class="form-check-input"
-            style="margin-left: 20px" />
+          <input
+            v-model="user.receiveNotification"
+            type="checkbox"
+            class="form-check-input"
+            style="margin-left: 20px"
+          />
         </div>
       </div>
       <div class="py-3 pb-4 border-bottom">

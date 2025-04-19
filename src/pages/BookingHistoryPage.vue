@@ -9,12 +9,7 @@
         </h2>
         <div class="d-flex gap-2">
           <div class="input-group">
-            <input
-              type="text"
-              v-model="searchQuery"
-              class="form-control"
-              placeholder=""
-            />
+            <input type="text" v-model="searchQuery" class="form-control" placeholder="Search bookings..." />
             <button class="btn btn-outline-primary" type="button">
               <i class="bi bi-search"></i>
             </button>
@@ -33,68 +28,100 @@
         </div>
 
         <!-- Empty state -->
-        <div
-          v-else-if="paginatedBookings.length === 0"
-          class="text-center py-5"
-        >
+        <div v-else-if="paginatedBookings.length === 0" class="text-center py-5">
           <i class="bi bi-calendar-x display-1 text-muted"></i>
           <p class="mt-3 text-muted">{{ t("NoBookingHistory") }}</p>
         </div>
 
         <!-- Table with data -->
         <div v-else class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover mb-0 align-middle">
             <thead class="table-light">
               <tr>
-                <th class="fw-semibold border-0">{{ t("BookingDate") }}</th>
-                <th class="fw-semibold border-0">{{ t("Status") }}</th>
-                <th class="fw-semibold border-0">{{ t("TotalAmount") }}</th>
-                <th class="fw-semibold border-0">{{ t("Field") }}</th>
-                <th class="fw-semibold border-0">{{ t("Time") }}</th>
-                <th class="fw-semibold border-0">{{ t("Stadium") }}</th>
-                <th class="fw-semibold border-0">{{ t("Hành động") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("BookingDate") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Stadium") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Field") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("StartTime") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("EndTime") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("TotalAmount") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Status") }}</th>
+                <th class="fw-semibold border-0 text-uppercase">{{ t("Actions") }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="booking in paginatedBookings"
-                :key="booking.BookingId"
-                class="align-middle"
-              >
-                <td>{{ formatDate(booking.BookingDate) }}</td>
+              <tr v-for="booking in paginatedBookings" :key="booking.BookingId" class="align-middle border-bottom">
                 <td>
-                  <span
-                    class="badge"
-                    :class="getStatusBadgeClass(booking.Status)"
-                  >
-                    {{ booking.Status }}
-                  </span>
+                  <div class="d-flex align-items-center">
+                    <div
+                      class="date-icon bg-light rounded-circle p-2 me-2 d-flex align-items-center justify-content-center"
+                      style="width: 40px; height: 40px;">
+                      <i class="bi bi-calendar-date text-primary"></i>
+                    </div>
+                    <span>{{ formatDate(booking.BookingDate) }}</span>
+                  </div>
                 </td>
-                <td class="fw-semibold">
-                  {{ formatCurrency(booking.TotalPrice) }}
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-building me-1 text-muted"></i>
+                    {{ booking.StadiumName }}
+                  </div>
                 </td>
-                <td>{{ booking.FieldId }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-geo-alt me-1 text-muted"></i>
+                    {{ booking.FieldId }}
+                  </div>
+                </td>
                 <td>
                   <div class="d-flex align-items-center">
                     <i class="bi bi-clock me-1 text-muted"></i>
-                    {{ formatTime(booking.StartTime) }} -
+                    {{ formatTime(booking.StartTime) }}
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-clock me-1 text-muted"></i>
                     {{ formatTime(booking.EndTime) }}
                   </div>
                 </td>
-                <td>{{ booking.StadiumName }}</td>
+                <td class="fw-semibold text-primary">
+                  {{ formatCurrency(booking.TotalPrice) }}
+                </td>
                 <td>
-                  <button
-                    class="btn btn-outline-primary btn-sm me-2"
-                    @click="openRefundModal(booking.BookingId)"
-                  >
-                    Refund
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary btn-sm"
-                    @click="goToFeedback(booking.BookingId)"
-                  >
-                    Feedback
-                  </button>
+                  <span class="badge rounded-pill" :class="getStatusBadgeClass(booking.Status)">
+                    {{ booking.Status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-outline-primary btn-sm dropdown-toggle rounded-pill px-3" type="button"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots-vertical me-1"></i> Actions
+                    </button>
+                    <ul class="dropdown-menu shadow border-0">
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center" @click="getInvoice(booking.BookingId)">
+                          <i class="bi bi-file-earmark-text me-2 text-primary"></i> Get invoice
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center" @click="openRefundModal(booking.BookingId)">
+                          <i class="bi bi-arrow-counterclockwise me-2 text-warning"></i> Refund
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center" @click="goToFeedback(booking.BookingId)">
+                          <i class="bi bi-chat-square-text me-2 text-success"></i> Feedback
+                        </a>
+                      </li>
+                      <!-- Report Booking option - only for past bookings -->
+                      <li v-if="isPastBooking(booking)">
+                        <a class="dropdown-item d-flex align-items-center" @click="openReportModal(booking)">
+                          <i class="bi bi-exclamation-triangle me-2 text-danger"></i> Report Issue
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -104,34 +131,21 @@
         <!-- Pagination footer -->
         <div class="card-footer bg-white py-3 border-0">
           <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted"
-              >{{ t("Show") }} {{ paginatedBookings.length }} {{ t("On") }}
-              {{ bookings.length }} {{ t("Result") }}</small
-            >
+            <small class="text-muted">{{ t("Show") }} {{ paginatedBookings.length }} {{ t("On") }}
+              {{ bookings.length }} {{ t("Result") }}</small>
             <nav aria-label="Điều hướng trang">
               <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                  <button
-                    class="page-link rounded-start"
-                    @click="currentPage--"
-                  >
+                  <button class="page-link rounded-start" @click="currentPage--">
                     <i class="bi bi-chevron-left"></i> Trước
                   </button>
                 </li>
-                <li
-                  v-for="page in totalPages"
-                  :key="page"
-                  class="page-item"
-                  :class="{ active: currentPage === page }"
-                >
+                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
                   <button class="page-link" @click="currentPage = page">
                     {{ page }}
                   </button>
                 </li>
-                <li
-                  class="page-item"
-                  :class="{ disabled: currentPage === totalPages }"
-                >
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
                   <button class="page-link rounded-end" @click="currentPage++">
                     Tiếp <i class="bi bi-chevron-right"></i>
                   </button>
@@ -141,6 +155,7 @@
           </div>
         </div>
       </div>
+      <div style="margin-bottom: 250px;"></div>
     </div>
 
     <!-- Refund Modal -->
@@ -170,21 +185,146 @@
           Tôi đồng ý với điều khoản hoàn tiền
         </label>
         <div class="modal-actions" style="display: flex; gap: 10px">
-          <button
-            @click="confirmRefund"
-            :disabled="!agreedToRefundTerms"
-            class="btn btn-success"
-            style="flex: 1"
-          >
+          <button @click="confirmRefund" :disabled="!agreedToRefundTerms" class="btn btn-success" style="flex: 1">
             Xác nhận
           </button>
-          <button
-            @click="showRefundModal = false"
-            class="btn btn-danger"
-            style="flex: 1"
-          >
+          <button @click="showRefundModal = false" class="btn btn-danger" style="flex: 1">
             Hủy
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Booking Modal - Google Form Style -->
+    <div class="modal fade" id="reportBookingModal" tabindex="-1" aria-labelledby="reportBookingModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-light">
+            <h5 class="modal-title" id="reportBookingModalLabel">
+              <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Report Booking Issue
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="submitReport" class="google-form-style">
+              <!-- Booking details summary -->
+              <div class="mb-4 p-3 bg-light rounded">
+                <h6 class="mb-2 text-muted">Booking Details</h6>
+                <div class="row g-2" v-if="selectedBooking">
+                  <div class="col-md-6">
+                    <small class="text-muted d-block">Date:</small>
+                    <span>{{ formatDate(selectedBooking.BookingDate) }}</span>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted d-block">Time:</small>
+                    <span>{{ formatTime(selectedBooking.StartTime) }} - {{ formatTime(selectedBooking.EndTime) }}</span>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted d-block">Field:</small>
+                    <span>{{ selectedBooking.FieldId }}</span>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted d-block">Stadium:</small>
+                    <span>{{ selectedBooking.StadiumName }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Issue Type - Radio buttons like Google Form -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">What issue did you experience? <span class="text-danger">*</span></label>
+
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="issueType" id="issue1"
+                    value="Poor field condition" v-model="reportData.reasonType">
+                  <label class="form-check-label" for="issue1">
+                    Poor field condition
+                  </label>
+                </div>
+
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="issueType" id="issue2"
+                    value="Facility issues (changing rooms, bathrooms, etc.)" v-model="reportData.reasonType">
+                  <label class="form-check-label" for="issue2">
+                    Facility issues (changing rooms, bathrooms, etc.)
+                  </label>
+                </div>
+
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="issueType" id="issue3"
+                    value="Unprofessional staff behavior" v-model="reportData.reasonType">
+                  <label class="form-check-label" for="issue3">
+                    Unprofessional staff behavior
+                  </label>
+                </div>
+
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="issueType" id="issue4"
+                    value="Double booking/scheduling conflict" v-model="reportData.reasonType">
+                  <label class="form-check-label" for="issue4">
+                    Double booking/scheduling conflict
+                  </label>
+                </div>
+
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="issueType" id="issue5"
+                    value="Safety concerns" v-model="reportData.reasonType">
+                  <label class="form-check-label" for="issue5">
+                    Safety concerns
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="issueType" id="issue6"
+                    value="other" v-model="reportData.reasonType">
+                  <label class="form-check-label" for="issue6">
+                    Other
+                  </label>
+                </div>
+
+                <!-- Other reason input - only appears when "Other" is selected -->
+                <div class="mt-2 ps-4" v-if="reportData.reasonType === 'other'">
+                  <input type="text" class="form-control" v-model="reportData.otherReason"
+                    placeholder="Please specify your issue" required>
+                </div>
+              </div>
+
+              <!-- Image Upload -->
+              <div class="mb-4">
+                <label class="form-label fw-bold d-block">Upload Image (Optional)</label>
+                <div class="d-flex align-items-center">
+                  <button type="button" class="btn btn-outline-secondary me-2" @click="triggerFileInput">
+                    <i class="bi bi-image me-1"></i> Choose Image
+                  </button>
+                  <span class="text-muted small" v-if="reportData.image">{{ reportData.image.name }}</span>
+                  <span class="text-muted small" v-else>No file chosen</span>
+                </div>
+                <input type="file" ref="fileInput" class="d-none" @change="handleImageUpload" accept="image/*">
+                <div class="form-text">Upload an image to help us understand the issue better.</div>
+              </div>
+
+              <!-- Image preview -->
+              <div class="mb-4" v-if="reportData.imagePreview">
+                <label class="form-label fw-bold">Image Preview</label>
+                <div class="position-relative d-inline-block">
+                  <img :src="reportData.imagePreview" alt="Preview" class="img-thumbnail" style="max-height: 200px">
+                  <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                    @click="removeImage">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" @click="submitReport"
+              :disabled="!isReportFormValid">
+              Submit Report
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -193,15 +333,13 @@
   <div style="margin-bottom: 93px"></div>
 </template>
 
-<script setup>
-import { useI18n } from "vue-i18n";
-const { t } = useI18n();
-</script>
-
 <script>
+import { useI18n } from "vue-i18n";
 import API from "@/utils/axios";
 import CommonHelper from "@/utils/common";
 import "@fortawesome/fontawesome-free/css/all.css";
+import * as bootstrap from 'bootstrap';
+import { showMessageBox } from "@/utils/message-box-service";
 
 export default {
   data() {
@@ -211,9 +349,21 @@ export default {
       currentPage: 1,
       itemsPerPage: 10,
       searchQuery: "",
-      showRefundModal: false, // Trạng thái hiển thị modal
-      agreedToRefundTerms: false, // Trạng thái checkbox đồng ý
+      showRefundModal: false,
+      agreedToRefundTerms: false,
       bookingId: "",
+      selectedBooking: null,
+      reportModal: null,
+
+      // Report data
+      reportData: {
+        bookingId: null,
+        reasonType: "",
+        otherReason: "",
+        description: "",
+        image: null,
+        imagePreview: null
+      }
     };
   },
   computed: {
@@ -233,8 +383,16 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredBookings.length / this.itemsPerPage);
     },
+    isReportFormValid() {
+      if (!this.reportData.reasonType) return false;
+      if (this.reportData.reasonType === 'other' && !this.reportData.otherReason) return false;
+      return true;
+    }
   },
   methods: {
+    t(key) {
+      return useI18n().t(key);
+    },
     formatDate(dateString) {
       if (!dateString) return "";
       const options = { year: "numeric", month: "long", day: "numeric" };
@@ -242,8 +400,11 @@ export default {
     },
     formatTime(timeString) {
       if (!timeString) return "";
-      const options = { hour: "2-digit", minute: "2-digit" };
-      return new Date(timeString).toLocaleTimeString("vi-VN", options);
+      const timeOptions = { hour: "2-digit", minute: "2-digit", hour12: false };
+      const time = new Date(timeString).toLocaleTimeString("vi-VN", timeOptions);
+      const dateOptions = { year: "numeric", month: "long", day: "numeric" };
+      const date = new Date(timeString).toLocaleDateString("vi-VN", dateOptions);
+      return `${time}, ${date}`;
     },
     formatCurrency(value) {
       return CommonHelper.formatVND(value);
@@ -265,23 +426,28 @@ export default {
           return "bg-secondary";
       }
     },
+    isPastBooking(booking) {
+      if (!booking.EndTime) return false;
+      const now = new Date();
+      const endTime = new Date(booking.EndTime);
+      return endTime <= now;
+    },
     async fetchBookings() {
       this.loading = true;
       try {
         const userId = CommonHelper.getCurrentUserId();
         const response = await API.get(`Booking/history/${userId}`);
-        this.bookings = this.bookings.concat(
-          response.data.map((b) => ({
-            BookingId: b.bookingId,
-            TotalPrice: b.totalPrice,
-            BookingDate: b.bookingDate,
-            Status: b.status,
-            FieldId: b.description,
-            StartTime: b.startTime,
-            EndTime: b.endTime,
-            StadiumName: b.stadiumName,
-          }))
-        );
+        this.bookings = response.data.map((b) => ({
+          BookingId: b.bookingId,
+          TotalPrice: b.totalPrice,
+          BookingDate: b.bookingDate,
+          Status: b.status,
+          FieldId: b.description,
+          StartTime: b.startTime,
+          EndTime: b.endTime,
+          StadiumName: b.stadiumName,
+          IsReport: b.isReport
+        }));
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       } finally {
@@ -294,30 +460,170 @@ export default {
     goToFeedback(bookingId) {
       this.$router.push({ name: "rate", params: { bookingId } });
     },
-    openRefundModal(bookingId) {
-      this.bookingId = bookingId;
+    openRefundModal(id) {
+      this.bookingId = id;
       this.showRefundModal = true;
-      this.agreedToRefundTerms = false; // Reset checkbox khi mở modal
+      this.agreedToRefundTerms = false;
+    },
+    openReportModal(booking) {
+      if(booking.IsReport) {
+        showMessageBox({
+          title: "",
+          description: "You have already reported this booking.",
+          type: "info",
+          confirmText: "OK",
+        });
+        return;
+      }
+      else{
+        this.selectedBooking = booking;
+        this.reportData = {
+          bookingId: booking.BookingId,
+          reasonType: "",
+          otherReason: "",
+          description: "",
+          image: null,
+          imagePreview: null
+        };
+
+        // Show the modal
+        if (this.reportModal) {
+          this.reportModal.show();
+        }
+      }
+    },
+    triggerFileInput() {
+      // Trigger the hidden file input
+      this.$refs.fileInput.click();
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Check if file is an image
+      if (!file.type.match('image.*')) {
+        alert('Please select an image file');
+        return;
+      }
+
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should not exceed 5MB');
+        return;
+      }
+
+      this.reportData.image = file;
+
+      // Create image preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.reportData.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage() {
+      this.reportData.image = null;
+      this.reportData.imagePreview = null;
+      // Reset file input
+      this.$refs.fileInput.value = '';
+    },
+    async submitReport() {
+      if (!this.isReportFormValid) return;
+
+      try {
+        this.loading = true;
+
+        // Create form data for file upload
+        const formData = new FormData();
+        formData.append('userId', CommonHelper.getCurrentUserId());
+        formData.append('bookingId', this.reportData.bookingId);
+        formData.append('reasonType', this.reportData.reasonType);
+
+        if (this.reportData.reasonType === 'other') {
+          formData.append('description', this.reportData.otherReason);
+        } else {
+          formData.append('description', this.reportData.reasonType);
+        }
+
+        if (this.reportData.image) {
+          formData.append('image', this.reportData.image);
+        }
+
+        // Send report to API
+        await API.post('Booking/report-issue', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        // Close modal and show success message
+        if (this.reportModal) {
+          this.reportModal.hide();
+        }
+
+        this.fetchBookings();
+        showMessageBox({
+          title: "Infomation",
+          description: "Send successfully!",
+          type: "success",
+          confirmText: "OK",
+        });
+
+        // Reset form
+        this.reportData = {
+          bookingId: null,
+          reasonType: "",
+          otherReason: "",
+          description: "",
+          image: null,
+          imagePreview: null
+        };
+
+      } catch (error) {
+        console.error('Error submitting report:', error);
+        alert('Failed to submit report. Please try again later.');
+      } finally {
+        this.loading = false;
+      }
+    },
+    async getInvoice(bookingId) {
+      try {
+        const response = await API.get(`Invoice/download/${bookingId}`, {
+          responseType: 'blob',
+        });
+
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `invoice_${bookingId}.pdf`;
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Failed to download invoice:', error);
+      }
     },
     confirmRefund() {
       if (!this.agreedToRefundTerms) return;
-
-      // Chuyển hướng đến trang refund-request với bookingId đã chọn
       this.goToRefundRequest(this.bookingId);
-
-      // Đóng modal sau khi xác nhận
       this.showRefundModal = false;
       this.agreedToRefundTerms = false;
-    },
+    }
   },
   mounted() {
     this.fetchBookings();
-  },
+
+    // Initialize Bootstrap modal
+    this.reportModal = new bootstrap.Modal(document.getElementById('reportBookingModal'));
+  }
 };
 </script>
 
-<style>
+<style scoped>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
+
 /* Custom styles */
 .table th {
   font-weight: 600;
@@ -430,7 +736,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Đảm bảo modal nằm trên các phần tử khác */
+  z-index: 1000;
 }
 
 .modal-background {
@@ -439,20 +745,20 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền tối với độ trong suốt */
-  z-index: 999; /* Đặt nền dưới nội dung modal */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 .modal-content {
-  background-color: white !important; /* Màu nền trắng cho modal */
-  border-radius: 8px; /* Bo góc cho modal */
+  background-color: white !important;
+  border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng cho modal */
-  max-width: 500px; /* Chiều rộng tối đa của modal */
-  width: 90%; /* Chiều rộng 90% cho các màn hình nhỏ */
-  position: relative; /* Để nội dung nằm trên nền */
-  z-index: 1000; /* Đảm bảo nội dung nằm trên nền */
-  animation: fadeIn 0.3s; /* Hiệu ứng xuất hiện */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  z-index: 1000;
+  animation: fadeIn 0.3s;
 }
 
 @keyframes fadeIn {
@@ -460,6 +766,7 @@ export default {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -468,73 +775,166 @@ export default {
 
 h3 {
   margin-bottom: 15px;
-  text-align: center; /* Căn giữa tiêu đề */
-  font-size: 24px; /* Kích thước chữ tiêu đề */
-  color: #333; /* Màu chữ tiêu đề */
+  text-align: center;
+  font-size: 24px;
+  color: #333;
 }
 
 ul {
-  list-style-type: none; /* Bỏ dấu đầu dòng */
-  padding: 0; /* Bỏ khoảng cách bên trong */
-  margin-bottom: 20px; /* Khoảng cách dưới cho danh sách */
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
 }
 
 ul li {
-  margin-bottom: 10px; /* Khoảng cách giữa các mục trong danh sách */
-  font-size: 16px; /* Kích thước chữ cho các mục */
-  display: flex; /* Sử dụng flexbox để căn giữa biểu tượng và văn bản */
-  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-bottom: 10px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
 }
+
 ul li i {
-  margin-right: 10px; /* Khoảng cách giữa biểu tượng và văn bản */
-  color: #28a745; /* Màu sắc cho biểu tượng thành công */
-  font-size: 18px; /* Kích thước biểu tượng */
+  margin-right: 10px;
+  color: #28a745;
+  font-size: 18px;
 }
 
 ul li i.fa-times-circle {
-  color: #dc3545; /* Màu sắc cho biểu tượng không thành công */
+  color: #dc3545;
 }
 
 label {
   display: flex;
-  align-items: center; /* Căn giữa các phần tử trong label */
-  margin-bottom: 20px; /* Khoảng cách dưới cho label */
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 label input {
-  margin-right: 10px; /* Khoảng cách giữa checkbox và văn bản */
+  margin-right: 10px;
 }
 
 .modal-actions {
   display: flex;
-  justify-content: space-between; /* Căn giữa các nút */
+  justify-content: space-between;
 }
 
 .btn {
-  padding: 10px 15px; /* Khoảng cách cho nút */
+  padding: 10px 15px;
   border: none;
-  border-radius: 5px; /* Bo góc cho nút */
-  cursor: pointer; /* Hiệu ứng con trỏ khi hover */
-  transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển màu nền và hiệu ứng nhấn */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .btn-success {
-  background-color: #28a745; /* Màu nền cho nút xác nhận */
-  color: white; /* Màu chữ cho nút xác nhận */
+  background-color: #28a745;
+  color: white;
 }
 
 .btn-danger {
-  background-color: #dc3545; /* Màu nền cho nút hủy */
-  color: white; /* Màu chữ cho nút hủy */
+  background-color: #dc3545;
+  color: white;
 }
 
 .btn-success:disabled {
-  background-color: #c6e1b6; /* Màu nền cho nút xác nhận khi bị vô hiệu hóa */
-  cursor: not-allowed; /* Hiệu ứng con trỏ khi nút bị vô hiệu hóa */
+  background-color: #c6e1b6;
+  cursor: not-allowed;
 }
 
 .btn:hover:not(:disabled) {
-  opacity: 0.9; /* Hiệu ứng mờ khi hover */
-  transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Additional styles for enhanced table */
+.border-bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, .05) !important;
+}
+
+.rounded-pill {
+  border-radius: 50rem !important;
+}
+
+.text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.dropdown-menu {
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  border-radius: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.date-icon {
+  transition: all 0.3s ease;
+}
+
+tr:hover .date-icon {
+  background-color: #e9ecef !important;
+}
+
+/* Google Form style */
+.google-form-style .form-label.fw-bold {
+  color: #202124;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.google-form-style .form-check {
+  padding-left: 1.8rem;
+}
+
+.google-form-style .form-check-input {
+  width: 18px;
+  height: 18px;
+  margin-top: 0.2rem;
+  margin-left: -1.8rem;
+}
+
+.google-form-style .form-check-label {
+  font-size: 15px;
+}
+
+.google-form-style .form-control:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 0.2rem rgba(66, 133, 244, 0.25);
+}
+
+.google-form-style textarea.form-control {
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  transition: border 0.2s;
+}
+
+.google-form-style textarea.form-control:focus {
+  border-color: #4285f4;
+}
+
+/* Image preview styles */
+.img-thumbnail {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
 }
 </style>

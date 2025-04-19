@@ -12,6 +12,7 @@ const store = createStore({
     },
     isLoading: false,
     chosenServices: [],
+    multipleBookingModel: null,
   },
   mutations: {
     SET_IDENTITY(state, identity) {
@@ -49,6 +50,17 @@ const store = createStore({
     REMOVE_SERVICE(state, index) {
       state.chosenServices.splice(index, 1);
     },
+    SET_MULTIPLE_BOOKING_MODEL(state, multipleBookingModel) {
+      state.multipleBookingModel = multipleBookingModel;
+      localStorage.setItem(
+        "multipleBookingModel",
+        JSON.stringify(multipleBookingModel)
+      );
+    },
+    CLEAR_MULTIPLE_BOOKING_MODEL(state) {
+      state.multipleBookingModel = null;
+      localStorage.removeItem("multipleBookingModel");
+    },
   },
   actions: {
     async login({ commit }, identity) {
@@ -80,12 +92,21 @@ const store = createStore({
     removeService({ commit }, index) {
       commit("REMOVE_SERVICE", index);
     },
+    setMultipleBookingModel({ commit }, model) {
+      commit("SET_MULTIPLE_BOOKING_MODEL", model);
+    },
+    clearMultipleBookingModel({ commit }) {
+      commit("CLEAR_MULTIPLE_BOOKING_MODEL");
+    },
   },
   getters: {
     isAuthenticated: (state) => !!state.identity.accessToken,
     accessToken: (state) => state.identity.accessToken,
     refreshToken: (state) => state.identity.refreshToken,
     identity: (state) => state.identity,
+    multipleBookingModel: (state) =>
+      state.multipleBookingModel ||
+      JSON.parse(localStorage.getItem("multipleBookingModel")),
     chosenServices: (state) => state.chosenServices,
   },
 });

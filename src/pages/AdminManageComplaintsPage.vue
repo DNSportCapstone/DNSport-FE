@@ -1,193 +1,80 @@
 <template>
-    <div class="complaints-management-container p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="mb-1">Complaints & Feedback Management</h2>
-                <p class="text-muted">Manage and track user complaints and feedback</p>
+    <div class="violation-report-container">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Violation Reports</h4>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-secondary" @click="exportComplaints">
-                    <i class="bi bi-download me-1"></i> Export
-                </button>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-                    <i class="bi bi-bar-chart me-1"></i> Reports
-                </button>
-            </div>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-md-3 mb-3 mb-md-0">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-inbox-fill text-primary fs-4"></i>
-                        </div>
-                        <div>
-                            <h6 class="card-subtitle text-muted mb-1">Total Complaints</h6>
-                            <h3 class="card-title mb-0">{{ complaints.length }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3 mb-md-0">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-exclamation-circle-fill text-danger fs-4"></i>
-                        </div>
-                        <div>
-                            <h6 class="card-subtitle text-muted mb-1">Unresolved</h6>
-                            <h3 class="card-title mb-0">{{ getComplaintsByStatus('New').length +
-                                getComplaintsByStatus('In Progress').length }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3 mb-md-0">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
-                        </div>
-                        <div>
-                            <h6 class="card-subtitle text-muted mb-1">Resolved</h6>
-                            <h3 class="card-title mb-0">{{ getComplaintsByStatus('Resolved').length }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-clock-fill text-info fs-4"></i>
-                        </div>
-                        <div>
-                            <h6 class="card-subtitle text-muted mb-1">Avg. Response Time</h6>
-                            <h3 class="card-title mb-0">1.8 days</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filters and Search -->
-        <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label for="statusFilter" class="form-label">Status</label>
-                        <select id="statusFilter" class="form-select" v-model="filters.status">
-                            <option value="">All Statuses</option>
-                            <option value="New">New</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="priorityFilter" class="form-label">Priority</label>
-                        <select id="priorityFilter" class="form-select" v-model="filters.priority">
-                            <option value="">All Priorities</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Urgent">Urgent</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="categoryFilter" class="form-label">Category</label>
-                        <select id="categoryFilter" class="form-select" v-model="filters.category">
-                            <option value="">All Categories</option>
-                            <option value="Technical">Technical</option>
-                            <option value="Billing">Billing</option>
-                            <option value="Service">Service</option>
-                            <option value="Product">Product</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="assigneeFilter" class="form-label">Assignee</label>
-                        <select id="assigneeFilter" class="form-select" v-model="filters.assignee">
-                            <option value="">All Assignees</option>
-                            <option v-for="staff in staffMembers" :key="staff.id" :value="staff.id">
-                                {{ staff.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="dateRangeFilter" class="form-label">Date Range</label>
-                        <div class="input-group">
-                            <input type="date" class="form-control" v-model="filters.dateFrom">
-                            <span class="input-group-text">to</span>
-                            <input type="date" class="form-control" v-model="filters.dateTo">
+                <!-- Filters and Search -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex gap-2">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary" :class="{ 'active': statusFilter === 'all' }"
+                                @click="setStatusFilter('all')">
+                                All Reports
+                            </button>
+                            <button class="btn btn-outline-secondary" :class="{ 'active': statusFilter === 'pending' }"
+                                @click="setStatusFilter('pending')">
+                                Pending
+                            </button>
+                            <button class="btn btn-outline-secondary" :class="{ 'active': statusFilter === 'handled' }"
+                                @click="setStatusFilter('handled')">
+                                Handled
+                            </button>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="searchFilter" class="form-label">Search</label>
+
+                    <div class="col-md-4">
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" class="form-control"
-                                placeholder="Search by ID, customer name, or keywords..." v-model="filters.search">
-                            <button v-if="filters.search" class="btn btn-outline-secondary" type="button"
+                            <input type="text" class="form-control" placeholder="Search reports..."
+                                v-model="searchQuery" @input="handleSearch">
+                            <button v-if="searchQuery" class="btn btn-outline-secondary" type="button"
                                 @click="clearSearch">
                                 <i class="bi bi-x"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer bg-white d-flex justify-content-between">
-                <button class="btn btn-outline-secondary" @click="resetFilters">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
-                </button>
-                <button class="btn btn-primary" @click="applyFilters">
-                    <i class="bi bi-funnel me-1"></i> Apply Filters
-                </button>
-            </div>
-        </div>
 
-        <!-- Complaints Table -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                <!-- Reports Table -->
+                <div class="table-responsive" :class="{ 'loading': loading }">
+                    <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th @click="sortBy('id')" class="sortable-header">
-                                    ID
-                                    <i v-if="sortColumn === 'id'" :class="[
+                                <th @click="sortBy('reportId')" class="sortable-header">
+                                    Report ID
+                                    <i v-if="sortColumn === 'reportId'" :class="[
                                         'bi',
                                         sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                                     ]"></i>
                                 </th>
-                                <th @click="sortBy('customerName')" class="sortable-header">
-                                    Customer
-                                    <i v-if="sortColumn === 'customerName'" :class="[
+                                <th @click="sortBy('fieldName')" class="sortable-header">
+                                    Field Name
+                                    <i v-if="sortColumn === 'fieldName'" :class="[
                                         'bi',
                                         sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                                     ]"></i>
                                 </th>
-                                <th @click="sortBy('subject')" class="sortable-header">
-                                    Subject
-                                    <i v-if="sortColumn === 'subject'" :class="[
+                                <th @click="sortBy('reportedBy')" class="sortable-header">
+                                    Reported By
+                                    <i v-if="sortColumn === 'reportedBy'" :class="[
                                         'bi',
                                         sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                                     ]"></i>
                                 </th>
-                                <th @click="sortBy('category')" class="sortable-header">
-                                    Category
-                                    <i v-if="sortColumn === 'category'" :class="[
+                                <th @click="sortBy('reason')" class="sortable-header">
+                                    Reason
+                                    <i v-if="sortColumn === 'reason'" :class="[
                                         'bi',
                                         sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                                     ]"></i>
                                 </th>
-                                <th @click="sortBy('priority')" class="sortable-header">
-                                    Priority
-                                    <i v-if="sortColumn === 'priority'" :class="[
+                                <th @click="sortBy('dateSubmitted')" class="sortable-header">
+                                    Date Submitted
+                                    <i v-if="sortColumn === 'dateSubmitted'" :class="[
                                         'bi',
                                         sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                                     ]"></i>
@@ -199,104 +86,126 @@
                                         sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
                                     ]"></i>
                                 </th>
-                                <th @click="sortBy('assignee')" class="sortable-header">
-                                    Assignee
-                                    <i v-if="sortColumn === 'assignee'" :class="[
-                                        'bi',
-                                        sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
-                                    ]"></i>
-                                </th>
-                                <th @click="sortBy('createdAt')" class="sortable-header">
-                                    Date
-                                    <i v-if="sortColumn === 'createdAt'" :class="[
-                                        'bi',
-                                        sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'
-                                    ]"></i>
-                                </th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="complaint in paginatedComplaints" :key="complaint.id"
-                                @click="viewComplaint(complaint)" class="complaint-row">
-                                <td><span class="fw-medium">#{{ complaint.id }}</span></td>
+                            <tr v-for="report in paginatedReports" :key="report.reportId">
+                                <td>#{{ report.denounceId }}</td>
+                                <td>{{ report.stadiumName }}</td>
+                                <td>{{ report.userName }}</td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-circle me-2">{{ getInitials(complaint.customerName) }}</div>
-                                        <div>
-                                            <div class="fw-medium">{{ complaint.customerName }}</div>
-                                            <div class="small text-muted">{{ complaint.email }}</div>
-                                        </div>
-                                    </div>
+                                    <span class="text-truncate d-inline-block" style="max-width: 200px;">{{
+                                        report.description }}</span>
                                 </td>
-                                <td>{{ complaint.subject }}</td>
+                                <td>{{ formatDate(report.denounceTime) }}</td>
                                 <td>
-                                    <span class="badge rounded-pill text-bg-secondary">{{ complaint.category }}</span>
-                                </td>
-                                <td>
-                                    <span :class="getPriorityBadgeClass(complaint.priority)">
-                                        {{ complaint.priority }}
+                                    <span :class="getStatusBadgeClass(report.status)">
+                                        {{ report.status }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span :class="getStatusBadgeClass(complaint.status)">
-                                        {{ complaint.status }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div v-if="complaint.assigneeId" class="d-flex align-items-center">
-                                        <div class="avatar-circle me-2 bg-info bg-opacity-10 text-info">
-                                            {{ getStaffInitials(complaint.assigneeId) }}
-                                        </div>
-                                        <span>{{ getStaffName(complaint.assigneeId) }}</span>
-                                    </div>
-                                    <span v-else class="text-muted">Unassigned</span>
-                                </td>
-                                <td>
-                                    <div>{{ formatDate(complaint.createdAt) }}</div>
-                                    <div class="small text-muted">{{ getTimeAgo(complaint.createdAt) }}</div>
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-1">
+                                    <div class="btn-group">
                                         <button class="btn btn-sm btn-outline-primary"
-                                            @click.stop="viewComplaint(complaint)">
-                                            <i class="bi bi-eye"></i>
+                                            @click="viewReportDetails(report)">
+                                            <i class="bi bi-eye"></i> View
                                         </button>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                                                @click.stop>
-                                                <i class="bi bi-three-dots"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click.prevent.stop="assignComplaint(complaint)">
-                                                        <i class="bi bi-person-check me-2"></i>Assign</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click.prevent.stop="updateStatus(complaint, 'In Progress')">
-                                                        <i class="bi bi-play-circle me-2"></i>Mark In Progress</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click.prevent.stop="updateStatus(complaint, 'Resolved')">
-                                                        <i class="bi bi-check-circle me-2"></i>Mark Resolved</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click.prevent.stop="updateStatus(complaint, 'Closed')">
-                                                        <i class="bi bi-x-circle me-2"></i>Close Complaint</a></li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li><a class="dropdown-item text-danger" href="#"
-                                                        @click.prevent.stop="deleteComplaint(complaint)">
-                                                        <i class="bi bi-trash me-2"></i>Delete</a></li>
-                                            </ul>
-                                        </div>
+                                        <button class="btn btn-sm btn-outline-warning"
+                                            @click="openSendWarningModal(report)"
+                                            :disabled="report.status == 'handled'">
+                                            <i class="bi bi-exclamation-triangle"></i> Warning
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" @click="markAsHandled(report)"
+                                            :disabled="report.status == 'handled'">
+                                            <i class="bi bi-check-circle"></i> Mark Handled
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-if="filteredComplaints.length === 0">
-                                <td colspan="9" class="text-center py-4">
+                            <tr v-if="filteredReports.length === 0">
+                                <td colspan="7" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                                        No complaints found
+                                        No violation reports found
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div v-if="loading" class="loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        Showing {{ startIndex + 1 }} to {{ Math.min(endIndex, filteredReports.length) }} of {{
+                        filteredReports.length }}
+                        reports
+                    </div>
+                    <nav aria-label="Table pagination">
+                        <ul class="pagination mb-0">
+                            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                <a class="page-link" href="#" @click.prevent="goToPage(currentPage - 1)">Previous</a>
+                            </li>
+                            <li v-for="page in displayedPages" :key="page" class="page-item"
+                                :class="{ active: currentPage === page }">
+                                <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page }}</a>
+                            </li>
+                            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                                <a class="page-link" href="#" @click.prevent="goToPage(currentPage + 1)">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field Violation Summary Card -->
+        <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Field Violation Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Field ID</th>
+                                <th>Field Name</th>
+                                <th>Stadium Name</th>
+                                <th>Owner</th>
+                                <th>Total Reports</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="field in fieldSummary" :key="field.fieldId">
+                                <td>#{{ field.fieldId }}</td>
+                                <td>{{ field.fieldName }}</td>
+                                <td>{{ field.stadiumName }}</td>
+                                <td>{{ field.ownerName }}</td>
+                                <td>
+                                    <span class="badge bg-danger">{{ field.violationCount }}</span>
+                                </td>
+                                <td>
+                                    <button v-if="field.isActive" class="btn btn-sm btn-danger"
+                                        @click="openDisableFieldModal(field)">
+                                        <i class="bi bi-slash-circle"></i> Disable Field
+                                    </button>
+                                    <button v-else class="btn btn-sm btn-success" @click="enableField(field)">
+                                        <i class="bi bi-check-circle"></i> Enable Field
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr v-if="fieldSummary.length === 0">
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                        No field violation data available
                                     </div>
                                 </td>
                             </tr>
@@ -304,452 +213,171 @@
                     </table>
                 </div>
             </div>
-
-            <!-- Pagination -->
-            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                <div>
-                    Showing {{ startIndex + 1 }} to {{ Math.min(endIndex, filteredComplaints.length) }} of {{
-                        filteredComplaints.length }} complaints
-                </div>
-                <nav aria-label="Complaints pagination">
-                    <ul class="pagination mb-0">
-                        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                            <a class="page-link" href="#" @click.prevent="goToPage(currentPage - 1)">Previous</a>
-                        </li>
-                        <li v-for="page in displayedPages" :key="page" class="page-item"
-                            :class="{ active: currentPage === page, disabled: page === '...' }">
-                            <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page }}</a>
-                        </li>
-                        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                            <a class="page-link" href="#" @click.prevent="goToPage(currentPage + 1)">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
         </div>
 
-        <!-- Complaint Detail Modal -->
-        <div class="modal fade" id="complaintDetailModal" tabindex="-1" aria-labelledby="complaintDetailModalLabel"
+        <!-- Report Details Modal -->
+        <div class="modal fade" id="reportDetailsModal" tabindex="-1" aria-labelledby="reportDetailsModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="complaintDetailModalLabel">
-                            Complaint #{{ selectedComplaint ? selectedComplaint.id : '' }}
-                        </h5>
+                        <h5 class="modal-title" id="reportDetailsModalLabel">Violation Report Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" v-if="selectedComplaint">
-                        <div class="row mb-4">
-                            <div class="col-md-8">
-                                <h4>{{ selectedComplaint.subject }}</h4>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="avatar-circle me-2">{{ getInitials(selectedComplaint.customerName) }}
-                                    </div>
-                                    <div>
-                                        <div class="fw-medium">{{ selectedComplaint.customerName }}</div>
-                                        <div class="text-muted">{{ selectedComplaint.email }}</div>
-                                    </div>
+                    <div class="modal-body" v-if="selectedReport">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-3">Report Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Report ID</label>
+                                    <p>#{{ selectedReport.denounceId }}</p>
                                 </div>
                                 <div class="mb-3">
-                                    <span class="badge rounded-pill text-bg-secondary me-2">{{
-                                        selectedComplaint.category }}</span>
-                                    <span :class="getPriorityBadgeClass(selectedComplaint.priority)" class="me-2">
-                                        {{ selectedComplaint.priority }}
-                                    </span>
-                                    <span :class="getStatusBadgeClass(selectedComplaint.status)">
-                                        {{ selectedComplaint.status }}
-                                    </span>
+                                    <label class="form-label fw-bold">Field Name</label>
+                                    <p>{{ selectedReport.stadiumName }}</p>
                                 </div>
                                 <div class="mb-3">
-                                    <strong>Submitted:</strong> {{ formatDate(selectedComplaint.createdAt) }} ({{
-                                        getTimeAgo(selectedComplaint.createdAt) }})
+                                    <label class="form-label fw-bold">Description</label>
+                                    <p>{{ selectedReport.description }}</p>
                                 </div>
                                 <div class="mb-3">
-                                    <strong>Contact:</strong> {{ selectedComplaint.phone || 'N/A' }}
+                                    <label class="form-label fw-bold">Date Submitted</label>
+                                    <p>{{ formatDate(selectedReport.denounceTime, true) }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Status</label>
+                                    <p>
+                                        <span :class="getStatusBadgeClass(selectedReport.status)">
+                                            {{ selectedReport.status }}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="card border-0 bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Assigned To</h6>
-                                        <div v-if="selectedComplaint.assigneeId" class="d-flex align-items-center mb-3">
-                                            <div class="avatar-circle me-2 bg-info bg-opacity-10 text-info">
-                                                {{ getStaffInitials(selectedComplaint.assigneeId) }}
-                                            </div>
-                                            <div>
-                                                <div class="fw-medium">{{ getStaffName(selectedComplaint.assigneeId) }}
-                                                </div>
-                                                <div class="small text-muted">{{
-                                                    getStaffRole(selectedComplaint.assigneeId) }}</div>
-                                            </div>
-                                        </div>
-                                        <div v-else class="mb-3 text-muted">
-                                            Not assigned yet
-                                        </div>
-                                        <button class="btn btn-sm btn-outline-primary w-100"
-                                            @click="assignComplaint(selectedComplaint)">
-                                            <i class="bi bi-person-check me-1"></i> {{ selectedComplaint.assigneeId ?
-                                                'Reassign' : 'Assign' }}
-                                        </button>
-                                    </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-3">Reporter Information</h6>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Reported By</label>
+                                    <p>{{ selectedReport.userName }}</p>
                                 </div>
-                            </div>
-                        </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <p>{{ selectedReport.email }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Phone</label>
+                                    <p>{{ selectedReport.phoneNumber || 'N/A' }}</p>
+                                </div>
 
-                        <div class="card border-0 bg-light mb-4">
-                            <div class="card-body">
-                                <h6 class="card-title">Complaint Details</h6>
-                                <p class="card-text">{{ selectedComplaint.description }}</p>
-                            </div>
-                        </div>
-
-                        <h6 class="mb-3">Communication History</h6>
-                        <div class="timeline mb-4">
-                            <div v-for="(message, index) in selectedComplaint.messages" :key="index"
-                                :class="['timeline-item', message.isStaff ? 'timeline-staff' : 'timeline-customer']">
-                                <div class="timeline-badge">
-                                    <div class="avatar-circle"
-                                        :class="message.isStaff ? 'bg-info bg-opacity-10 text-info' : ''">
-                                        {{ message.isStaff ? getStaffInitials(message.staffId) :
-                                            getInitials(selectedComplaint.customerName) }}
+                                <h6 class="text-muted mb-3 mt-4">Evidence</h6>
+                                <div v-if="selectedReport.imageUrl" class="mb-3">
+                                    <img
+                                        :src="selectedReport.imageUrl"
+                                        class="img-fluid rounded cursor-pointer"
+                                        @click="openImagePreview(selectedReport.imageUrl)"
+                                        alt="Violation evidence"
+                                    />
                                     </div>
+                                    <div v-else class="mb-3">
+                                    <p class="text-muted">No images attached</p>
                                 </div>
-                                <div class="timeline-content">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <div class="fw-medium">
-                                            {{ message.isStaff ? getStaffName(message.staffId) :
-                                                selectedComplaint.customerName }}
-                                            <span class="badge ms-2"
-                                                :class="message.isStaff ? 'text-bg-info' : 'text-bg-primary'">
-                                                {{ message.isStaff ? 'Staff' : 'Customer' }}
-                                            </span>
-                                        </div>
-                                        <div class="text-muted small">{{ formatDate(message.timestamp) }}</div>
-                                    </div>
-                                    <div class="message-content">{{ message.content }}</div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <h6 class="mb-3">Add Response</h6>
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="responseMessage" class="form-label">Message</label>
-                                    <textarea class="form-control" id="responseMessage" rows="3"
-                                        v-model="newResponse"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="statusUpdate" class="form-label">Update Status</label>
-                                    <select class="form-select" id="statusUpdate" v-model="newStatus">
-                                        <option :value="selectedComplaint.status">Keep as {{ selectedComplaint.status }}
-                                        </option>
-                                        <option value="In Progress">In Progress</option>
-                                        <option value="Resolved">Resolved</option>
-                                        <option value="Closed">Closed</option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" @click="submitResponse">
-                            <i class="bi bi-send me-1"></i> Send Response
+                        <button v-if="selectedReport && selectedReport.status != 'handled'" type="button"
+                            class="btn btn-warning" @click="openSendWarningModal(selectedReport)">
+                            <i class="bi bi-exclamation-triangle"></i> Send Warning
+                        </button>
+                        <button v-if="selectedReport && selectedReport.status != 'handled'" type="button"
+                            class="btn btn-success" @click="markAsHandled(selectedReport)">
+                            <i class="bi bi-check-circle"></i> Mark as Handled
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Assign Modal -->
-        <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <!-- Send Warning Modal -->
+        <div class="modal fade" id="sendWarningModal" tabindex="-1" aria-labelledby="sendWarningModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="assignModalLabel">Assign Complaint</h5>
+                        <h5 class="modal-title" id="sendWarningModalLabel">Send Warning to Field Owner</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" v-if="selectedReport">
                         <div class="mb-3">
-                            <label for="assigneeSelect" class="form-label">Select Staff Member</label>
-                            <select class="form-select" id="assigneeSelect" v-model="selectedAssignee">
-                                <option value="">Unassigned</option>
-                                <option v-for="staff in staffMembers" :key="staff.id" :value="staff.id">
-                                    {{ staff.name }} ({{ staff.role }})
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="assignmentNote" class="form-label">Assignment Note (Optional)</label>
-                            <textarea class="form-control" id="assignmentNote" rows="3"
-                                v-model="assignmentNote"></textarea>
+                            <label class="form-label">Warning Message</label>
+                            <textarea class="form-control" rows="4" v-model="warningMessage"
+                                placeholder="Enter warning message..."></textarea>
+                            <div class="form-text">
+                                This message will be sent to the field owner along with the violation details.
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" @click="confirmAssignment">
-                            <i class="bi bi-person-check me-1"></i> Assign
+                        <button type="button" class="btn btn-warning" @click="sendWarning">
+                            <i class="bi bi-exclamation-triangle"></i> Send Warning
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Reports Modal -->
-        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+        <!-- Disable Field Modal -->
+        <div class="modal fade" id="disableFieldModal" tabindex="-1" aria-labelledby="disableFieldModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="reportModalLabel">Complaints Reports</h5>
+                        <h5 class="modal-title" id="disableFieldModalLabel">Disable Field</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="summary-tab" data-bs-toggle="tab"
-                                    data-bs-target="#summary" type="button" role="tab" aria-controls="summary"
-                                    aria-selected="true">Summary</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="category-tab" data-bs-toggle="tab"
-                                    data-bs-target="#category" type="button" role="tab" aria-controls="category"
-                                    aria-selected="false">By Category</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="status-tab" data-bs-toggle="tab" data-bs-target="#status"
-                                    type="button" role="tab" aria-controls="status" aria-selected="false">By
-                                    Status</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="assignee-tab" data-bs-toggle="tab"
-                                    data-bs-target="#assignee" type="button" role="tab" aria-controls="assignee"
-                                    aria-selected="false">By Assignee</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="reportTabsContent">
-                            <div class="tab-pane fade show active" id="summary" role="tabpanel"
-                                aria-labelledby="summary-tab">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="card border-0 bg-light mb-3">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Complaints Overview</h6>
-                                                <table class="table">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Total Complaints</td>
-                                                            <td class="text-end fw-bold">{{ complaints.length }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>New Complaints</td>
-                                                            <td class="text-end fw-bold">{{
-                                                                getComplaintsByStatus('New').length }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>In Progress</td>
-                                                            <td class="text-end fw-bold">{{
-                                                                getComplaintsByStatus('InProgress').length }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Resolved</td>
-                                                            <td class="text-end fw-bold">{{
-                                                                getComplaintsByStatus('Resolved').length }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Closed</td>
-                                                            <td class="text-end fw-bold">{{
-                                                                getComplaintsByStatus('Closed').length }}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card border-0 bg-light mb-3">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Response Metrics</h6>
-                                                <table class="table">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Average Response Time</td>
-                                                            <td class="text-end fw-bold">1.8 days</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Average Resolution Time</td>
-                                                            <td class="text-end fw-bold">4.2 days</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Complaints Resolved &lt; 24h</td>
-                                                            <td class="text-end fw-bold">24%</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Complaints Resolved &lt; 48h</td>
-                                                            <td class="text-end fw-bold">56%</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Complaints Resolved &lt; 7d</td>
-                                                            <td class="text-end fw-bold">82%</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card border-0 bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Complaints Trend (Last 30 Days)</h6>
-                                        <div class="chart-placeholder bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center"
-                                            style="height: 250px;">
-                                            <span class="text-muted">Chart visualization would appear here</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
-                                <div class="card border-0 bg-light mb-3">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Complaints by Category</h6>
-                                        <div class="chart-placeholder bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center"
-                                            style="height: 250px;">
-                                            <span class="text-muted">Chart visualization would appear here</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Category</th>
-                                                <th>Count</th>
-                                                <th>Percentage</th>
-                                                <th>Avg. Resolution Time</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Technical</td>
-                                                <td>42</td>
-                                                <td>35%</td>
-                                                <td>3.5 days</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Billing</td>
-                                                <td>28</td>
-                                                <td>23%</td>
-                                                <td>2.1 days</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Service</td>
-                                                <td>24</td>
-                                                <td>20%</td>
-                                                <td>4.8 days</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Product</td>
-                                                <td>18</td>
-                                                <td>15%</td>
-                                                <td>5.2 days</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Other</td>
-                                                <td>8</td>
-                                                <td>7%</td>
-                                                <td>3.9 days</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="status-tab">
-                                <div class="card border-0 bg-light mb-3">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Complaints by Status</h6>
-                                        <div class="chart-placeholder bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center"
-                                            style="height: 250px;">
-                                            <span class="text-muted">Chart visualization would appear here</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Status</th>
-                                                <th>Count</th>
-                                                <th>Percentage</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>New</td>
-                                                <td>{{ getComplaintsByStatus('New').length }}</td>
-                                                <td>{{ Math.round(getComplaintsByStatus('New').length /
-                                                    complaints.length * 100) }}%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>In Progress</td>
-                                                <td>{{ getComplaintsByStatus('In Progress').length }}</td>
-                                                <td>{{ Math.round(getComplaintsByStatus('In Progress').length /
-                                                    complaints.length * 100) }}%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Resolved</td>
-                                                <td>{{ getComplaintsByStatus('Resolved').length }}</td>
-                                                <td>{{ Math.round(getComplaintsByStatus('Resolved').length /
-                                                    complaints.length * 100) }}%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Closed</td>
-                                                <td>{{ getComplaintsByStatus('Closed').length }}</td>
-                                                <td>{{ Math.round(getComplaintsByStatus('Closed').length /
-                                                    complaints.length * 100) }}%</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="assignee" role="tabpanel" aria-labelledby="assignee-tab">
-                                <div class="card border-0 bg-light mb-3">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Complaints by Assignee</h6>
-                                        <div class="chart-placeholder bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center"
-                                            style="height: 250px;">
-                                            <span class="text-muted">Chart visualization would appear here</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Assignee</th>
-                                                <th>Assigned</th>
-                                                <th>Resolved</th>
-                                                <th>Avg. Resolution Time</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="staff in staffMembers" :key="staff.id">
-                                                <td>{{ staff.name }}</td>
-                                                <td>{{ getComplaintsByAssignee(staff.id).length }}</td>
-                                                <td>{{ getResolvedComplaintsByAssignee(staff.id).length }}</td>
-                                                <td>{{ getAvgResolutionTime(staff.id) }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                    <div class="modal-body" v-if="selectedField">
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            You are about to disable <strong>{{ selectedField.fieldName }}</strong>. This will make the
+                            field unavailable
+                            for booking.
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Field Name</label>
+                            <input type="text" class="form-control" :value="selectedField.fieldName" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Owner</label>
+                            <input type="text" class="form-control" :value="selectedField.ownerName" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Violation Count (This Month)</label>
+                            <input type="text" class="form-control" :value="selectedField.violationCount" disabled>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-download me-1"></i> Export Report
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" @click="disableField">
+                            <i class="bi bi-slash-circle"></i> Disable Field
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Preview Modal -->
+        <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imagePreviewModalLabel">Evidence Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center p-0">
+                        <img :src="previewImage" class="img-fluid" alt="Evidence image preview">
                     </div>
                 </div>
             </div>
@@ -758,282 +386,106 @@
 </template>
 
 <script>
+import { ref, computed, onMounted } from 'vue';
 import { Modal } from 'bootstrap';
+import { useToast } from 'vue-toastification';
+import API from '@/utils/axios';
 
 export default {
-    name: 'ComplaintsManagement',
-    data() {
-        return {
-            // Modals
-            complaintDetailModal: null,
-            assignModal: null,
+    name: 'ViolationReportManagement',
+    setup() {
+        const toast = useToast();
+        const loading = ref(false);
+        const reports = ref([]);
+        const fieldSummary = ref([]);
+        const searchQuery = ref('');
+        const statusFilter = ref('all');
+        const sortColumn = ref('dateSubmitted');
+        const sortDirection = ref('desc');
+        const currentPage = ref(1);
+        const itemsPerPage = ref(10);
+        const selectedReport = ref(null);
+        const selectedField = ref(null);
+        const warningMessage = ref('');
+        const disableReason = ref('');
+        const sendEmail = ref(true);
+        const notifyOwner = ref(true);
+        const previewImage = ref('');
 
-            // Complaints data
-            complaints: [
-                {
-                    id: 1001,
-                    customerName: 'John Smith',
-                    email: 'john.smith@example.com',
-                    phone: '+1 (555) 123-4567',
-                    subject: 'Website login issues',
-                    description: 'I have been trying to log in to my account for the past two days but keep getting an error message saying "Invalid credentials" even though I am sure my password is correct. I have tried resetting my password twice but still facing the same issue.',
-                    category: 'Technical',
-                    priority: 'High',
-                    status: 'In Progress',
-                    assigneeId: 2,
-                    createdAt: new Date('2023-10-15T09:23:45'),
-                    messages: [
-                        {
-                            isStaff: false,
-                            content: 'I have been trying to log in to my account for the past two days but keep getting an error message saying "Invalid credentials" even though I am sure my password is correct. I have tried resetting my password twice but still facing the same issue.',
-                            timestamp: new Date('2023-10-15T09:23:45')
-                        },
-                        {
-                            isStaff: true,
-                            staffId: 2,
-                            content: 'Thank you for reporting this issue, Mr. Smith. I will look into this right away. Could you please confirm which browser and device you are using to access the website?',
-                            timestamp: new Date('2023-10-15T10:15:22')
-                        },
-                        {
-                            isStaff: false,
-                            content: 'I am using Chrome on my Windows laptop. I also tried on my iPhone with Safari and had the same problem.',
-                            timestamp: new Date('2023-10-15T11:05:33')
-                        },
-                        {
-                            isStaff: true,
-                            staffId: 2,
-                            content: 'Thank you for the additional information. I have checked your account and found that there might be an issue with your account settings. I have reset your account status and you should now be able to log in with your current password. Please try again and let me know if you still experience any issues.',
-                            timestamp: new Date('2023-10-15T14:22:10')
-                        }
-                    ]
-                },
-                {
-                    id: 1002,
-                    customerName: 'Sarah Johnson',
-                    email: 'sarah.j@example.com',
-                    phone: '+1 (555) 987-6543',
-                    subject: 'Billing discrepancy on recent invoice',
-                    description: 'I was charged $59.99 on my last invoice dated Oct 5, 2023, but my plan should be $39.99/month. I believe there has been an error in billing. Please review and adjust my account accordingly.',
-                    category: 'Billing',
-                    priority: 'Medium',
-                    status: 'New',
-                    assigneeId: null,
-                    createdAt: new Date('2023-10-18T14:05:12'),
-                    messages: [
-                        {
-                            isStaff: false,
-                            content: 'I was charged $59.99 on my last invoice dated Oct 5, 2023, but my plan should be $39.99/month. I believe there has been an error in billing. Please review and adjust my account accordingly.',
-                            timestamp: new Date('2023-10-18T14:05:12')
-                        }
-                    ]
-                },
-                {
-                    id: 1003,
-                    customerName: 'Michael Chen',
-                    email: 'mchen@example.com',
-                    phone: '+1 (555) 234-5678',
-                    subject: 'Product arrived damaged',
-                    description: 'I received my order #45678 yesterday, but the item was damaged during shipping. The package appeared to have been crushed on one side, and the product inside has a large crack. I would like a replacement sent as soon as possible.',
-                    category: 'Product',
-                    priority: 'High',
-                    status: 'Resolved',
-                    assigneeId: 3,
-                    createdAt: new Date('2023-10-10T11:32:40'),
-                    messages: [
-                        {
-                            isStaff: false,
-                            content: 'I received my order #45678 yesterday, but the item was damaged during shipping. The package appeared to have been crushed on one side, and the product inside has a large crack. I would like a replacement sent as soon as possible.',
-                            timestamp: new Date('2023-10-10T11:32:40')
-                        },
-                        {
-                            isStaff: true,
-                            staffId: 3,
-                            content: "I'm very sorry to hear about the damaged product, Mr. Chen. We take great care in packaging our items, but sometimes shipping damage can occur. I've processed a replacement order for you with expedited shipping at no additional cost. You should receive the replacement within 2-3 business days. There's no need to return the damaged item.",
-                            timestamp: new Date('2023-10-10T13:45:22')
-                        },
-                        {
-                            isStaff: false,
-                            content: 'Thank you for the quick response and resolution. I appreciate the expedited shipping.',
-                            timestamp: new Date('2023-10-10T14:12:05')
-                        },
-                        {
-                            isStaff: true,
-                            staffId: 3,
-                            content: 'Youre welcome, Mr. Chen. Your replacement has been shipped. The tracking number is TX987654321. Please let us know if you need anything else!',
-                            timestamp: new Date('2023-10-11T09:30:15')
-                        },
-                        {
-                            isStaff: false,
-                            content: 'I received the replacement today and its in perfect condition. Thank you for the excellent service!',
-                            timestamp: new Date('2023-10-13T16:05:33')
-                        }
-                    ]
-                },
-                {
-                    id: 1004,
-                    customerName: 'Emily Rodriguez',
-                    email: 'emily.r@example.com',
-                    phone: '+1 (555) 345-6789',
-                    subject: 'Refund not processed after 30 days',
-                    description: 'I returned an item on September 15th (return tracking #RT123456) which was received by your warehouse on September 20th according to the tracking information. The return policy states refunds will be processed within 14 days, but it has been over 30 days and I still haven\'t received my refund of $129.99.',
-                    category: 'Billing',
-                    priority: 'Urgent',
-                    status: 'In Progress',
-                    assigneeId: 1,
-                    createdAt: new Date('2023-10-20T10:15:30'),
-                    messages: [
-                        {
-                            isStaff: false,
-                            content: 'I returned an item on September 15th (return tracking #RT123456) which was received by your warehouse on September 20th according to the tracking information. The return policy states refunds will be processed within 14 days, but it has been over 30 days and I still haven\'t received my refund of $129.99.',
-                            timestamp: new Date('2023-10-20T10:15:30')
-                        },
-                        {
-                            isStaff: true,
-                            staffId: 1,
-                            content: "Thank you for bringing this to our attention, Ms. Rodriguez. I apologize for the delay in processing your refund. I've looked into this matter and can confirm that your return was received. There appears to have been an oversight in our system. I've expedited your refund, which should appear in your account within 3-5 business days. As a goodwill gesture for the inconvenience, I've also added a $20 store credit to your account.",
-                            timestamp: new Date('2023-10-20T11:05:45')
-                        }
-                    ]
-                },
-                {
-                    id: 1005,
-                    customerName: 'David Wilson',
-                    email: 'dwilson@example.com',
-                    phone: '+1 (555) 456-7890',
-                    subject: 'Poor customer service experience',
-                    description: 'I had a very disappointing interaction with a customer service representative named Kevin on October 17th. I called regarding a simple question about my subscription, but the representative was rude, interrupted me multiple times, and ultimately did not resolve my issue. I would like to speak with a manager about this experience.',
-                    category: 'Service',
-                    priority: 'Medium',
-                    status: 'New',
-                    assigneeId: null,
-                    createdAt: new Date('2023-10-19T15:45:20'),
-                    messages: [
-                        {
-                            isStaff: false,
-                            content: 'I had a very disappointing interaction with a customer service representative named Kevin on October 17th. I called regarding a simple question about my subscription, but the representative was rude, interrupted me multiple times, and ultimately did not resolve my issue. I would like to speak with a manager about this experience.',
-                            timestamp: new Date('2023-10-19T15:45:20')
-                        }
-                    ]
-                }
-            ],
+        // Modal references
+        let reportDetailsModal = null;
+        let sendWarningModal = null;
+        let disableFieldModal = null;
+        let imagePreviewModal = null;
 
-            // Staff members
-            staffMembers: [
-                { id: 1, name: 'Amanda Lee', role: 'Customer Support Manager', email: 'amanda.l@company.com' },
-                { id: 2, name: 'Robert Taylor', role: 'Technical Support Specialist', email: 'robert.t@company.com' },
-                { id: 3, name: 'Jessica Brown', role: 'Customer Service Representative', email: 'jessica.b@company.com' },
-                { id: 4, name: 'Daniel Kim', role: 'Billing Specialist', email: 'daniel.k@company.com' }
-            ],
-
-            // Filters
-            filters: {
-                status: '',
-                priority: '',
-                category: '',
-                assignee: '',
-                dateFrom: '',
-                dateTo: '',
-                search: ''
-            },
-
-            // Sorting
-            sortColumn: 'createdAt',
-            sortDirection: 'desc',
-
-            // Pagination
-            itemsPerPage: 10,
-            currentPage: 1,
-
-            // Selected complaint for detail view
-            selectedComplaint: null,
-
-            // New response form
-            newResponse: '',
-            newStatus: '',
-
-            // Assignment
-            complaintToAssign: null,
-            selectedAssignee: '',
-            assignmentNote: ''
-        };
-    },
-    computed: {
-        // Filtered complaints based on search and filters
-        filteredComplaints() {
-            let result = this.complaints;
+        // Computed properties
+        const filteredReports = computed(() => {
+            let result = [...reports.value];
 
             // Apply status filter
-            if (this.filters.status) {
-                result = result.filter(c => c.status === this.filters.status);
-            }
-
-            // Apply priority filter
-            if (this.filters.priority) {
-                result = result.filter(c => c.priority === this.filters.priority);
-            }
-
-            // Apply category filter
-            if (this.filters.category) {
-                result = result.filter(c => c.category === this.filters.category);
-            }
-
-            // Apply assignee filter
-            if (this.filters.assignee) {
-                result = result.filter(c => c.assigneeId === parseInt(this.filters.assignee));
-            }
-
-            // Apply date range filter
-            if (this.filters.dateFrom) {
-                const fromDate = new Date(this.filters.dateFrom);
-                result = result.filter(c => c.createdAt >= fromDate);
-            }
-
-            if (this.filters.dateTo) {
-                const toDate = new Date(this.filters.dateTo);
-                toDate.setHours(23, 59, 59, 999); // End of day
-                result = result.filter(c => c.createdAt <= toDate);
+            if (statusFilter.value !== 'all') {
+                result = result.filter(report =>
+                    report.status.toLowerCase() === statusFilter.value.toLowerCase()
+                );
             }
 
             // Apply search filter
-            if (this.filters.search) {
-                const searchLower = this.filters.search.toLowerCase();
-                result = result.filter(c => {
-                    return c.id.toString().includes(searchLower) ||
-                        c.customerName.toLowerCase().includes(searchLower) ||
-                        c.email.toLowerCase().includes(searchLower) ||
-                        c.subject.toLowerCase().includes(searchLower) ||
-                        c.description.toLowerCase().includes(searchLower);
+            if (searchQuery.value) {
+                const query = searchQuery.value.toLowerCase();
+                result = result.filter(report => {
+                    return (
+                        report.reportId.toString().includes(query) ||
+                        report.fieldName.toLowerCase().includes(query) ||
+                        report.reportedBy.toLowerCase().includes(query) ||
+                        report.reason.toLowerCase().includes(query) ||
+                        (report.description && report.description.toLowerCase().includes(query))
+                    );
                 });
             }
 
+            // Apply sorting
+            result.sort((a, b) => {
+                let aValue = a[sortColumn.value];
+                let bValue = b[sortColumn.value];
+
+                // Special handling for dates
+                if (sortColumn.value === 'dateSubmitted') {
+                    aValue = new Date(aValue).getTime();
+                    bValue = new Date(bValue).getTime();
+                }
+
+                if (aValue < bValue) return sortDirection.value === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortDirection.value === 'asc' ? 1 : -1;
+                return 0;
+            });
+
             return result;
-        },
+        });
 
-        // Pagination calculations
-        totalPages() {
-            return Math.ceil(this.filteredComplaints.length / this.itemsPerPage);
-        },
+        // Pagination
+        const totalPages = computed(() => {
+            return Math.ceil(filteredReports.value.length / itemsPerPage.value);
+        });
 
-        startIndex() {
-            return (this.currentPage - 1) * this.itemsPerPage;
-        },
+        const startIndex = computed(() => {
+            return (currentPage.value - 1) * itemsPerPage.value;
+        });
 
-        endIndex() {
-            return this.startIndex + this.itemsPerPage;
-        },
+        const endIndex = computed(() => {
+            return startIndex.value + itemsPerPage.value;
+        });
 
-        paginatedComplaints() {
-            return this.filteredComplaints.slice(this.startIndex, this.endIndex);
-        },
+        const paginatedReports = computed(() => {
+            return filteredReports.value.slice(startIndex.value, endIndex.value);
+        });
 
-        // Display only a reasonable number of page links
-        displayedPages() {
+        const displayedPages = computed(() => {
             const pages = [];
             const maxVisiblePages = 5;
 
-            if (this.totalPages <= maxVisiblePages) {
+            if (totalPages.value <= maxVisiblePages) {
                 // If we have fewer pages than the max, show all
-                for (let i = 1; i <= this.totalPages; i++) {
+                for (let i = 1; i <= totalPages.value; i++) {
                     pages.push(i);
                 }
             } else {
@@ -1041,14 +493,14 @@ export default {
                 pages.push(1);
 
                 // Calculate start and end of visible pages
-                let start = Math.max(2, this.currentPage - 1);
-                let end = Math.min(this.totalPages - 1, this.currentPage + 1);
+                let start = Math.max(2, currentPage.value - 1);
+                let end = Math.min(totalPages.value - 1, currentPage.value + 1);
 
                 // Adjust if we're at the beginning or end
-                if (this.currentPage <= 2) {
-                    end = Math.min(this.totalPages - 1, maxVisiblePages - 1);
-                } else if (this.currentPage >= this.totalPages - 1) {
-                    start = Math.max(2, this.totalPages - maxVisiblePages + 2);
+                if (currentPage.value <= 2) {
+                    end = Math.min(totalPages.value - 1, maxVisiblePages - 1);
+                } else if (currentPage.value >= totalPages.value - 1) {
+                    start = Math.max(2, totalPages.value - maxVisiblePages + 2);
                 }
 
                 // Add ellipsis if needed
@@ -1062,291 +514,302 @@ export default {
                 }
 
                 // Add ellipsis if needed
-                if (end < this.totalPages - 1) {
+                if (end < totalPages.value - 1) {
                     pages.push('...');
                 }
 
                 // Always include last page
-                pages.push(this.totalPages);
+                if (totalPages.value > 1) {
+                    pages.push(totalPages.value);
+                }
             }
 
             return pages;
-        }
-    },
-    methods: {
-        // Utility functions
-        formatDate(date) {
-            return new Date(date).toLocaleDateString('en-US', {
+        });
+
+        // Methods
+        const fetchReports = async () => {
+            try {
+                const response = await API.get(`Admin/denounce-report`);
+                reports.value = response.data;
+                console.log('Fetched reports:', reports.value);
+            } catch (error) {
+                console.error('Error fetching reports:', error);
+                toast.error('Failed to load violation reports');
+                loading.value = false;
+            }
+        };
+
+        const fetchFieldSummary = async () => {
+            try {
+                const response = await API.get(`Admin/get-feild-report`);
+                fieldSummary.value = response.data;
+            } catch (error) {
+                console.error('Error fetching field summary:', error);
+                toast.error('Failed to load field violation summary');
+            }
+        };
+
+        const sortBy = (column) => {
+            if (sortColumn.value === column) {
+                sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn.value = column;
+                sortDirection.value = 'asc';
+            }
+        };
+
+        const goToPage = (page) => {
+            if (page < 1 || page > totalPages.value || page === '...') return;
+            currentPage.value = page;
+        };
+
+        const handleSearch = () => {
+            currentPage.value = 1;
+        };
+
+        const clearSearch = () => {
+            searchQuery.value = '';
+            currentPage.value = 1;
+        };
+
+        const setStatusFilter = (status) => {
+            statusFilter.value = status;
+            currentPage.value = 1;
+        };
+
+        const formatDate = (dateString, includeTime = false) => {
+            if (!dateString) return 'N/A';
+
+            const date = new Date(dateString);
+            const options = {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        },
+            };
 
-        getTimeAgo(date) {
-            const now = new Date();
-            const diffMs = now - new Date(date);
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffMinutes = Math.floor(diffMs / (1000 * 60));
-
-            if (diffDays > 0) {
-                return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-            } else if (diffHours > 0) {
-                return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-            } else {
-                return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+            if (includeTime) {
+                options.hour = '2-digit';
+                options.minute = '2-digit';
             }
-        },
 
-        getInitials(name) {
-            if (!name) return 'NA';
-            return name.split(' ').map(n => n[0]).join('').toUpperCase();
-        },
+            return new Intl.DateTimeFormat('en-US', options).format(date);
+        };
 
-        getStaffName(staffId) {
-            const staff = this.staffMembers.find(s => s.id === staffId);
-            return staff ? staff.name : 'Unknown';
-        },
+        const getStatusBadgeClass = (status) => {
+            if (!status) return 'badge bg-secondary';
 
-        getStaffInitials(staffId) {
-            const name = this.getStaffName(staffId);
-            return this.getInitials(name);
-        },
-
-        getStaffRole(staffId) {
-            const staff = this.staffMembers.find(s => s.id === staffId);
-            return staff ? staff.role : '';
-        },
-
-        getStatusBadgeClass(status) {
-            const classes = 'badge rounded-pill ';
-            switch (status) {
-                case 'New':
-                    return classes + 'bg-primary';
-                case 'In Progress':
+            const classes = 'badge ';
+            switch (status.toLowerCase()) {
+                case 'pending':
                     return classes + 'bg-warning text-dark';
-                case 'Resolved':
+                case 'handled':
                     return classes + 'bg-success';
-                case 'Closed':
+                default:
                     return classes + 'bg-secondary';
-                default:
-                    return classes + 'bg-light text-dark';
             }
-        },
+        };
 
-        getPriorityBadgeClass(priority) {
-            const classes = 'badge rounded-pill ';
-            switch (priority) {
-                case 'Low':
-                    return classes + 'bg-info';
-                case 'Medium':
-                    return classes + 'bg-primary';
-                case 'High':
-                    return classes + 'bg-warning text-dark';
-                case 'Urgent':
-                    return classes + 'bg-danger';
-                default:
-                    return classes + 'bg-light text-dark';
+        const viewReportDetails = (report) => {
+            selectedReport.value = report;
+            reportDetailsModal.show();
+        };
+
+        const openSendWarningModal = (report) => {
+            selectedReport.value = report;
+            warningMessage.value = `Your field "${report.stadiumName}" has received a violation report: ${report.description}. Please resolve this issue to avoid field suspension.`;
+
+            // If we're coming from the details modal, hide it first
+            if (reportDetailsModal._isShown) {
+                reportDetailsModal.hide();
             }
-        },
 
-        getComplaintsByStatus(status) {
-            return this.complaints.filter(c => c.status === status);
-        },
+            setTimeout(() => {
+                sendWarningModal.show();
+            }, 500);
+        };
 
-        getComplaintsByAssignee(assigneeId) {
-            return this.complaints.filter(c => c.assigneeId === assigneeId);
-        },
+        const openDisableFieldModal = (field) => {
+            selectedField.value = field;
+            disableReason.value = `Due to receiving ${field.violationCount} violation reports this month.`;
+            disableFieldModal.show();
+        };
 
-        getResolvedComplaintsByAssignee(assigneeId) {
-            return this.complaints.filter(c => c.assigneeId === assigneeId &&
-                (c.status === 'Resolved' || c.status === 'Closed'));
-        },
+        const openImagePreview = (imageUrl) => {
+            previewImage.value = imageUrl;
+            imagePreviewModal.show();
+        };
 
-        getAvgResolutionTime(assigneeId) {
-            // This would normally calculate the actual average resolution time
-            // For demo purposes, returning static values
-            const times = {
-                1: '2.3 days',
-                2: '1.8 days',
-                3: '3.5 days',
-                4: '2.1 days'
-            };
-            return times[assigneeId] || 'N/A';
-        },
-
-        // Sorting
-        sortBy(column) {
-            if (this.sortColumn === column) {
-                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.sortColumn = column;
-                this.sortDirection = 'asc';
-            }
-        },
-
-        // Pagination
-        goToPage(page) {
-            if (page < 1 || page > this.totalPages || page === '...') return;
-            this.currentPage = page;
-        },
-
-        // Filter actions
-        applyFilters() {
-            this.currentPage = 1; // Reset to first page when filtering
-        },
-
-        resetFilters() {
-            this.filters = {
-                status: '',
-                priority: '',
-                category: '',
-                assignee: '',
-                dateFrom: '',
-                dateTo: '',
-                search: ''
-            };
-            this.currentPage = 1;
-        },
-
-        clearSearch() {
-            this.filters.search = '';
-        },
-
-        // Complaint actions
-        viewComplaint(complaint) {
-            this.selectedComplaint = complaint;
-            this.newStatus = complaint.status;
-            this.complaintDetailModal.show();
-        },
-
-        updateStatus(complaint, status) {
-            const index = this.complaints.findIndex(c => c.id === complaint.id);
-            if (index !== -1) {
-                this.complaints[index].status = status;
-
-                // Add a system message about the status change
-                this.complaints[index].messages.push({
-                    isStaff: true,
-                    staffId: 1, // Assuming the current admin is ID 1
-                    content: `Status changed to "${status}"`,
-                    timestamp: new Date()
+        const markAsHandled = async (report) => {
+            try {
+                console.log('Marking report as handled:', report.denounceId);
+                await API.post(`Admin/set-report-status/${report.denounceId}`, 'handled', {
+                    headers: { 'Content-Type': 'application/json' }
                 });
+                toast.success(`Report ${report.denounceId} has been marked as handled`);
 
-                alert(`Complaint #${complaint.id} status updated to ${status}`);
-            }
-        },
+                fetchReports(); // Refresh the reports list
 
-        assignComplaint(complaint) {
-            this.complaintToAssign = complaint;
-            this.selectedAssignee = complaint.assigneeId || '';
-            this.assignmentNote = '';
-            this.assignModal.show();
-        },
-
-        confirmAssignment() {
-            if (this.complaintToAssign) {
-                const index = this.complaints.findIndex(c => c.id === this.complaintToAssign.id);
-                if (index !== -1) {
-                    // Update the assignee
-                    this.complaints[index].assigneeId = this.selectedAssignee ? parseInt(this.selectedAssignee) : null;
-
-                    // Add a system message about the assignment
-                    if (this.selectedAssignee) {
-                        const staffName = this.getStaffName(parseInt(this.selectedAssignee));
-                        const message = this.assignmentNote
-                            ? `Assigned to ${staffName}. Note: ${this.assignmentNote}`
-                            : `Assigned to ${staffName}`;
-
-                        this.complaints[index].messages.push({
-                            isStaff: true,
-                            staffId: 1, // Assuming the current admin is ID 1
-                            content: message,
-                            timestamp: new Date()
-                        });
-                    } else {
-                        this.complaints[index].messages.push({
-                            isStaff: true,
-                            staffId: 1,
-                            content: 'Complaint unassigned',
-                            timestamp: new Date()
-                        });
-                    }
-
-                    alert(`Complaint #${this.complaintToAssign.id} ${this.selectedAssignee ? 'assigned' : 'unassigned'} successfully`);
+                // If the details modal is open, close it
+                if (reportDetailsModal._isShown) {
+                    reportDetailsModal.hide();
                 }
+
+                loading.value = false;
+            } catch (error) {
+                console.error('Error marking report as handled:', error);
+                toast.error('Failed to update report status');
+                loading.value = false;
             }
+        };
 
-            this.assignModal.hide();
-        },
-
-        deleteComplaint(complaint) {
-            if (confirm(`Are you sure you want to delete complaint #${complaint.id}?`)) {
-                this.complaints = this.complaints.filter(c => c.id !== complaint.id);
-                alert(`Complaint #${complaint.id} deleted successfully`);
-            }
-        },
-
-        submitResponse() {
-            if (!this.newResponse.trim()) {
-                alert('Please enter a response message');
-                return;
-            }
-
-            if (this.selectedComplaint) {
-                const index = this.complaints.findIndex(c => c.id === this.selectedComplaint.id);
-                if (index !== -1) {
-                    // Add the response message
-                    this.complaints[index].messages.push({
-                        isStaff: true,
-                        staffId: 1, // Assuming the current admin is ID 1
-                        content: this.newResponse,
-                        timestamp: new Date()
-                    });
-
-                    // Update status if changed
-                    if (this.newStatus !== this.selectedComplaint.status) {
-                        this.complaints[index].status = this.newStatus;
-
-                        // Add a system message about the status change
-                        this.complaints[index].messages.push({
-                            isStaff: true,
-                            staffId: 1,
-                            content: `Status changed to "${this.newStatus}"`,
-                            timestamp: new Date()
-                        });
-                    }
-
-                    // Update the selected complaint to reflect changes
-                    this.selectedComplaint = this.complaints[index];
-
-                    // Clear the response field
-                    this.newResponse = '';
-
-                    alert('Response submitted successfully');
+        const sendWarning = async () => {
+            try {
+                if (!warningMessage.value.trim()) {
+                    toast.error('Please enter a warning message');
+                    return;
                 }
-            }
-        },
 
-        exportComplaints() {
-            alert('Complaints data exported successfully');
-        }
-    },
-    mounted() {
-        // Initialize Bootstrap modals
-        this.complaintDetailModal = new Modal(document.getElementById('complaintDetailModal'));
-        this.assignModal = new Modal(document.getElementById('assignModal'));
+                //loading.value = true;
+                const data = {
+                    message: warningMessage.value,
+                    bookingId: selectedReport.value.bookingId,
+                };
+
+                await API.post("Admin/warning-lessor", data);
+
+
+                toast.success(`Warning sent to the owner of ${selectedReport.value.stadiumName}`);
+
+                // Close the modal
+                sendWarningModal.hide();
+
+                // Reset form
+                warningMessage.value = '';
+                sendEmail.value = true;
+
+                loading.value = false;
+            } catch (error) {
+                console.error('Error sending warning:', error);
+                toast.error('Failed to send warning');
+                loading.value = false;
+            }
+        };
+
+        const disableField = async () => {
+            try {
+                if (!disableReason.value.trim()) {
+                    toast.error('Please enter a reason for disabling the field');
+                    return;
+                }
+                const data = {
+                    fieldId: selectedField.value.fieldId,
+                    status: 'InActive',
+                };
+                await API.post(`Admin/set-field-status`,data)
+                toast.success(`Field "${selectedField.value.fieldName}" has been disabled`);
+                fetchFieldSummary();
+                // Close the modal
+                disableFieldModal.hide();
+
+                // Reset form
+                disableReason.value = '';
+                notifyOwner.value = true;
+
+                loading.value = false;
+            } catch (error) {
+                console.error('Error disabling field:', error);
+                toast.error('Failed to disable field');
+                loading.value = false;
+            }
+        };
+
+        const enableField = async (field) => {
+            try {
+                loading.value = true;
+                const data = {
+                    fieldId: field.fieldId,
+                    status: 'Active',
+                };
+                await API.post(`Admin/set-field-status`,data)
+
+                // Update the field status locally
+                const index = fieldSummary.value.findIndex(f => f.fieldId === field.fieldId);
+                if (index !== -1) {
+                    fieldSummary.value[index].isActive = true;
+                }
+                fetchFieldSummary();
+
+                toast.success(`Field "${field.fieldName}" has been enabled`);
+                loading.value = false;
+            } catch (error) {
+                console.error('Error enabling field:', error);
+                toast.error('Failed to enable field');
+                loading.value = false;
+            }
+        };
+
+        // Initialize modals and fetch data on component mount
+        onMounted(() => {
+            reportDetailsModal = new Modal(document.getElementById('reportDetailsModal'));
+            sendWarningModal = new Modal(document.getElementById('sendWarningModal'));
+            disableFieldModal = new Modal(document.getElementById('disableFieldModal'));
+            imagePreviewModal = new Modal(document.getElementById('imagePreviewModal'));
+
+            fetchReports();
+            fetchFieldSummary();
+        });
+
+        return {
+            // State
+            loading,
+            reports,
+            fieldSummary,
+            searchQuery,
+            statusFilter,
+            sortColumn,
+            sortDirection,
+            currentPage,
+            selectedReport,
+            selectedField,
+            warningMessage,
+            disableReason,
+            sendEmail,
+            notifyOwner,
+            previewImage,
+
+            // Computed
+            filteredReports,
+            paginatedReports,
+            totalPages,
+            startIndex,
+            endIndex,
+            displayedPages,
+
+            // Methods
+            sortBy,
+            goToPage,
+            handleSearch,
+            clearSearch,
+            setStatusFilter,
+            formatDate,
+            getStatusBadgeClass,
+            viewReportDetails,
+            openSendWarningModal,
+            openDisableFieldModal,
+            openImagePreview,
+            markAsHandled,
+            sendWarning,
+            disableField,
+            enableField
+        };
     }
 };
 </script>
 
 <style scoped>
-.complaints-management-container {
-    background-color: #f8f9fa;
-    min-height: 100vh;
+.violation-report-container {
+    padding: 1rem;
 }
 
 .sortable-header {
@@ -1358,72 +821,52 @@ export default {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-.complaint-row {
+/* Add some spacing for the icons */
+.bi {
+    margin-left: 0.25rem;
+}
+
+/* Make sure the table doesn't break on small screens */
+.table-responsive {
+    min-height: 300px;
+    position: relative;
+}
+
+/* Add loading overlay */
+.table-responsive.loading {
+    position: relative;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.table-responsive.loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 5;
+}
+
+.cursor-pointer {
     cursor: pointer;
 }
 
-.complaint-row:hover {
-    background-color: rgba(13, 110, 253, 0.05) !important;
+/* Add any custom styles you need */
+.modal-body {
+    padding: 1.5rem;
 }
 
-.avatar-circle {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #e9ecef;
-    color: #495057;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-/* Timeline styling */
-.timeline {
-    position: relative;
-    padding-left: 30px;
-}
-
-.timeline-item {
-    position: relative;
-    padding-bottom: 20px;
-    padding-left: 20px;
-}
-
-.timeline-item:before {
-    content: '';
-    position: absolute;
-    left: -20px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background-color: #dee2e6;
-}
-
-.timeline-badge {
-    position: absolute;
-    left: -36px;
-    top: 0;
-    z-index: 1;
-}
-
-.timeline-content {
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.timeline-staff .timeline-content {
-    background-color: #e9f5fe;
-}
-
-.message-content {
-    white-space: pre-line;
-}
-
-.chart-placeholder {
-    min-height: 250px;
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
 }
 </style>

@@ -27,6 +27,7 @@
               src="@/assets/hero1.png"
               class="d-block w-100"
               alt="Sports Field 1"
+              loading="lazy"
             />
           </div>
           <div class="carousel-item">
@@ -34,6 +35,7 @@
               src="@/assets/hero2.png"
               class="d-block w-100"
               alt="Sports Field 2"
+              loading="lazy"
             />
           </div>
           <div class="carousel-item">
@@ -41,6 +43,7 @@
               src="@/assets/hero3.png"
               class="d-block w-100"
               alt="Sports Field 3"
+              loading="lazy"
             />
           </div>
         </div>
@@ -217,7 +220,7 @@
             class="stadium-card"
           >
             <div class="stadium-image">
-              <img :src="stadium.image" :alt="stadium.stadiumName" />
+              <img :src="stadium.image" :alt="stadium.stadiumName" loading="lazy" />
             </div>
             <div class="stadium-content">
               <h3>{{ stadium.stadiumName }}</h3>
@@ -325,6 +328,41 @@ export default {
       } catch (error) {
         console.error("Error fetching stadium data:", error);
       }
+    },
+    nextSlide() {
+      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    },
+    prevSlide() {
+      this.currentSlide =
+        (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    },
+    goToSlide(index) {
+      this.currentSlide = index;
+    },
+    startAutoplay() {
+      this.autoplayInterval = setInterval(() => {
+        this.nextSlide();
+      }, 5000);
+    },
+    stopAutoplay() {
+      if (this.autoplayInterval) {
+        clearInterval(this.autoplayInterval);
+      }
+    },
+    handleImageError(index) {
+      // Xử lý lỗi khi ảnh không tải được, thay bằng ảnh dự phòng
+      console.warn(`Không thể tải ảnh cho slide ${index + 1}`);
+      this.slides[index].image =
+        "https://via.placeholder.com/1200x600?text=Image+Not+Found"; // Ảnh dự phòng
+    },
+    bookingMultiSlots(stadiumId) {
+      this.$router.push({
+        name: "booking-by-date",
+        params: { stadiumId: stadiumId },
+      });
+    },
+    onImageError(event) {
+      event.target.src = this.defaultImage;
     },
   },
   async mounted() {
