@@ -10,7 +10,6 @@ import CheckoutPage from "@/pages/CheckoutPage.vue";
 import CartPage from "@/pages/CartPage.vue";
 import BookingList from "@/pages/BookingList.vue";
 import LoginSSO from "@/pages/auth/LoginSSO.vue";
-import TestPage from "@/components/TestPage.vue";
 import ReviewPage from "@/pages/ReviewPage.vue";
 import FieldList from "@/pages/FieldList.vue";
 import PaymentPage from "@/pages/PaymentPage.vue";
@@ -35,6 +34,13 @@ import AdminVoucherPage from "@/pages/AdminVoucherPage.vue";
 import AdminRefundRequestsPage from "@/pages/AdminRefundRequestsPage.vue";
 import ScheduleBooking from "@/pages/user/schedule-booking/BookingPage.vue";
 import AIPage from "@/pages/AIPage.vue";
+import PaymentHistoryPage from "@/pages/PaymentHistoryPage.vue";
+import TestPage from "@/components/TestPage.vue";
+import RegisterField from "@/pages/RegisterField.vue";
+import UpdateField from "@/pages/UpdateField.vue";
+import LessorPage from "@/pages/LessorPage.vue";
+import Lessor from "@/pages/Lessor.vue";
+import VoucherManager from "@/pages/VoucherManager.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -180,6 +186,43 @@ const protectedRoutes = [
     component: AIPage,
     meta: { requiresAuth: true },
   },
+  {
+    path: "/payment-history",
+    name: "payment-history",
+    component: PaymentHistoryPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/lessor-page",
+    name: "lessor-page",
+    component: LessorPage,
+    children: [
+      {
+        path: "/revenue",
+        name: "revenue",
+        component: Lessor,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+      {
+        path: "/manage-vouchers",
+        name: "manage-vouchers",
+        component: VoucherManager,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+      {
+        path: "/update-field",
+        name: "updatefield",
+        component: UpdateField,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+      {
+        path: "/register-field",
+        name: "registerfield",
+        component: RegisterField,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+    ],
+  },
 ];
 
 // Admin routes that require admin privileges
@@ -260,6 +303,9 @@ router.beforeEach(async (to, from, next) => {
     store.getters.accessToken || localStorage.getItem("accessToken");
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
+  const requiresLessor = to.matched.some(
+    (record) => record.meta.requiresLessor
+  );
 
   if (requiresAuth) {
     if (!accessToken) {
@@ -277,7 +323,12 @@ router.beforeEach(async (to, from, next) => {
         return next("/login");
       }
 
-      if (requiresAdmin && Number(accessTokenDecoded.roleId) !== 1) {
+      const roleId = Number(accessTokenDecoded.roleId);
+      if (requiresAdmin && roleId !== 1) {
+        return next("/");
+      }
+
+      if (requiresLessor && roleId !== 2 && roleId !== 1) {
         return next("/");
       }
     } catch (error) {

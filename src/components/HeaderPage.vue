@@ -104,8 +104,14 @@
               <li v-if="isAdmin">
                 <router-link to="/administration">Administration</router-link>
               </li>
+              <li v-if="isLessor">
+                <router-link to="/lessor-page">Field Manager</router-link>
+              </li>
               <li>
                 <router-link to="/booking-history">Booking History</router-link>
+              </li>
+              <li>
+                <router-link to="/payment-history">Payment History</router-link>
               </li>
               <li>
                 <a href="" @click="handleLogout()"><span><font-awesome-icon class="pr-5"
@@ -174,6 +180,9 @@ export default {
     isAdmin() {
       return CommonHelper.getCurentRole() == 1;
     },
+    isLessor() {
+      return CommonHelper.getCurentRole() == 2;
+    }
   },
   methods: {
     // 9. Phương thức

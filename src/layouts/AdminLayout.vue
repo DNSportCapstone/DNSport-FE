@@ -7,13 +7,11 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li>
-                        <router-link :to="{ name: 'home' }" :class="{ active: currentRoute === '' }"
-                            @click="navigateTo">
-                            <i class="bi bi-house"></i>
-                            {{ t('Home') }}
-                        </router-link>
-                    </li>
+                    <a
+                        href="/" :class="{ active: currentRoute === '' }" >
+                        <i class="bi bi-house"></i>
+                        {{ t('Home') }}
+                    </a>
                     <li>
                         <router-link :to="{ name: 'revenue-report' }"
                             :class="{ active: currentRoute === 'revenue-report' }" @click="navigateTo">
@@ -49,13 +47,13 @@
                             {{ t('Vouchers') }}
                         </router-link>
                     </li>
-                    <!-- <li>
+                    <li>
                         <router-link :to="{ name: 'manage-complaints' }"
                             :class="{ active: currentRoute === 'manage-complaints' }" @click="navigateTo">
                             <i class="bi bi-exclamation-triangle"></i>
                             {{ t('ManageComplaints') }}
                         </router-link>
-                    </li> -->
+                    </li>
                     <li>
                         <router-link :to="{ name: 'refund-requests' }"
                             :class="{ active: currentRoute === 'refund-requests' }" @click="navigateTo">
@@ -73,7 +71,7 @@
                 <button class="toggle-sidebar" @click="toggleSidebar">
                     <i class="bi bi-list"></i>
                 </button>
-                <div class="page-title">
+                <div class="new-page-title">
                     {{ t(getPageTitle()) }}
                 </div>
             </div>
@@ -242,9 +240,19 @@ export default {
     cursor: pointer;
 }
 
-.page-title {
+.new-page-title {
     font-size: 1.5rem;
     margin: 0;
+}
+
+.new-page-title {
+    color: #333;
+    font-weight: bold;
+}
+
+.new-page-title {
+    padding: 10px;
+    background-color: #f8f9fa;
 }
 
 .content-wrapper {
