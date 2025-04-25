@@ -41,6 +41,8 @@ import UpdateField from "@/pages/UpdateField.vue";
 import LessorPage from "@/pages/LessorPage.vue";
 import Lessor from "@/pages/Lessor.vue";
 import VoucherManager from "@/pages/VoucherManager.vue";
+import FieldOnStadiumPage from "@/pages/FieldOnStadiumPage.vue";
+import ManageFeedbackPage from "@/pages/ManageFeedbackPage.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -83,6 +85,12 @@ const publicRoutes = [
     path: "/multiple-booking/payment-success",
     name: "multiple-booking-success",
     component: MultipleBookingPaymentSuccess,
+  },
+
+  {
+    path: "/field-on-stadium/:stadiumId",
+    name: "field-on-stadium",
+    component: FieldOnStadiumPage,
   },
 ];
 
@@ -192,6 +200,7 @@ const protectedRoutes = [
     component: PaymentHistoryPage,
     meta: { requiresAuth: true },
   },
+
   {
     path: "/lessor-page",
     name: "lessor-page",
@@ -207,6 +216,12 @@ const protectedRoutes = [
         path: "/manage-vouchers",
         name: "manage-vouchers",
         component: VoucherManager,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+      {
+        path: "/manage-feedback",
+        name: "manage-feedback",
+        component: ManageFeedbackPage,
         meta: { requiresAuth: true, requiresLessor: true },
       },
       {

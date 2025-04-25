@@ -232,7 +232,12 @@
                 <p><i class="bi bi-geo-alt-fill"></i> {{ stadium.address }}</p>
               </div>
               <div class="stadium-actions">
-                <button class="view-details-btn">View Details</button>
+                <button
+                  class="view-details-btn"
+                  @click="viewFields(stadium.stadiumId, stadium.stadiumName)"
+                >
+                  View Fields
+                </button>
                 <button
                   class="book-now-btn"
                   @click="bookingMultiSlots(stadium.stadiumId)"
@@ -368,6 +373,13 @@ export default {
       this.$router.push({
         name: "booking-by-date",
         params: { stadiumId: stadiumId },
+      });
+    },
+    viewFields(stadiumId, stadiumName) {
+      this.$router.push({
+        name: "field-on-stadium",
+        params: { stadiumId },
+        query: { stadiumName },
       });
     },
     onImageError(event) {
