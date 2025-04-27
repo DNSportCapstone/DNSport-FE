@@ -93,6 +93,185 @@
   "RepeatWeeks": "Số tuần lặp lại",
   "Continue": "Tiếp tục đặt",
   "StartTime": "Thời gian bắt đầu",
+  "Contacts": "Liên hệ",
   "EndTime": "Thời gian kết thúc",
-  "Contacts": "Liên hệ"
+  "refund": {
+    "title": "Hoàn tiền",
+    "request_title": "Yêu cầu hoàn tiền",
+    "form": {
+      "name": "Họ và tên",
+      "name_placeholder": "Nhập họ và tên đầy đủ",
+      "bank_account": "Số tài khoản ngân hàng",
+      "bank_account_placeholder": "Nhập số tài khoản ngân hàng",
+      "bank_name": "Tên ngân hàng",
+      "select_bank": "Chọn ngân hàng",
+      "submit": "Gửi yêu cầu hoàn tiền",
+      "submitting": "Đang gửi..."
+    },
+    "confirm_title": "Xác nhận hoàn tiền",
+    "confirm_message": "Họ và tên: {userName}. Thời gian còn lại: {timeRemaining}, bạn sẽ được hoàn {refundPercentage}% số tiền: {refundAmount} VND vào ngân hàng {bank}. Bạn có muốn tiếp tục không?",
+    "confirm": "Đồng ý",
+    "processing": "Đang xử lý...",
+    "cancel": "Hủy",
+    "success_title": "Thành công",
+    "success_message": "Yêu cầu hoàn tiền đã được gửi thành công."
+  },
+  "error": {
+    "title": "Thông báo lỗi",
+    "close": "Đóng",
+    "missing_fields": "Vui lòng điền đầy đủ thông tin.",
+    "invalid_name": "Họ và tên chỉ được chứa chữ cái và khoảng trắng, không được chứa số hoặc ký tự đặc biệt.",
+    "invalid_bank_account": "Số tài khoản ngân hàng chỉ được chứa số và phải có từ 8 đến 16 ký tự.",
+    "missing_bank": "Vui lòng chọn ngân hàng.",
+    "missing_booking_id": "Không tìm thấy mã booking. Vui lòng kiểm tra lại.",
+    "time_expired": "Không thể yêu cầu refund: Thời gian đã hết.",
+    "unknown": "Đã xảy ra lỗi không xác định."
+  },
+  "review": {
+    "title": "Đánh giá",
+    "description": "Đánh giá & Bình luận",
+    "form": {
+      "title": "Đánh giá của bạn",
+      "description": "Chia sẻ trải nghiệm của bạn với chúng tôi",
+      "comment_label": "Bình luận của bạn",
+      "comment_placeholder": "Viết đánh giá của bạn...",
+      "submit": "Gửi đánh giá",
+      "submitting": "Đang gửi..."
+    },
+    "success": {
+      "already_rated": "Bạn đã đánh giá booking này rồi.",
+      "submitted": "Đánh giá của bạn đã được gửi thành công!"
+    },
+    "error": {
+      "load_failed": "Không thể tải thông tin booking và người dùng.",
+      "only_successful": "Bạn chỉ có thể đánh giá booking đã hoàn thành thành công.",
+      "after_booking": "Bạn chỉ có thể gửi đánh giá sau khi booking kết thúc.",
+      "already_rated": "Bạn đã đánh giá booking này rồi.",
+      "submit_failed": "Đã xảy ra lỗi khi gửi đánh giá của bạn."
+    }
+  },
+  "manage_feedback": {
+    "title": "Quản lý phản hồi",
+    "select_stadium": "Chọn sân:",
+    "select_stadium_placeholder": "-- Chọn sân --",
+    "select_field": "Chọn sân con:",
+    "select_field_placeholder": "-- Chọn sân con --",
+    "table": {
+      "reviewer": "Người đánh giá",
+      "rating": "Rating",
+      "comment": "Bình luận",
+      "time": "Thời gian",
+      "reply": "Phản hồi",
+      "action": "Thao tác"
+    },
+    "no_comments": "Không có phản hồi nào cho sân này.",
+    "reply_placeholder": "Nhập phản hồi...",
+    "submit": "Gửi",
+    "error": {
+      "empty_reply": "Phản hồi không được để trống",
+      "submit_failed": "Lỗi gửi phản hồi"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Tìm sân thể thao hoàn hảo của bạn",
+      "subtitle": "Đặt sân thể thao dễ dàng và nhanh chóng",
+      "search_placeholder": "Tìm kiếm sân thể thao...",
+      "search_button": "Tìm kiếm",
+      "nearby_button": "Tìm sân gần đây"
+    },
+    "about": {
+      "title": "GIỚI THIỆU",
+      "subtitle": "VỀ CHÚNG TÔI",
+      "main_title": "Cách mạng hóa quản lý địa điểm thể thao",
+      "description_1": "Chào mừng đến với DNSport, điểm đến hàng đầu của bạn để đặt sân thể thao. Chúng tôi cam kết thay đổi cách mà những người đam mê thể thao và các đội truy cập và đặt sân thể thao. Nền tảng của chúng tôi ra đời từ một ý tưởng đơn giản: làm cho việc đặt sân thể thao trở nên dễ tiếp cận, tiện lợi và thú vị cho mọi người.",
+      "description_2": "Tại DNSport, chúng tôi hiểu niềm đam mê thể thao và tầm quan trọng của việc tiếp cận các cơ sở chất lượng. Đó là lý do tại sao chúng tôi đã tạo ra một nền tảng toàn diện kết nối những người đam mê thể thao với các địa điểm tốt nhất trong khu vực của họ. Dù bạn đang tổ chức một trận đấu giao hữu, lên kế hoạch cho một giải đấu, hay quản lý các buổi tập luyện thường xuyên của đội, chúng tôi đều hỗ trợ bạn.",
+      "features": {
+        "easy_booking": {
+          "title": "Đặt sân dễ dàng",
+          "description": "Đặt sân thể thao yêu thích của bạn chỉ với vài cú nhấp chuột. Giao diện trực quan của chúng tôi khiến việc lên lịch trở nên dễ dàng."
+        },
+        "prime_locations": {
+          "title": "Vị trí đắc địa",
+          "description": "Tìm các sân thể thao ở những vị trí thuận tiện gần bạn. Chúng tôi hợp tác với các cơ sở tốt nhất trong khu vực của bạn."
+        },
+        "community_events": {
+          "title": "Sự kiện cộng đồng",
+          "description": "Tham gia các sự kiện và gặp gỡ những người đam mê thể thao khác. Xây dựng cộng đồng thể thao của bạn với những người chơi có cùng sở thích."
+        },
+        "secure_platform": {
+          "title": "Nền tảng an toàn",
+          "description": "Hệ thống xử lý thanh toán an toàn và bảo mật. Giao dịch và dữ liệu của bạn luôn được bảo vệ."
+        }
+      }
+    },
+    "how_it_works": {
+      "title": "CÁC BƯỚC",
+      "subtitle": "CÁCH HOẠT ĐỘNG",
+      "steps": {
+        "find": {
+          "title": "1. Tìm kiếm",
+          "description": "Tìm kiếm các sân thể thao có sẵn trong khu vực của bạn"
+        },
+        "book": {
+          "title": "2. Đặt sân",
+          "description": "Chọn thời gian ưa thích của bạn và đặt chỗ"
+        },
+        "play": {
+          "title": "3. Chơi",
+          "description": "Thưởng thức trận đấu của bạn tại cơ sở đã đặt"
+        }
+      }
+    },
+    "stadiums": {
+      "title": "SÂN VẬN ĐỘNG",
+      "subtitle": "SÂN VẬN ĐỘNG CỦA CHÚNG TÔI",
+      "view_fields": "Xem sân con",
+      "book_now": "Đặt ngay"
+    },
+    "contact": {
+      "title": "LIÊN HỆ",
+      "subtitle": "KẾT NỐI VỚI CHÚNG TÔI",
+      "address": {
+        "title": "Địa chỉ",
+        "value": "137 đường Nguyễn Thị Thập, quận Liên Chiểu, thành phố Đà Nẵng."
+      },
+      "phone": {
+        "title": "Gọi chúng tôi",
+        "value": "+1 234 567 890"
+      },
+      "email": {
+        "title": "Email cho chúng tôi",
+        "value": "dnsport2025@gmail.com"
+      }
+    }
+  },
+  "field_on_stadium": {
+    "title": "Danh sách sân thuộc: ",
+    "loading": "Đang tải dữ liệu...",
+    "no_fields": "Không có sân nào được tìm thấy.",
+    "field": {
+      "maximum_people": "👥 Tối đa: {count} người",
+      "day_price": "☀️ Giá ngày: {price}đ",
+      "night_price": "🌙 Giá đêm: {price}đ",
+      "view_details": "Xem chi tiết",
+      "book_now": "Đặt ngay"
+    },
+    "unknown_stadium": "Không xác định"
+  },
+  "field_list": {
+    "title": "Danh sách sân",
+    "subtitle": "Khám phá và đặt sân thể thao cao cấp của chúng tôi",
+    "loading": "Đang tải...",
+    "loading_fields": "Đang tải danh sách sân...",
+    "no_fields": "Không tìm thấy sân nào.",
+    "field": {
+      "maximum_people": "👥 Tối đa: {count} người",
+      "day_price": "☀️ Giá ngày: {price}đ",
+      "night_price": "🌙 Giá đêm: {price}đ",
+      "view_details": "Xem chi tiết",
+      "book_now": "Đặt ngay",
+      "booking_alert": "Đang đặt sân với ID: {id}"
+    }
+  }
 }
