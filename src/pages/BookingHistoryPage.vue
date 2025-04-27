@@ -57,7 +57,7 @@
                       style="width: 40px; height: 40px;">
                       <i class="bi bi-calendar-date text-primary"></i>
                     </div>
-                    <span>{{ formatDate(booking.BookingDate) }}</span>
+                    <span>{{ formatTime(booking.BookingDate) }}</span>
                   </div>
                 </td>
                 <td>

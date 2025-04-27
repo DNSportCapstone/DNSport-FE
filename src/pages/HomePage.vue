@@ -295,8 +295,8 @@
             </div>
           </div>
 
-          <!-- Phần bản đồ bên phải -->
-          <div class="col-lg-8">
+          <!-- Phần bản đồ ở giữa -->
+          <div class="col-lg-4">
             <div class="map-container" data-aos="fade-up" data-aos-delay="200">
               <iframe
                 width="100%"
@@ -307,6 +307,72 @@
                 referrerpolicy="no-referrer-when-downgrade"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.7925869653195!2d108.25067467600928!3d16.02116673909486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219e3fddf5e3b%3A0x815aebebf1293ae5!2sFPT%20City%20Da%20Nang!5e0!3m2!1sen!2s!4v1709833456789"
               ></iframe>
+            </div>
+          </div>
+
+          <!-- Lessor Form bên phải -->
+          <div class="col-lg-4">
+            <div class="lessor-form-container" data-aos="fade-up" data-aos-delay="300">
+              <h3 class="form-title">Become a Lessor</h3>
+              <p class="form-subtitle">List your sports field with us</p>
+              <form @submit.prevent="submitLessorForm" class="lessor-form">
+                <div class="form-group">
+                  <label for="fullname">Full Name</label>
+                  <input
+                    type="text"
+                    id="fullname"
+                    v-model="lessorForm.fullname"
+                    class="form-control"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    v-model="lessorForm.email"
+                    class="form-control"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    v-model="lessorForm.phoneNumber"
+                    class="form-control"
+                    placeholder="Enter your phone number"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="address">Address</label>
+                  <textarea
+                    id="address"
+                    v-model="lessorForm.address"
+                    class="form-control"
+                    placeholder="Enter your address"
+                    rows="3"
+                    required
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                  <span v-if="isSubmitting">Submitting...</span>
+                  <span v-else>Register as Lessor</span>
+                </button>
+
+                <div v-if="formMessage" class="form-message" :class="{ 'success': formSuccess, 'error': !formSuccess }">
+                  {{ formMessage }}
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -327,6 +393,15 @@ export default {
   data() {
     return {
       stadiums: [],
+      lessorForm: {
+        fullname: '',
+        email: '',
+        phoneNumber: '',
+        address: ''
+      },
+      isSubmitting: false,
+      formMessage: '',
+      formSuccess: false
     };
   },
   methods: {
@@ -373,6 +448,38 @@ export default {
     onImageError(event) {
       event.target.src = this.defaultImage;
     },
+    async submitLessorForm() {
+      this.isSubmitting = true;
+      this.formMessage = '';
+
+      try {
+        // Replace with your actual API endpoint for lessor registration
+        const response = await API.post("/Lessor/create-lessor-contact", this.lessorForm);
+
+        if (response.status === 200 || response.status === 201) {
+          this.formSuccess = true;
+          this.formMessage = "Thank you! Your lessor registration has been submitted successfully.";
+          this.resetForm();
+        } else {
+          throw new Error("Unexpected response");
+        }
+      } catch (error) {
+        this.formSuccess = false;
+        this.formMessage = "Sorry, there was an error submitting your form. Please try again later.";
+        console.error("Error submitting lessor form:", error);
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+
+    resetForm() {
+      this.lessorForm = {
+        fullname: '',
+        email: '',
+        phoneNumber: '',
+        address: ''
+      };
+    }
   },
   async mounted() {
     await this.fetchStadiums();
@@ -859,5 +966,99 @@ export default {
   background: #28a745;
   color: white;
   transform: translateY(-2px);
+}
+
+.lessor-form-container {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+.form-title {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.form-subtitle {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.lessor-form .form-group {
+  margin-bottom: 15px;
+}
+
+.lessor-form label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.lessor-form .form-control {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.lessor-form .form-control:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+.lessor-form .submit-btn {
+  width: 100%;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 10px;
+}
+
+.lessor-form .submit-btn:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.lessor-form .submit-btn:active {
+  transform: translateY(0);
+}
+
+.form-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.form-message.success {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.form-message.error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+@media (max-width: 991px) {
+  .lessor-form-container {
+    margin-top: 30px;
+  }
 }
 </style>
