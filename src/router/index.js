@@ -41,6 +41,7 @@ import UpdateField from "@/pages/UpdateField.vue";
 import LessorPage from "@/pages/LessorPage.vue";
 import Lessor from "@/pages/Lessor.vue";
 import VoucherManager from "@/pages/VoucherManager.vue";
+import AdminContactPage from "@/pages/AdminContactPage.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -259,6 +260,12 @@ const adminRoutes = [
         path: "users",
         name: "users",
         component: AdminUserPage,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: "contacts",
+        name: "contacts",
+        component: AdminContactPage,
         meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
