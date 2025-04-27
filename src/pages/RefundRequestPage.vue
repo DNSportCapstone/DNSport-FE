@@ -2,15 +2,15 @@
   <div class="section">
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-      <h2>Refund</h2>
+      <h2>{{ t("refund.title") }}</h2>
       <div>
-        <span class="description-title">Refund Request</span>
+        <span class="description-title">{{ t("refund.request_title") }}</span>
       </div>
     </div>
     <!-- End Section Title -->
 
-    <!-- Refund Form -->
-    <div class="container">
+    <!-- Refund Form (Hidden if Refund Not Possible) -->
+    <div v-if="canRequestRefund" class="container">
       <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
           <div class="card refund-card shadow-lg">
@@ -23,7 +23,8 @@
                 <!-- User Name -->
                 <div class="mb-4 position-relative">
                   <label for="userName" class="form-label fw-semibold">
-                    Họ và tên <span class="text-danger">*</span>
+                    {{ t("refund.form.name") }}
+                    <span class="text-danger">*</span>
                   </label>
                   <div class="input-group">
                     <span class="input-group-text bg-transparent">
@@ -35,19 +36,27 @@
                       v-model="refundRequest.userName"
                       class="form-control rounded-end"
                       required
-                      placeholder="Nhập họ và tên đầy đủ"
+                      :placeholder="t('refund.form.name_placeholder')"
                       :class="{
-                        'is-invalid': !refundRequest.userName && submitted,
+                        'is-invalid':
+                          (!refundRequest.userName ||
+                            !/^[a-zA-ZÀ-ỹ\s]+$/u.test(
+                              refundRequest.userName
+                            )) &&
+                          submitted,
                       }"
                     />
-                    <div class="invalid-feedback">Vui lòng nhập họ và tên</div>
+                    <div class="invalid-feedback">
+                      {{ t("error.invalid_name") }}
+                    </div>
                   </div>
                 </div>
 
                 <!-- Bank Account Number -->
                 <div class="mb-4 position-relative">
                   <label for="bankAccountNumber" class="form-label fw-semibold">
-                    Số tài khoản ngân hàng <span class="text-danger">*</span>
+                    {{ t("refund.form.bank_account") }}
+                    <span class="text-danger">*</span>
                   </label>
                   <div class="input-group">
                     <span class="input-group-text bg-transparent">
@@ -59,14 +68,18 @@
                       v-model="refundRequest.bankAccountNumber"
                       class="form-control rounded-end"
                       required
-                      placeholder="Nhập số tài khoản ngân hàng"
+                      :placeholder="t('refund.form.bank_account_placeholder')"
                       :class="{
                         'is-invalid':
-                          !refundRequest.bankAccountNumber && submitted,
+                          (!refundRequest.bankAccountNumber ||
+                            !/^\d{8,16}$/.test(
+                              refundRequest.bankAccountNumber
+                            )) &&
+                          submitted,
                       }"
                     />
                     <div class="invalid-feedback">
-                      Vui lòng nhập số tài khoản ngân hàng
+                      {{ t("error.invalid_bank_account") }}
                     </div>
                   </div>
                 </div>
@@ -74,7 +87,8 @@
                 <!-- Bank Name (Dropdown) -->
                 <div class="mb-4 position-relative">
                   <label for="bank" class="form-label fw-semibold">
-                    Tên ngân hàng <span class="text-danger">*</span>
+                    {{ t("refund.form.bank_name") }}
+                    <span class="text-danger">*</span>
                   </label>
                   <div class="input-group">
                     <span class="input-group-text bg-transparent">
@@ -89,12 +103,16 @@
                         'is-invalid': !refundRequest.bank && submitted,
                       }"
                     >
-                      <option value="" disabled>Chọn ngân hàng</option>
+                      <option value="" disabled>
+                        {{ t("refund.form.select_bank") }}
+                      </option>
                       <option v-for="bank in banks" :key="bank" :value="bank">
                         {{ bank }}
                       </option>
                     </select>
-                    <div class="invalid-feedback">Vui lòng chọn ngân hàng</div>
+                    <div class="invalid-feedback">
+                      {{ t("error.missing_bank") }}
+                    </div>
                   </div>
                 </div>
 
@@ -110,105 +128,14 @@
                     role="status"
                     aria-hidden="true"
                   ></span>
-                  {{ isSubmitting ? "Đang gửi..." : "Gửi yêu cầu hoàn tiền" }}
+                  {{
+                    isSubmitting
+                      ? t("refund.form.submitting")
+                      : t("refund.form.submit")
+                  }}
                 </button>
               </form>
-
-              <!-- Success Message (chỉ hiển thị khi thành công) -->
-              <transition name="fade">
-                <div
-                  v-if="message && messageType === 'success'"
-                  class="mt-4 alert alert-success"
-                  role="alert"
-                >
-                  {{ message }}
-                </div>
-              </transition>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Refund Confirmation Modal -->
-    <div
-      class="modal fade"
-      id="refundModal"
-      tabindex="-1"
-      aria-labelledby="refundModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="refundModalLabel">
-              Xác nhận hoàn tiền
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">{{ modalMessage }}</div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-              @click="cancelRefund"
-            >
-              Hủy
-            </button>
-            <button
-              type="button"
-              class="btn btn-custom"
-              @click="confirmRefund"
-              :disabled="isConfirming"
-            >
-              <span
-                v-if="isConfirming"
-                class="spinner-grow spinner-grow-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              {{ isConfirming ? "Đang xử lý..." : "Đồng ý" }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Error Modal (dùng cho mọi lỗi) -->
-    <div
-      class="modal fade"
-      id="errorModal"
-      tabindex="-1"
-      aria-labelledby="errorModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="errorModalLabel">Thông báo lỗi</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">{{ errorMessage }}</div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              @click="handleCloseErrorModal"
-            >
-              Đóng
-            </button>
           </div>
         </div>
       </div>
@@ -220,10 +147,15 @@
 
 <script>
 import API from "@/utils/axios";
-import { Modal } from "bootstrap";
+import { showMessageBox } from "@/utils/message-box-service.js";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "RefundRequestPage",
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       refundRequest: {
@@ -240,8 +172,7 @@ export default {
       messageType: "",
       modalMessage: "",
       errorMessage: "",
-      refundModal: null,
-      errorModal: null,
+      canRequestRefund: true,
       banks: [
         "Vietcombank",
         "VietinBank",
@@ -274,6 +205,7 @@ export default {
         "MB Bank",
         "OCB",
       ],
+      isMounted: false,
     };
   },
   methods: {
@@ -282,24 +214,50 @@ export default {
         const response = await API.get(
           `/Refund/preview/${this.refundRequest.bookingId}`
         );
+        if (!this.isMounted) return;
         if (response.data.error) {
-          this.errorMessage =
-            response.data.message || "Lỗi không xác định từ server";
-          if (this.errorModal) this.errorModal.show();
+          const errorKey =
+            response.data.message ===
+            "Không thể yêu cầu refund: Thời gian đã hết"
+              ? "error.time_expired"
+              : "error.unknown";
+          this.errorMessage = this.t(errorKey);
+          this.canRequestRefund = false;
+          showMessageBox({
+            title: this.t("error.title"),
+            description: this.errorMessage,
+            type: "error",
+            confirmText: this.t("error.close"),
+            showCancel: false,
+          });
+          this.redirectToBookingHistory();
           this.refundPreview = null;
           return;
         }
         this.refundPreview = response.data;
         this.message = "";
         this.messageType = "";
+        this.errorMessage = "";
+        this.canRequestRefund = true;
       } catch (error) {
         const errorMsg =
           error.response?.data?.message ||
           error.response?.data?.error ||
-          error.message ||
-          "Đã xảy ra lỗi không xác định";
-        this.errorMessage = errorMsg;
-        if (this.errorModal) this.errorModal.show();
+          error.message;
+        const errorKey =
+          errorMsg === "Không thể yêu cầu refund: Thời gian đã hết"
+            ? "error.time_expired"
+            : "error.unknown";
+        this.errorMessage = this.t(errorKey);
+        this.canRequestRefund = false;
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.errorMessage,
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        this.redirectToBookingHistory();
         this.refundPreview = null;
       }
     },
@@ -308,26 +266,68 @@ export default {
       this.message = "";
       this.messageType = "";
 
-      // Kiểm tra các trường bắt buộc
+      // Check required fields
       if (
         !this.refundRequest.userName ||
         !this.refundRequest.bankAccountNumber ||
         !this.refundRequest.bank
       ) {
-        this.errorMessage = "Vui lòng điền đầy đủ thông tin.";
-        if (this.errorModal) this.errorModal.show();
+        this.errorMessage = this.t("error.missing_fields");
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.errorMessage,
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        return;
+      }
+
+      // Validate full name (letters and spaces only)
+      const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/u;
+      if (!nameRegex.test(this.refundRequest.userName)) {
+        this.errorMessage = this.t("error.invalid_name");
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.errorMessage,
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        return;
+      }
+
+      // Validate bank account number (digits only, 8-16 characters)
+      const accountNumberRegex = /^\d{8,16}$/;
+      if (!accountNumberRegex.test(this.refundRequest.bankAccountNumber)) {
+        this.errorMessage = this.t("error.invalid_bank_account");
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.errorMessage,
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
         return;
       }
 
       if (!this.refundRequest.bookingId) {
-        this.errorMessage = "Không tìm thấy mã booking. Vui lòng kiểm tra lại.";
-        if (this.errorModal) this.errorModal.show();
+        this.errorMessage = this.t("error.missing_booking_id");
+        this.canRequestRefund = false;
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.errorMessage,
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        this.redirectToBookingHistory();
         return;
       }
 
       this.isSubmitting = true;
 
-      // Lấy refundPreview nếu chưa có
+      // Fetch refund preview if not already fetched
       if (!this.refundPreview) {
         await this.fetchRefundPreview();
         if (!this.refundPreview) {
@@ -336,28 +336,74 @@ export default {
         }
       }
 
-      // Hiển thị modal xác nhận nếu không có lỗi
-      this.modalMessage = `Họ và tên: ${this.refundRequest.userName}. Thời gian còn lại: ${this.refundPreview.timeRemaining}, bạn sẽ được hoàn ${this.refundPreview.refundPercentage}% số tiền: ${this.refundPreview.refundAmount} VND vào ngân hàng ${this.refundRequest.bank}. Bạn có muốn tiếp tục không?`;
-      if (this.refundModal) this.refundModal.show();
-      this.isSubmitting = false;
+      // Show confirmation message box with cancel button
+      this.modalMessage = this.t("refund.confirm_message", {
+        userName: this.refundRequest.userName,
+        timeRemaining: this.refundPreview.timeRemaining,
+        refundPercentage: this.refundPreview.refundPercentage,
+        refundAmount: this.refundPreview.refundAmount,
+        bank: this.refundRequest.bank,
+      });
+      showMessageBox(
+        {
+          title: this.t("refund.confirm_title"),
+          description: this.modalMessage,
+          type: "info",
+          confirmText: this.isConfirming
+            ? this.t("refund.processing")
+            : this.t("refund.confirm"),
+          cancelText: this.t("refund.cancel"),
+          showCancel: true,
+          disabled: this.isConfirming,
+        },
+        async () => {
+          await this.confirmRefund();
+          this.isSubmitting = false;
+        },
+        () => {
+          this.cancelRefund();
+          this.isSubmitting = false;
+        }
+      );
     },
     async confirmRefund() {
+      if (this.isConfirming) return;
       this.isConfirming = true;
       this.message = "";
       this.messageType = "";
 
       try {
         const response = await API.post("/Refund/request", this.refundRequest);
+        if (!this.isMounted) return;
         if (response.data.error) {
-          this.errorMessage =
-            response.data.message || "Lỗi không xác định từ server";
-          if (this.errorModal) this.errorModal.show();
-          if (this.refundModal) this.refundModal.hide();
+          const errorKey =
+            response.data.message ===
+            "Không thể yêu cầu refund: Thời gian đã hết"
+              ? "error.time_expired"
+              : "error.unknown";
+          this.errorMessage = this.t(errorKey);
+          this.canRequestRefund = false;
+          showMessageBox({
+            title: this.t("error.title"),
+            description: this.errorMessage,
+            type: "error",
+            confirmText: this.t("error.close"),
+            showCancel: false,
+          });
+          this.redirectToBookingHistory();
           return;
         }
-        this.message = "Yêu cầu hoàn tiền đã được gửi thành công.";
+        // Show success message box
+        this.message = this.t("refund.success_message");
         this.messageType = "success";
-        if (this.refundModal) this.refundModal.hide();
+        showMessageBox({
+          title: this.t("refund.success_title"),
+          description: this.message,
+          type: "success",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        this.redirectToBookingHistory();
         this.refundRequest = {
           bookingId: this.refundRequest.bookingId,
           userName: "",
@@ -366,103 +412,57 @@ export default {
         };
         this.refundPreview = null;
         this.submitted = false;
-
-        // Chuyển hướng sau khi thành công
-        setTimeout(() => this.redirectToBookingHistory(), 1000); // Chờ 1 giây để người dùng thấy thông báo thành công
       } catch (error) {
         const errorMsg =
           error.response?.data?.message ||
           error.response?.data?.error ||
-          error.message ||
-          "Đã xảy ra lỗi không xác định";
-        this.errorMessage = errorMsg;
-        if (this.errorModal) this.errorModal.show();
-        if (this.refundModal) this.refundModal.hide();
+          error.message;
+        const errorKey =
+          errorMsg === "Không thể yêu cầu refund: Thời gian đã hết"
+            ? "error.time_expired"
+            : "error.unknown";
+        this.errorMessage = this.t(errorKey);
+        this.canRequestRefund = false;
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.errorMessage,
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        this.redirectToBookingHistory();
       } finally {
         this.isConfirming = false;
       }
     },
     cancelRefund() {
-      if (this.refundModal) this.refundModal.hide();
       this.isSubmitting = false;
     },
     redirectToBookingHistory() {
       this.$router.push("/booking-history");
     },
-    handleCloseErrorModal() {
-      // Set a flag that we want to redirect
-      this.shouldRedirect = true;
-
-      // Get the modal element
-      const errorModalElement = document.getElementById("errorModal");
-
-      // Add event listener for when the modal is hidden
-      if (errorModalElement) {
-        errorModalElement.addEventListener(
-          "hidden.bs.modal",
-          this.onModalHidden,
-          { once: true }
-        );
-      }
-    },
-    onModalHidden() {
-      // Only redirect if the flag is set
-      if (this.shouldRedirect) {
-        this.shouldRedirect = false;
-        this.$router.push("/booking-history");
-      }
-    },
   },
   mounted() {
+    this.isMounted = true;
     this.refundRequest.bookingId = this.$route.params.bookingId;
-    const refundModalElement = document.getElementById("refundModal");
-    const errorModalElement = document.getElementById("errorModal");
-
-    this.refundModal = refundModalElement
-      ? new Modal(refundModalElement)
-      : null;
-    this.errorModal = errorModalElement ? new Modal(errorModalElement) : null;
 
     if (this.refundRequest.bookingId) {
       this.fetchRefundPreview();
     } else {
-      this.errorMessage = "Không tìm thấy mã booking. Vui lòng kiểm tra lại.";
-      if (this.errorModal) this.errorModal.show();
-    }
-
-    // Add event listeners for modal events
-    if (errorModalElement) {
-      errorModalElement.addEventListener("hidden.bs.modal", () => {
-        // Only redirect if the flag is set
-        if (this.shouldRedirect) {
-          this.shouldRedirect = false;
-          this.$nextTick(() => {
-            this.$router.push("/booking-history");
-          });
-        }
+      this.errorMessage = this.t("error.missing_booking_id");
+      this.canRequestRefund = false;
+      showMessageBox({
+        title: this.t("error.title"),
+        description: this.errorMessage,
+        type: "error",
+        confirmText: this.t("error.close"),
+        showCancel: false,
       });
+      this.redirectToBookingHistory();
     }
   },
   beforeUnmount() {
-    // Clean up modal instances
-    if (this.refundModal) {
-      this.refundModal.dispose();
-      this.refundModal = null;
-    }
-
-    if (this.errorModal) {
-      this.errorModal.dispose();
-      this.errorModal = null;
-    }
-
-    // Remove event listeners
-    const errorModalElement = document.getElementById("errorModal");
-    if (errorModalElement) {
-      errorModalElement.removeEventListener(
-        "hidden.bs.modal",
-        this.onModalHidden
-      );
-    }
+    this.isMounted = false;
   },
 };
 </script>
@@ -508,22 +508,5 @@ export default {
 .btn-custom:disabled {
   background-color: #6c757d;
   opacity: 0.8;
-}
-.alert-success {
-  background-color: #d4edda;
-  color: #155724;
-  border-color: #c3e6cb;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-.modal-footer .btn {
-  flex: 1;
-  margin: 0 5px;
 }
 </style>

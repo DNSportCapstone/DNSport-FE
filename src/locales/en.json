@@ -88,5 +88,208 @@
   "Collapse": "Collapse",
   "TotalItems": "Total Items",
   "StartTime": "Start Time",
-  "EndTime": "End Time"
+  "Contacts": "Contacts",
+  "EndTime": "End Time",
+  "refund": {
+    "title": "Refund",
+    "request_title": "Refund Request",
+    "form": {
+      "name": "Full Name",
+      "name_placeholder": "Enter full name",
+      "bank_account": "Bank Account Number",
+      "bank_account_placeholder": "Enter bank account number",
+      "bank_name": "Bank Name",
+      "select_bank": "Select bank",
+      "submit": "Submit Refund Request",
+      "submitting": "Submitting..."
+    },
+    "confirm_title": "Confirm Refund",
+    "confirm_message": "Full Name: {userName}. Time Remaining: {timeRemaining}, you will be refunded {refundPercentage}% of the amount: {refundAmount} VND to the bank {bank}. Do you want to continue?",
+    "confirm": "Confirm",
+    "processing": "Processing...",
+    "cancel": "Cancel",
+    "success_title": "Success",
+    "success_message": "Refund request has been sent successfully."
+  },
+  "error": {
+    "title": "Error",
+    "close": "Close",
+    "missing_fields": "Please fill in all required fields.",
+    "invalid_name": "Full name can only contain letters and spaces, no numbers or special characters.",
+    "invalid_bank_account": "Bank account number can only contain digits and must be 8 to 16 characters long.",
+    "missing_bank": "Please select a bank.",
+    "missing_booking_id": "Booking ID not found. Please check again.",
+    "time_expired": "Cannot request refund: Time has expired.",
+    "unknown": "An unknown error occurred."
+  },
+  "refund_list": {
+    "title": "Refund Requests List",
+    "description": "Manage refund requests from customers",
+    "table": {
+      "user": "User",
+      "amount": "Amount",
+      "status": "Status",
+      "bank_account": "Bank Account",
+      "time": "Time",
+      "action": "Action"
+    },
+    "status": {
+      "Processing": "Processing",
+      "Completed": "Completed"
+    },
+    "no_refunds": "No refund requests found",
+    "done": "Done",
+    "processing": "Processing...",
+    "error": {
+      "fetch_failed": "Error loading refund list",
+      "update_failed": "An error occurred, please try again!"
+    }
+  },
+  "review": {
+    "title": "Review",
+    "description": "Review & Comments",
+    "form": {
+      "title": "Your Review",
+      "description": "Share your experience with us",
+      "comment_label": "Your Comment",
+      "comment_placeholder": "Write your review...",
+      "submit": "Submit Review",
+      "submitting": "Submitting..."
+    },
+    "success": {
+      "already_rated": "You have already rated this booking.",
+      "submitted": "Your review has been submitted successfully!"
+    },
+    "error": {
+      "load_failed": "Failed to load booking and user information.",
+      "only_successful": "You can only rate a booking that has been successfully completed.",
+      "after_booking": "You can only submit a rating after your booking has ended.",
+      "already_rated": "You have already rated this booking.",
+      "submit_failed": "An error occurred while submitting your review."
+    }
+  },
+  "manage_feedback": {
+    "title": "Manage Feedback",
+    "select_stadium": "Select Stadium:",
+    "select_stadium_placeholder": "-- Select Stadium --",
+    "select_field": "Select Field:",
+    "select_field_placeholder": "-- Select Field --",
+    "table": {
+      "reviewer": "Reviewer",
+      "rating": "Rating",
+      "comment": "Comment",
+      "time": "Time",
+      "reply": "Reply",
+      "action": "Action"
+    },
+    "no_comments": "No feedback available for this field.",
+    "reply_placeholder": "Enter your reply...",
+    "submit": "Submit",
+    "error": {
+      "empty_reply": "Reply cannot be empty",
+      "submit_failed": "Error submitting reply"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Find Your Perfect Sports Field",
+      "subtitle": "Book sports fields easily and quickly",
+      "search_placeholder": "Search for sports fields...",
+      "search_button": "Search",
+      "nearby_button": "Find Nearby Stadiums"
+    },
+    "about": {
+      "title": "ABOUT",
+      "subtitle": "ABOUT US",
+      "main_title": "Revolutionizing Sports Venue Management",
+      "description_1": "Welcome to DNSport, your premier destination for sports field bookings. We are dedicated to revolutionizing the way sports enthusiasts and teams access and book sports facilities. Our platform was born from a simple idea: making sports field booking accessible, convenient, and enjoyable for everyone.",
+      "description_2": "At DNSport, we understand the passion for sports and the importance of having access to quality facilities. That's why we've created a comprehensive platform that connects sports enthusiasts with the best venues in their area. Whether you're organizing a friendly match, planning a tournament, or managing regular team practice sessions, we've got you covered.",
+      "features": {
+        "easy_booking": {
+          "title": "Easy Booking",
+          "description": "Book your favorite sports stadium with just a few clicks. Our intuitive interface makes scheduling a breeze."
+        },
+        "prime_locations": {
+          "title": "Prime Locations",
+          "description": "Find sports stadiums in convenient locations near you. We partner with the best facilities in your area."
+        },
+        "community_events": {
+          "title": "Community Events",
+          "description": "Join events and meet other sports enthusiasts. Build your sports community with like-minded players."
+        },
+        "secure_platform": {
+          "title": "Secure Platform",
+          "description": "Safe and secure payment processing system. Your transactions and data are always protected."
+        }
+      }
+    },
+    "how_it_works": {
+      "title": "STEPS",
+      "subtitle": "HOW IT WORKS",
+      "steps": {
+        "find": {
+          "title": "1. Find",
+          "description": "Search for available sports fields in your area"
+        },
+        "book": {
+          "title": "2. Book",
+          "description": "Select your preferred time and make a reservation"
+        },
+        "play": {
+          "title": "3. Play",
+          "description": "Enjoy your game at the booked facility"
+        }
+      }
+    },
+    "stadiums": {
+      "title": "STADIUMS",
+      "subtitle": "OUR STADIUMS",
+      "view_fields": "View Fields",
+      "book_now": "Book Now"
+    },
+    "contact": {
+      "title": "CONTACT",
+      "subtitle": "GET IN TOUCH",
+      "address": {
+        "title": "Address",
+        "value": "137 Nguyen Thi Thap street, Lien Chieu district, Da Nang city."
+      },
+      "phone": {
+        "title": "Call Us",
+        "value": "+1 234 567 890"
+      },
+      "email": {
+        "title": "Email Us",
+        "value": "dnsport2025@gmail.com"
+      }
+    }
+  },
+  "field_on_stadium": {
+    "title": "List of Fields at: ",
+    "loading": "Loading data...",
+    "no_fields": "No fields found.",
+    "field": {
+      "maximum_people": "👥 Maximum: {count} people",
+      "day_price": "☀️ Day Price: {price}",
+      "night_price": "🌙 Night Price: {price}",
+      "view_details": "View Details",
+      "book_now": "Book Now"
+    },
+    "unknown_stadium": "Unknown"
+  },
+  "field_list": {
+    "title": "Our Fields",
+    "subtitle": "Discover and book our premium sports fields",
+    "loading": "Loading...",
+    "loading_fields": "Loading fields...",
+    "no_fields": "No fields found.",
+    "field": {
+      "maximum_people": "👥 Maximum: {count} people",
+      "day_price": "☀️ Day Price: {price}",
+      "night_price": "🌙 Night Price: {price}",
+      "view_details": "View Details",
+      "book_now": "Book Now",
+      "booking_alert": "Booking field with ID: {id}"
+    }
+  }
 }

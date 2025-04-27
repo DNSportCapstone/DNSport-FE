@@ -44,6 +44,9 @@ import VoucherManager from "@/pages/VoucherManager.vue";
 import LessorStadiumManager from "@/pages/LessorStadiumManager.vue";
 import StadiumRegister from "@/pages/StadiumRegister.vue";
 import PendingStadium from "@/pages/PendingStadium.vue";
+import FieldOnStadiumPage from "@/pages/FieldOnStadiumPage.vue";
+import ManageFeedbackPage from "@/pages/ManageFeedbackPage.vue";
+import AdminContactPage from "@/pages/AdminContactPage.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -86,6 +89,12 @@ const publicRoutes = [
     path: "/multiple-booking/payment-success",
     name: "multiple-booking-success",
     component: MultipleBookingPaymentSuccess,
+  },
+
+  {
+    path: "/field-on-stadium/:stadiumId",
+    name: "field-on-stadium",
+    component: FieldOnStadiumPage,
   },
 ];
 
@@ -195,6 +204,7 @@ const protectedRoutes = [
     component: PaymentHistoryPage,
     meta: { requiresAuth: true },
   },
+
   {
     path: "/lessor-page",
     name: "lessor-page",
@@ -216,6 +226,11 @@ const protectedRoutes = [
         path: "/stadium-manager",
         name: "stadium-manager",
         component: LessorStadiumManager,
+      },
+      {
+        path: "/manage-feedback",
+        name: "manage-feedback",
+        component: ManageFeedbackPage,
         meta: { requiresAuth: true, requiresLessor: true },
       },
       {
@@ -274,6 +289,12 @@ const adminRoutes = [
         path: "users",
         name: "users",
         component: AdminUserPage,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: "contacts",
+        name: "contacts",
+        component: AdminContactPage,
         meta: { requiresAuth: true, requiresAdmin: true },
       },
       {

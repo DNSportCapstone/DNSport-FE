@@ -151,26 +151,28 @@ export default {
       isSidebarOpen.value = !isSidebarOpen.value;
     };
 
-    const getPageTitle = () => {
-      switch (route.name) {
-        case "revenue-report":
-          return "RevenueReportTitle";
-        case "booking-report":
-          return "BookingReportTitle";
-        case "stadiums":
-          return "Stadium";
-        case "users":
-          return "Users";
-        case "vouchers":
-          return "Vouchers";
-        case "manage-complaints":
-          return "ManageComplaints";
-        case "refund-requests":
-          return "RefundRequests";
-        default:
-          return "AdminDashboard";
-      }
-    };
+        const getPageTitle = () => {
+            switch (route.name) {
+                case 'revenue-report':
+                    return 'RevenueReportTitle';
+                case 'booking-report':
+                    return 'BookingReportTitle';
+                case 'stadiums':
+                    return 'Stadium';
+                case 'users':
+                    return 'Users';
+                case 'vouchers':
+                    return 'Vouchers';
+                case 'manage-complaints':
+                    return 'ManageComplaints';
+                case 'refund-requests':
+                    return 'RefundRequests';
+                case 'contacts':
+                    return 'Contacts';
+                default:
+                    return 'AdminDashboard';
+            }
+        };
 
     return {
       t,

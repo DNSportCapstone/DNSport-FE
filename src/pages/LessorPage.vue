@@ -125,6 +125,27 @@
           </svg>
           <span>Vouchers</span>
         </li>
+        <li
+          @click="navigateTo('manage-feedback')"
+          :class="{ active: currentRoute === 'manage-feedback' }"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            width="20"
+            height="20"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 3.866-3.582 7-8 7-1.294 0-2.515-.244-3.572-.678L3 21l1.678-4.428C3.244 15.515 3 14.294 3 13c0-3.866 3.582-7 8-7s8 3.134 8 7z"
+            />
+          </svg>
+          <span>Feedback</span>
+        </li>
       </ul>
     </div>
 
