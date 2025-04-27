@@ -1,22 +1,22 @@
 <template>
   <section class="field-list container py-5">
     <div class="header-section text-center mb-5" data-aos="fade-up">
-      <h1 class="text-primary">Our Fields</h1>
+      <h1 class="text-primary">{{ t("field_list.title") }}</h1>
       <p class="subtitle text-muted">
-        Discover and book our premium sports fields
+        {{ t("field_list.subtitle") }}
       </p>
     </div>
 
     <div v-if="loading" class="text-center">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">{{ t("field_list.loading") }}</span>
       </div>
-      <p class="mt-3 text-muted">Loading fields...</p>
+      <p class="mt-3 text-muted">{{ t("field_list.loading_fields") }}</p>
     </div>
 
     <div v-else-if="fields.length === 0" class="text-center text-muted">
       <i class="bi bi-emoji-frown display-1"></i>
-      <p class="mt-3">No fields found.</p>
+      <p class="mt-3">{{ t("field_list.no_fields") }}</p>
     </div>
 
     <div v-else class="row g-4">
@@ -25,24 +25,38 @@
           <img
             :src="field.imageUrls || defaultImage"
             @error="(e) => (e.target.src = defaultImage)"
-            alt="Field Image"
+            :alt="t('field_list.field.image_alt')"
             class="card-img-top"
           />
           <div class="card-body d-flex flex-column">
             <h5 class="card-title text-primary">{{ field.name }}</h5>
             <p class="card-text text-muted mb-1">
-              👥 Tối đa: {{ field.maximumPeople }} người
+              {{
+                t("field_list.field.maximum_people", {
+                  count: field.maximumPeople,
+                })
+              }}
             </p>
             <p class="card-text text-muted mb-1">
-              ☀️ Giá ngày: {{ formatPrice(field.dayPrice || 0) }}đ
+              {{
+                t("field_list.field.day_price", {
+                  price: formatPrice(field.dayPrice || 0),
+                })
+              }}
             </p>
             <p class="card-text text-muted mb-3">
-              🌙 Giá đêm: {{ formatPrice(field.nightPrice || 0) }}đ
+              {{
+                t("field_list.field.night_price", {
+                  price: formatPrice(field.nightPrice || 0),
+                })
+              }}
             </p>
             <div class="stadium-actions mt-auto">
-              <button class="view-details-btn">View Details</button>
+              <button class="view-details-btn">
+                {{ t("field_list.field.view_details") }}
+              </button>
               <button class="book-now-btn" @click="bookNow(field.id)">
-                Book Now
+                {{ t("field_list.field.book_now") }}
               </button>
             </div>
           </div>
@@ -54,9 +68,14 @@
 
 <script>
 import API from "@/utils/axios";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "FieldList",
+  setup() {
+    const { t, locale } = useI18n();
+    return { t, locale };
+  },
   data() {
     return {
       fields: [],
@@ -71,16 +90,22 @@ export default {
         const response = await API.get("/Field/get-all-fields");
         this.fields = response.data;
       } catch (error) {
-        console.error("Error fetching fields:", error);
+        console.error(this.t("field_list.error.fetch_failed"), error);
       } finally {
         this.loading = false;
       }
     },
     formatPrice(value) {
-      return new Intl.NumberFormat("vi-VN").format(value);
+      const priceLocale = this.locale === "vi" ? "vi-VN" : "en-US";
+      const currency = this.locale === "vi" ? "VND" : "USD"; // Adjust currency if needed
+      return new Intl.NumberFormat(priceLocale, {
+        style: "currency",
+        currency: currency,
+        currencyDisplay: "symbol",
+      }).format(value);
     },
     bookNow(id) {
-      alert(`Booking field with ID: ${id}`);
+      alert(this.t("field_list.field.booking_alert", { id }));
     },
   },
   mounted() {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Hero Section with Carousel (Giữ nguyên) -->
+    <!-- Hero Section with Carousel -->
     <section class="hero-section">
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -67,17 +67,22 @@
         <!-- Search Overlay -->
         <div class="hero-overlay">
           <div class="container">
-            <h1 class="hero-title">Find Your Perfect Sports Field</h1>
-            <p class="hero-subtitle">Book sports fields easily and quickly</p>
+            <h1 class="hero-title">{{ t("home.hero.title") }}</h1>
+            <p class="hero-subtitle">{{ t("home.hero.subtitle") }}</p>
             <div class="search-container">
               <div class="search-box">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Search for sports fields..." />
-                <button class="search-btn">Search</button>
+                <input
+                  type="text"
+                  :placeholder="t('home.hero.search_placeholder')"
+                />
+                <button class="search-btn">
+                  {{ t("home.hero.search_button") }}
+                </button>
               </div>
               <router-link to="/nearby-stadiums" class="nearby-btn">
                 <i class="bi bi-geo-alt"></i>
-                Find Nearby Stadiums
+                {{ t("home.hero.nearby_button") }}
               </router-link>
             </div>
           </div>
@@ -88,31 +93,18 @@
     <!-- About Section -->
     <section id="about" class="about section">
       <div class="container section-title" data-aos="fade-up">
-        <h2>ABOUT</h2>
+        <h2>{{ t("home.about.title") }}</h2>
         <div>
-          <span>ABOUT US</span>
+          <span>{{ t("home.about.subtitle") }}</span>
         </div>
       </div>
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row content align-items-center">
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
-            <h3>Revolutionizing Sports Venue Management</h3>
-            <p>
-              Welcome to DNSport, your premier destination for sports field
-              bookings. We are dedicated to revolutionizing the way sports
-              enthusiasts and teams access and book sports facilities. Our
-              platform was born from a simple idea: making sports field booking
-              accessible, convenient, and enjoyable for everyone.
-            </p>
-            <p>
-              At DNSport, we understand the passion for sports and the
-              importance of having access to quality facilities. That's why
-              we've created a comprehensive platform that connects sports
-              enthusiasts with the best venues in their area. Whether you're
-              organizing a friendly match, planning a tournament, or managing
-              regular team practice sessions, we've got you covered.
-            </p>
+            <h3>{{ t("home.about.main_title") }}</h3>
+            <p>{{ t("home.about.description_1") }}</p>
+            <p>{{ t("home.about.description_2") }}</p>
           </div>
           <div
             class="col-lg-6 pt-4 pt-lg-0"
@@ -123,21 +115,17 @@
               <div class="feature-box">
                 <i class="bi bi-calendar-check"></i>
                 <div class="feature-content">
-                  <h4>Easy Booking</h4>
-                  <p>
-                    Book your favorite sports stadium with just a few clicks.
-                    Our intuitive interface makes scheduling a breeze.
-                  </p>
+                  <h4>{{ t("home.about.features.easy_booking.title") }}</h4>
+                  <p>{{ t("home.about.features.easy_booking.description") }}</p>
                 </div>
               </div>
 
               <div class="feature-box">
                 <i class="bi bi-geo-alt"></i>
                 <div class="feature-content">
-                  <h4>Prime Locations</h4>
+                  <h4>{{ t("home.about.features.prime_locations.title") }}</h4>
                   <p>
-                    Find sports stadiums in convenient locations near you. We
-                    partner with the best facilities in your area.
+                    {{ t("home.about.features.prime_locations.description") }}
                   </p>
                 </div>
               </div>
@@ -145,10 +133,9 @@
               <div class="feature-box">
                 <i class="bi bi-people"></i>
                 <div class="feature-content">
-                  <h4>Community Events</h4>
+                  <h4>{{ t("home.about.features.community_events.title") }}</h4>
                   <p>
-                    Join events and meet other sports enthusiasts. Build your
-                    sports community with like-minded players.
+                    {{ t("home.about.features.community_events.description") }}
                   </p>
                 </div>
               </div>
@@ -156,10 +143,9 @@
               <div class="feature-box">
                 <i class="bi bi-shield-check"></i>
                 <div class="feature-content">
-                  <h4>Secure Platform</h4>
+                  <h4>{{ t("home.about.features.secure_platform.title") }}</h4>
                   <p>
-                    Safe and secure payment processing system. Your transactions
-                    and data are always protected.
+                    {{ t("home.about.features.secure_platform.description") }}
                   </p>
                 </div>
               </div>
@@ -172,9 +158,9 @@
     <!-- How It Works Section -->
     <section class="how-it-works section">
       <div class="container section-title" data-aos="fade-up">
-        <h2>STEPS</h2>
+        <h2>{{ t("home.how_it_works.title") }}</h2>
         <div>
-          <span>HOW IT WORKS</span>
+          <span>{{ t("home.how_it_works.subtitle") }}</span>
         </div>
       </div>
       <div class="container" data-aos="fade" data-aos-delay="100">
@@ -183,22 +169,22 @@
             <div class="step-icon">
               <i class="bi bi-search"></i>
             </div>
-            <h3>1. Find</h3>
-            <p>Search for available sports fields in your area</p>
+            <h3>{{ t("home.how_it_works.steps.find.title") }}</h3>
+            <p>{{ t("home.how_it_works.steps.find.description") }}</p>
           </div>
           <div class="step" data-aos="fade-up" data-aos-delay="300">
             <div class="step-icon">
               <i class="bi bi-calendar-check"></i>
             </div>
-            <h3>2. Book</h3>
-            <p>Select your preferred time and make a reservation</p>
+            <h3>{{ t("home.how_it_works.steps.book.title") }}</h3>
+            <p>{{ t("home.how_it_works.steps.book.description") }}</p>
           </div>
           <div class="step" data-aos="fade-up" data-aos-delay="400">
             <div class="step-icon">
               <i class="bi bi-trophy"></i>
             </div>
-            <h3>3. Play</h3>
-            <p>Enjoy your game at the booked facility</p>
+            <h3>{{ t("home.how_it_works.steps.play.title") }}</h3>
+            <p>{{ t("home.how_it_works.steps.play.description") }}</p>
           </div>
         </div>
       </div>
@@ -207,9 +193,9 @@
     <!-- Featured Stadiums Section -->
     <section class="featured-stadiums section">
       <div class="container section-title" data-aos="fade-up">
-        <h2>STADIUMS</h2>
+        <h2>{{ t("home.stadiums.title") }}</h2>
         <div>
-          <span>OUR STADIUMS</span>
+          <span>{{ t("home.stadiums.subtitle") }}</span>
         </div>
       </div>
       <div class="container" data-aos="fade" data-aos-delay="100">
@@ -224,6 +210,7 @@
                 :src="stadium.image"
                 :alt="stadium.stadiumName"
                 loading="lazy"
+                @error="onImageError"
               />
             </div>
             <div class="stadium-content">
@@ -236,13 +223,13 @@
                   class="view-details-btn"
                   @click="viewFields(stadium.stadiumId, stadium.stadiumName)"
                 >
-                  View Fields
+                  {{ t("home.stadiums.view_fields") }}
                 </button>
                 <button
                   class="book-now-btn"
                   @click="bookingMultiSlots(stadium.stadiumId)"
                 >
-                  Book Now
+                  {{ t("home.stadiums.book_now") }}
                 </button>
               </div>
             </div>
@@ -254,9 +241,9 @@
     <!-- Contact Section -->
     <section id="contact" class="contact section">
       <div class="container section-title" data-aos="fade-up">
-        <h2>CONTACT</h2>
+        <h2>{{ t("home.contact.title") }}</h2>
         <div>
-          <span>GET IN TOUCH</span>
+          <span>{{ t("home.contact.subtitle") }}</span>
         </div>
       </div>
       <div class="container" data-aos="fade" data-aos-delay="100">
@@ -270,10 +257,8 @@
             >
               <i class="bi bi-geo-alt flex-shrink-0"></i>
               <div>
-                <h3>Address</h3>
-                <p>
-                  137 Nguyễn Thị Thập street, Liên Chiểu district, Đà Nẵng city.
-                </p>
+                <h3>{{ t("home.contact.address.title") }}</h3>
+                <p>{{ t("home.contact.address.value") }}</p>
               </div>
             </div>
             <div
@@ -283,8 +268,8 @@
             >
               <i class="bi bi-telephone flex-shrink-0"></i>
               <div>
-                <h3>Call Us</h3>
-                <p>+1 234 567 890</p>
+                <h3>{{ t("home.contact.phone.title") }}</h3>
+                <p>{{ t("home.contact.phone.value") }}</p>
               </div>
             </div>
             <div
@@ -294,8 +279,8 @@
             >
               <i class="bi bi-envelope flex-shrink-0"></i>
               <div>
-                <h3>Email Us</h3>
-                <p>dnsport2025@gmail.com</p>
+                <h3>{{ t("home.contact.email.title") }}</h3>
+                <p>{{ t("home.contact.email.value") }}</p>
               </div>
             </div>
           </div>
@@ -321,8 +306,8 @@
 </template>
 
 <script setup>
-// import { useI18n } from "vue-i18n";
-// const { t } = useI18n();
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 </script>
 
 <script>

@@ -1,19 +1,20 @@
 <template>
   <div class="field-on-stadium container py-5">
     <h1 class="text-center text-primary mb-5">
-      Danh sách sân thuộc: <span class="text-dark">{{ stadiumName }}</span>
+      {{ t("field_on_stadium.title") }}
+      <span class="text-dark">{{ stadiumName }}</span>
     </h1>
 
     <div v-if="loading" class="text-center">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Đang tải dữ liệu...</span>
+        <span class="visually-hidden">{{ t("field_on_stadium.loading") }}</span>
       </div>
-      <p class="mt-3 text-muted">Đang tải dữ liệu...</p>
+      <p class="mt-3 text-muted">{{ t("field_on_stadium.loading") }}</p>
     </div>
 
     <div v-else-if="fields.length === 0" class="text-center text-muted">
       <i class="bi bi-emoji-frown display-1"></i>
-      <p class="mt-3">Không có sân nào được tìm thấy.</p>
+      <p class="mt-3">{{ t("field_on_stadium.no_fields") }}</p>
     </div>
 
     <div v-else class="row g-4">
@@ -33,19 +34,35 @@
             <!-- Tên sân con -->
             <h5 class="card-title text-primary">{{ field.fieldName }}</h5>
             <p class="card-text text-muted mb-1">
-              👥 Tối đa: {{ field.maximumPeople }} người
+              {{
+                t("field_on_stadium.field.maximum_people", {
+                  count: field.maximumPeople,
+                })
+              }}
             </p>
             <p class="card-text text-muted mb-1">
-              ☀️ Giá ngày: {{ formatPrice(field.dayPrice) }}đ
+              {{
+                t("field_on_stadium.field.day_price", {
+                  price: formatPrice(field.dayPrice),
+                })
+              }}
             </p>
             <p class="card-text text-muted mb-3">
-              🌙 Giá đêm: {{ formatPrice(field.nightPrice) }}đ
+              {{
+                t("field_on_stadium.field.night_price", {
+                  price: formatPrice(field.nightPrice),
+                })
+              }}
             </p>
 
             <!-- Nút hành động -->
             <div class="stadium-actions mt-auto">
-              <button class="view-details-btn">View Details</button>
-              <button class="book-now-btn">Book Now</button>
+              <button class="view-details-btn">
+                {{ t("field_on_stadium.field.view_details") }}
+              </button>
+              <button class="book-now-btn">
+                {{ t("field_on_stadium.field.book_now") }}
+              </button>
             </div>
           </div>
         </div>
@@ -56,9 +73,14 @@
 
 <script>
 import API from "@/utils/axios";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "FieldOnStadium",
+  setup() {
+    const { t, locale } = useI18n();
+    return { t, locale };
+  },
   data() {
     return {
       fields: [],
@@ -73,13 +95,21 @@ export default {
   },
   methods: {
     formatPrice(value) {
-      return new Intl.NumberFormat("vi-VN").format(value);
+      const priceLocale = this.locale === "vi" ? "vi-VN" : "en-US";
+      const currency = this.locale === "vi" ? "VND" : "USD"; // Adjust currency if needed
+      return new Intl.NumberFormat(priceLocale, {
+        style: "currency",
+        currency: currency,
+        currencyDisplay: "symbol",
+      }).format(value);
     },
     async loadFields() {
       this.loading = true;
       try {
         const stadiumId = this.$route.params.stadiumId;
-        this.stadiumName = this.$route.query.stadiumName || "Không xác định";
+        this.stadiumName =
+          this.$route.query.stadiumName ||
+          this.t("field_on_stadium.unknown_stadium");
 
         const response = await API.get(
           `/Field/fields-by-stadium-id/${stadiumId}`
@@ -87,7 +117,7 @@ export default {
         console.log(response.data);
         this.fields = response.data;
       } catch (err) {
-        console.error("Lỗi khi load fields:", err);
+        console.error("Error loading fields:", err);
       } finally {
         this.loading = false;
       }

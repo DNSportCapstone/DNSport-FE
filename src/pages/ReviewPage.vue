@@ -2,9 +2,9 @@
   <div class="section">
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-      <h2>Review</h2>
+      <h2>{{ t("review.title") }}</h2>
       <div>
-        <span class="description-title">Review & Comments</span>
+        <span class="description-title">{{ t("review.description") }}</span>
       </div>
     </div>
     <!-- End Section Title -->
@@ -22,14 +22,14 @@
           <!-- Success Message -->
           <div v-if="hasRated" class="alert-message success">
             <i class="bi bi-check-circle-fill"></i>
-            You have already rated this booking.
+            {{ t("review.success.already_rated") }}
           </div>
 
           <!-- Review Form -->
           <div v-else class="review-form">
             <div class="form-header">
-              <h2>Your Review</h2>
-              <p>Share your experience with us</p>
+              <h2>{{ t("review.form.title") }}</h2>
+              <p>{{ t("review.form.description") }}</p>
             </div>
 
             <!-- Star Rating -->
@@ -39,11 +39,11 @@
 
             <!-- Comment Input -->
             <div class="comment-section">
-              <label for="comment">Your Comment</label>
+              <label for="comment">{{ t("review.form.comment_label") }}</label>
               <textarea
                 id="comment"
                 v-model="newComment"
-                placeholder="Write your review..."
+                :placeholder="t('review.form.comment_placeholder')"
                 rows="4"
               ></textarea>
             </div>
@@ -55,7 +55,11 @@
               @click="submitReview"
             >
               <span v-if="isSubmitting" class="spinner"></span>
-              {{ isSubmitting ? "Submitting..." : "Submit Review" }}
+              {{
+                isSubmitting
+                  ? t("review.form.submitting")
+                  : t("review.form.submit")
+              }}
             </button>
           </div>
         </div>
@@ -69,9 +73,14 @@
 import StarRating from "@/components/StarRating.vue";
 import CommonHelper from "@/utils/common";
 import API from "@/utils/axios";
+import { useI18n } from "vue-i18n";
 
 export default {
   components: { StarRating },
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       rating: 0,
@@ -80,6 +89,7 @@ export default {
       bookingId: "",
       userId: null,
       errorMessage: "",
+      isSubmitting: false,
     };
   },
   methods: {
@@ -92,16 +102,11 @@ export default {
           throw new Error("User ID not found.");
         }
 
-        // const bookingResponse = await API.get("/booking/", {
-        //   params: { userId: this.userId },
-        // });
-        // this.bookingId = bookingResponse.data.bookingId;
-
-        //kiểm tra xem đã đánh giá chưa
+        // Check if the user has already rated
         await this.checkIfRated();
       } catch (error) {
         console.error("Error fetching user and booking info:", error);
-        this.errorMessage = "Failed to load booking and user information.";
+        this.errorMessage = this.t("review.error.load_failed");
       }
     },
     async checkIfRated() {
@@ -120,6 +125,7 @@ export default {
       this.rating = rating;
     },
     async submitReview() {
+      this.isSubmitting = true;
       try {
         await API.post("/rating/add", {
           userId: this.userId,
@@ -129,7 +135,7 @@ export default {
         });
 
         this.hasRated = true;
-        alert("Your review has been submitted successfully!");
+        alert(this.t("review.success.submitted"));
       } catch (error) {
         console.error("Error submitting review:", error);
 
@@ -137,24 +143,23 @@ export default {
         if (error.response && error.response.data.message) {
           const errorMsg = error.response.data.message;
           if (errorMsg.includes("Only successful bookings can be rated")) {
-            this.errorMessage =
-              "You can only rate a booking that has been successfully completed.";
+            this.errorMessage = this.t("review.error.only_successful");
           } else if (
             errorMsg.includes(
               "You can only rate after the booked time has passed"
             )
           ) {
-            this.errorMessage =
-              "You can only submit a rating after your booking has ended.";
+            this.errorMessage = this.t("review.error.after_booking");
           } else if (errorMsg.includes("You can only rate once per booking")) {
-            this.errorMessage = "You have already rated this booking.";
+            this.errorMessage = this.t("review.error.already_rated");
           } else {
-            this.errorMessage =
-              "An error occurred while submitting your review.";
+            this.errorMessage = this.t("review.error.submit_failed");
           }
         } else {
-          this.errorMessage = "An error occurred while submitting your review.";
+          this.errorMessage = this.t("review.error.submit_failed");
         }
+      } finally {
+        this.isSubmitting = false;
       }
     },
   },

@@ -1,16 +1,18 @@
 <template>
   <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Quản lý phản hồi</h1>
+    <h1 class="text-2xl font-bold mb-4">{{ t("manage_feedback.title") }}</h1>
 
     <!-- Chọn sân -->
     <div class="mb-4">
-      <label>Chọn sân:</label>
+      <label>{{ t("manage_feedback.select_stadium") }}</label>
       <select
         v-model="selectedStadiumId"
         @change="fetchFields"
         class="border rounded p-2 w-full"
       >
-        <option disabled value="">-- Chọn sân --</option>
+        <option disabled value="">
+          {{ t("manage_feedback.select_stadium_placeholder") }}
+        </option>
         <option
           v-for="stadium in stadiums"
           :key="stadium.stadiumId"
@@ -23,13 +25,15 @@
 
     <!-- Chọn sân con -->
     <div v-if="fields.length" class="mb-4">
-      <label>Chọn sân con:</label>
+      <label>{{ t("manage_feedback.select_field") }}</label>
       <select
         v-model="selectedFieldId"
         @change="fetchComments"
         class="border rounded p-2 w-full"
       >
-        <option disabled value="">-- Chọn sân con --</option>
+        <option disabled value="">
+          {{ t("manage_feedback.select_field_placeholder") }}
+        </option>
         <option
           v-for="field in fields"
           :key="field.fieldId"
@@ -45,12 +49,24 @@
       <table class="w-full table-auto border mt-4">
         <thead class="bg-gray-100">
           <tr>
-            <th class="border px-4 py-2">Người đánh giá</th>
-            <th class="border px-4 py-2">Rating</th>
-            <th class="border px-4 py-2">Bình luận</th>
-            <th class="border px-4 py-2">Thời gian</th>
-            <th class="border px-4 py-2">Phản hồi</th>
-            <th class="border px-4 py-2">Thao tác</th>
+            <th class="border px-4 py-2">
+              {{ t("manage_feedback.table.reviewer") }}
+            </th>
+            <th class="border px-4 py-2">
+              {{ t("manage_feedback.table.rating") }}
+            </th>
+            <th class="border px-4 py-2">
+              {{ t("manage_feedback.table.comment") }}
+            </th>
+            <th class="border px-4 py-2">
+              {{ t("manage_feedback.table.time") }}
+            </th>
+            <th class="border px-4 py-2">
+              {{ t("manage_feedback.table.reply") }}
+            </th>
+            <th class="border px-4 py-2">
+              {{ t("manage_feedback.table.action") }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -59,7 +75,6 @@
             <td class="border px-4 py-2 text-center">
               {{ comment.ratingValue }} ⭐
             </td>
-
             <td class="border px-4 py-2">{{ comment.comment }}</td>
             <td class="border px-4 py-2">{{ formatDate(comment.time) }}</td>
             <td class="border px-4 py-2 text-green-600">
@@ -72,7 +87,7 @@
                   v-model="comment.replyText"
                   class="w-full border rounded p-1"
                   rows="2"
-                  placeholder="Nhập phản hồi..."
+                  :placeholder="t('manage_feedback.reply_placeholder')"
                 ></textarea>
               </div>
             </td>
@@ -82,7 +97,7 @@
                   style="background-color: #28a745; color: white"
                   @click="submitReply(comment)"
                 >
-                  Gửi
+                  {{ t("manage_feedback.submit") }}
                 </button>
               </div>
               <div v-else></div>
@@ -93,7 +108,7 @@
     </div>
 
     <div v-else-if="selectedFieldId" class="text-gray-500 mt-4">
-      Không có phản hồi nào cho sân này.
+      {{ t("manage_feedback.no_comments") }}
     </div>
   </div>
 </template>
@@ -102,6 +117,9 @@
 import CommonHelper from "@/utils/common";
 import { ref, onMounted } from "vue";
 import API from "@/utils/axios";
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
 
 const stadiums = ref([]);
 const fields = ref([]);
@@ -133,7 +151,8 @@ const fetchComments = async () => {
 };
 
 const submitReply = async (comment) => {
-  if (!comment.replyText.trim()) return alert("Phản hồi không được để trống");
+  if (!comment.replyText.trim())
+    return alert(t("manage_feedback.error.empty_reply"));
   try {
     await API.post(`/rating/reply`, {
       ratingId: comment.ratingId,
@@ -143,11 +162,16 @@ const submitReply = async (comment) => {
     comment.replyTime = new Date().toISOString();
     comment.replyText = "";
   } catch (err) {
-    alert(err.response?.data?.message || "Lỗi gửi phản hồi");
+    alert(
+      err.response?.data?.message || t("manage_feedback.error.submit_failed")
+    );
   }
 };
 
-const formatDate = (iso) => new Date(iso).toLocaleString("vi-VN");
+const formatDate = (iso) => {
+  const dateLocale = locale.value === "vi" ? "vi-VN" : "en-US";
+  return new Date(iso).toLocaleString(dateLocale);
+};
 
 onMounted(() => {
   fetchStadiums();
