@@ -41,6 +41,9 @@ import UpdateField from "@/pages/UpdateField.vue";
 import LessorPage from "@/pages/LessorPage.vue";
 import Lessor from "@/pages/Lessor.vue";
 import VoucherManager from "@/pages/VoucherManager.vue";
+import LessorStadiumManager from "@/pages/LessorStadiumManager.vue";
+import StadiumRegister from "@/pages/StadiumRegister.vue";
+import PendingStadium from "@/pages/PendingStadium.vue";
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -210,9 +213,21 @@ const protectedRoutes = [
         meta: { requiresAuth: true, requiresLessor: true },
       },
       {
+        path: "/stadium-manager",
+        name: "stadium-manager",
+        component: LessorStadiumManager,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+      {
         path: "/update-field",
         name: "updatefield",
         component: UpdateField,
+        meta: { requiresAuth: true, requiresLessor: true },
+      },
+      {
+        path: "/stadiumregister",
+        name: "stadiumregister",
+        component: StadiumRegister,
         meta: { requiresAuth: true, requiresLessor: true },
       },
       {
@@ -274,11 +289,17 @@ const adminRoutes = [
         meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
+        path: "pending-stadium",
+        name: "pending-stadium",
+        component: PendingStadium,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
         path: "refund-requests",
         name: "refund-requests",
         component: AdminRefundRequestsPage,
-        meta: { requiresAuth: true, requiresAdmin: true },
       },
+
       // {
       //   path: "booking-cancel",
       //   name: "booking-cancel",
