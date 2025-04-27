@@ -41,6 +41,13 @@
                         </router-link>
                     </li>
                     <li>
+                        <router-link :to="{ name: 'contacts' }" :class="{ active: currentRoute === 'contacts' }"
+                            @click="navigateTo">
+                            <i class="bi bi-people"></i>
+                            {{ t('Contacts') }}
+                        </router-link>
+                    </li>
+                    <li>
                         <router-link :to="{ name: 'vouchers' }" :class="{ active: currentRoute === 'vouchers' }"
                             @click="navigateTo">
                             <i class="bi bi-ticket-perforated"></i>
@@ -137,6 +144,8 @@ export default {
                     return 'ManageComplaints';
                 case 'refund-requests':
                     return 'RefundRequests';
+                case 'contacts':
+                    return 'Contacts';
                 default:
                     return 'AdminDashboard';
             }
