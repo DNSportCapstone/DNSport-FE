@@ -362,7 +362,7 @@ export default {
             error.response?.data?.message || error.message || "Unknown error"
           }`
         );
-        this.$router.push("/stadiums");
+        this.$router.push("/stadium-manager");
       } finally {
         this.loading = false;
       }
@@ -424,7 +424,7 @@ export default {
           this.toast.success("Field added successfully!");
         }
 
-        this.$router.push("/stadiums");
+        this.$router.push("/stadium-manager");
       } catch (error) {
         console.error("Error saving field:", error);
         this.toast.error(
@@ -438,7 +438,7 @@ export default {
     },
 
     handleCancel() {
-      this.$router.push("/stadiums");
+      this.$router.push("/stadium-manager");
     },
     handleStadiumSearch() {
       this.stadiumCurrentPage = 1;
