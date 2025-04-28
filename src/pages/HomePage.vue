@@ -280,7 +280,7 @@
               <i class="bi bi-envelope flex-shrink-0"></i>
               <div>
                 <h3>{{ t("home.contact.email.title") }}</h3>
-                <p>{{ t("home.contact.email.value") }}</p>
+                <p>dnsport2025@gmail.com</p>
               </div>
             </div>
           </div>
@@ -302,7 +302,11 @@
 
           <!-- Lessor Form bên phải -->
           <div class="col-lg-4">
-            <div class="lessor-form-container" data-aos="fade-up" data-aos-delay="300">
+            <div
+              class="lessor-form-container"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
               <h3 class="form-title">Become a Lessor</h3>
               <p class="form-subtitle">List your sports field with us</p>
               <form @submit.prevent="submitLessorForm" class="lessor-form">
@@ -359,7 +363,11 @@
                   <span v-else>Register as Lessor</span>
                 </button>
 
-                <div v-if="formMessage" class="form-message" :class="{ 'success': formSuccess, 'error': !formSuccess }">
+                <div
+                  v-if="formMessage"
+                  class="form-message"
+                  :class="{ success: formSuccess, error: !formSuccess }"
+                >
                   {{ formMessage }}
                 </div>
               </form>
@@ -384,14 +392,14 @@ export default {
     return {
       stadiums: [],
       lessorForm: {
-        fullname: '',
-        email: '',
-        phoneNumber: '',
-        address: ''
+        fullname: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
       },
       isSubmitting: false,
-      formMessage: '',
-      formSuccess: false
+      formMessage: "",
+      formSuccess: false,
     };
   },
   methods: {
@@ -447,22 +455,27 @@ export default {
     },
     async submitLessorForm() {
       this.isSubmitting = true;
-      this.formMessage = '';
+      this.formMessage = "";
 
       try {
         // Replace with your actual API endpoint for lessor registration
-        const response = await API.post("/Lessor/create-lessor-contact", this.lessorForm);
+        const response = await API.post(
+          "/Lessor/create-lessor-contact",
+          this.lessorForm
+        );
 
         if (response.status === 200 || response.status === 201) {
           this.formSuccess = true;
-          this.formMessage = "Thank you! Your lessor registration has been submitted successfully.";
+          this.formMessage =
+            "Thank you! Your lessor registration has been submitted successfully.";
           this.resetForm();
         } else {
           throw new Error("Unexpected response");
         }
       } catch (error) {
         this.formSuccess = false;
-        this.formMessage = "Sorry, there was an error submitting your form. Please try again later.";
+        this.formMessage =
+          "Sorry, there was an error submitting your form. Please try again later.";
         console.error("Error submitting lessor form:", error);
       } finally {
         this.isSubmitting = false;
@@ -471,12 +484,12 @@ export default {
 
     resetForm() {
       this.lessorForm = {
-        fullname: '',
-        email: '',
-        phoneNumber: '',
-        address: ''
+        fullname: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
       };
-    }
+    },
   },
   async mounted() {
     await this.fetchStadiums();
