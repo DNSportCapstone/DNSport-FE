@@ -1,21 +1,5 @@
 <template>
-  <div class="revenue-table-container">
-    <!-- Revenue Summary -->
-    <div class="card mb-3" v-if="ownerAmountData">
-      <div class="card-body">
-        <h5 class="card-title">Revenue Summary</h5>
-        <p class="card-text">
-          Total Owner Amount:
-          <strong>{{
-            formatCurrency(ownerAmountData.totalOwnerAmount)
-          }}</strong>
-        </p>
-        <p class="card-text">
-          From {{ ownerAmountData.fieldsCount }} field(s) across
-          {{ ownerAmountData.stadiumsCount }} stadium(s).
-        </p>
-      </div>
-    </div>
+  <div class="stadium-table-container">
     <!-- Top Action Bar -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <div class="d-flex gap-2">
@@ -214,9 +198,7 @@
               >
                 <template
                   v-if="
-                    column.key === 'dayPrice' ||
-                    column.key === 'nightPrice' ||
-                    column.key === 'ownerAmount'
+                    column.key === 'dayPrice' || column.key === 'nightPrice'
                   "
                 >
                   {{ formatCurrency(field[column.key]) }}
@@ -534,7 +516,6 @@ export default {
       // Data
       stadiums: [],
       fields: [],
-      ownerAmountData: null,
 
       // Table columns
       columns: [
@@ -550,7 +531,6 @@ export default {
         { key: "dayPrice", label: "Day Price" },
         { key: "nightPrice", label: "Night Price" },
         { key: "status", label: "Status" },
-        { key: "ownerAmount", label: "Owner Amount" },
       ],
 
       // Search and sorting for stadiums
@@ -891,20 +871,7 @@ export default {
         const response = await API.get(
           `Field/fields-by-stadium-id/${stadiumId}`
         );
-        const fields = response.data || [];
-
-        const ownerAmountPromises = fields.map((field) =>
-          API.get(`RevenueTransaction/owner-amount/${field.fieldId}`)
-            .then((res) => res.data.ownerAmount || 0)
-            .catch(() => 0)
-        );
-
-        const ownerAmounts = await Promise.all(ownerAmountPromises);
-
-        this.fields = fields.map((field, index) => ({
-          ...field,
-          ownerAmount: ownerAmounts[index],
-        }));
+        this.fields = response.data || [];
       } catch (error) {
         console.error("Error fetching fields:", error);
         this.error =
@@ -915,73 +882,6 @@ export default {
         this.fields = [];
       } finally {
         this.fieldsLoading = false;
-      }
-    },
-    async fetchOwnerAmount() {
-      try {
-        this.loading = true;
-        this.error = null;
-
-        if (!this.userId) {
-          this.userId = await this.getUserId();
-          if (!this.userId)
-            throw new Error("User ID not found. Please log in.");
-        }
-
-        const stadiumResponse = await API.get(`Stadium/user/${this.userId}`);
-        const stadiums = stadiumResponse.data || [];
-
-        if (!stadiums.length) {
-          this.ownerAmountData = {
-            totalOwnerAmount: 0,
-            fieldsCount: 0,
-            stadiumsCount: 0,
-          };
-          return;
-        }
-
-        const fieldPromises = stadiums.map((stadium) =>
-          API.get(`Field/fields-by-stadium-id/${stadium.stadiumId}`)
-        );
-        const fieldResponses = await Promise.all(fieldPromises);
-        const allFields = fieldResponses.flatMap(
-          (response) => response.data || []
-        );
-        const fieldIds = allFields.map((field) => field.fieldId);
-
-        let totalOwnerAmount = 0;
-        if (fieldIds.length > 0) {
-          const ownerAmountPromises = fieldIds.map((fieldId) =>
-            API.get(`RevenueTransaction/owner-amount/${fieldId}`)
-              .then((res) => res.data.ownerAmount || 0)
-              .catch(() => 0)
-          );
-          const ownerAmountResponses = await Promise.all(ownerAmountPromises);
-          totalOwnerAmount = ownerAmountResponses.reduce(
-            (sum, amount) => sum + amount,
-            0
-          );
-        }
-
-        this.ownerAmountData = {
-          totalOwnerAmount,
-          fieldsCount: fieldIds.length,
-          stadiumsCount: stadiums.length,
-        };
-      } catch (error) {
-        console.error("Error fetching owner amount:", error);
-        this.error =
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to load owner amount";
-        this.toast.error(`Failed to load owner amount: ${this.error}`);
-        this.ownerAmountData = {
-          totalOwnerAmount: 0,
-          fieldsCount: 0,
-          stadiumsCount: 0,
-        };
-      } finally {
-        this.loading = false;
       }
     },
     handleAddNewField() {
@@ -1033,7 +933,6 @@ export default {
         this.toast.success(
           `${this.fieldToDelete.description} has been deleted successfully`
         );
-        await this.fetchOwnerAmount();
       } catch (error) {
         console.error("Error deleting field:", error);
         this.toast.error(
@@ -1049,7 +948,6 @@ export default {
   },
   mounted() {
     this.fetchStadiums();
-    this.fetchOwnerAmount();
     this.disableModal = new Modal(
       document.getElementById("disableConfirmModal")
     );
