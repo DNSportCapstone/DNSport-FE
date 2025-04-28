@@ -5,7 +5,7 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">
-          {{ isEditMode ? "Edit Field" : "Add New Field" }}
+          {{ isEditMode ? "Edit Field" : "Register New Field" }}
         </h5>
         <form @submit.prevent="handleSubmit">
           <!-- Stadium -->
