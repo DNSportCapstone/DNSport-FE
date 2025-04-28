@@ -146,7 +146,7 @@ const protectedRoutes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/field-details/:fieldId/:returnPath",
+    path: "/field-details/:fieldId",
     name: "field-details",
     component: FieldDetails,
     meta: { requiresAuth: true },

@@ -284,13 +284,13 @@ export default {
     async handlePayment(bookingId) {
       try {
         const response = await API.post(
-          `payment/payment-url/multiple-booking`,
+          `payment/payos-create-payment/multiple-booking`,
           {
             amount: this.calculateCartTotal(),
             bookingId: bookingId,
           }
         );
-        window.location.href = response.data;
+        window.location.href = response.data.paymentUrl;
       } catch (error) {
         console.error(error);
       }
