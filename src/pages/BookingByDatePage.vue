@@ -38,7 +38,7 @@
                                 data-rel="simplecalendar-prev-date"
                                 class="btn btn-light simplecalendar-navigation"
                                 href="javascript:;"
-                                simple-date="2025-01-18"
+                                @click="changeDate(-1)"
                               >
                                 <img
                                   src="https://manager.datsan247.com/images/arrow-left.svg"
@@ -54,7 +54,7 @@
                                 data-rel="simplecalendar-next-date"
                                 class="btn btn-light simplecalendar-navigation"
                                 href="javascript:;"
-                                simple-date="2025-01-20"
+                                @click="changeDate(1)"
                               >
                                 <img
                                   src="https://manager.datsan247.com/images/arrow-right.svg"
@@ -351,11 +351,13 @@ export default {
         name: "booking-services",
       });
     },
+    changeDate(increment) {
+      this.todayDate.value.setDate(this.todayDate.value.getDate() + increment); // Thêm hoặc bớt 1 ngày
+    },
   },
   async mounted() {
     await this.fetchFields();
-    this.todayDate = new Date();
-    this.todayDate.setHours(0, 0, 0, 0);
+    this.todayDate = new Date().toISOString();
   },
 };
 </script>
