@@ -250,21 +250,39 @@ export default {
     async fetchFields() {
       try {
         this.$store.dispatch("clearMultipleBookingModel");
+
         const response = await API.get(
           `Field/fields-by-stadium-id/${this.stadiumId}`
         );
+
         this.fields = response.data.map((field) => {
-          const allSlots = this.generateSlots();
-          const bookedSlots = field.bookingFields
-            .filter(
-              (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
-            )
-            .map((b) => this.formatTime(b.startTime));
-          console.log(bookedSlots);
-          const bookingSlots = allSlots.map((slot) => ({
-            ...slot,
-            isBooked: bookedSlots.includes(slot.time),
-          }));
+          const allSlots = this.generateSlots(); // các khung giờ như "08:00", "08:30", ...
+          console.log(field.bookingFields);
+          const bookedSlots = field.bookingFields.filter(
+            (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
+          );
+
+          const bookingSlots = allSlots.map((slot) => {
+            const slotStart = this.combineDateTime(this.todayDate, slot.time);
+            const slotEnd = this.addMinutes(slotStart, 60);
+
+            const isBooked = bookedSlots.some((b) => {
+              const bookingStart = new Date(b.startTime);
+              console.log(bookingStart);
+              const bookingEnd = new Date(b.endTime);
+              return (
+                (slotStart >= bookingStart && slotStart < bookingEnd) || // bắt đầu trong khung đặt
+                (slotEnd > bookingStart && slotEnd <= bookingEnd) || // kết thúc trong khung đặt
+                (slotStart <= bookingStart && slotEnd >= bookingEnd) // bao phủ toàn bộ
+              );
+            });
+
+            return {
+              ...slot,
+              isBooked,
+            };
+          });
+
           return {
             fieldId: field.fieldId,
             fieldName: field.description,
@@ -274,6 +292,13 @@ export default {
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sân:", error);
       }
+    },
+    combineDateTime(dateStr, timeStr) {
+      return new Date(`${dateStr.split("T")[0]}T${timeStr}:00`);
+    },
+
+    addMinutes(date, minutes) {
+      return new Date(date.getTime() + minutes * 60000);
     },
     formatTime(isoString) {
       const date = new Date(isoString);
@@ -356,8 +381,8 @@ export default {
     },
   },
   async mounted() {
-    await this.fetchFields();
     this.todayDate = new Date().toISOString();
+    await this.fetchFields();
   },
 };
 </script>
