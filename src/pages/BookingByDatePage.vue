@@ -317,6 +317,7 @@ export default {
     },
     handleSlotSelected(slot) {
       const { fieldId, fieldName, isChoose, time } = slot;
+      console.log(this.todayDate);
       slot.date = this.todayDate;
 
       let field = this.multipleBookingModel.find((f) => f.fieldId === fieldId);
@@ -395,7 +396,9 @@ export default {
     },
   },
   async mounted() {
-    this.todayDate = new Date().toISOString();
+    const now = new Date();
+    now.setHours(now.getHours() + 7);
+    this.todayDate = now.toISOString();
     await this.fetchFields();
   },
 };
