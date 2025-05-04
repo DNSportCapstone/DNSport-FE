@@ -135,7 +135,6 @@ export default {
         });
 
         this.hasRated = true;
-        alert(this.t("review.success.submitted"));
       } catch (error) {
         console.error("Error submitting review:", error);
 
