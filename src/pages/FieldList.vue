@@ -108,7 +108,10 @@ export default {
       }).format(value);
     },
     bookNow(id) {
-      alert(this.t("field_list.field.booking_alert", { id }));
+      this.$router.push({
+        name: "booking-schedule",
+        params: { fieldId: id },
+      });
     },
     navigateToFieldDetail(fieldId) {
       this.$router.push({
