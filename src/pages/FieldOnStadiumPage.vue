@@ -60,7 +60,7 @@
               <button class="view-details-btn">
                 {{ t("field_on_stadium.field.view_details") }}
               </button>
-              <button class="book-now-btn">
+              <button class="book-now-btn" @click="bookNow(field.fieldId)">
                 {{ t("field_on_stadium.field.book_now") }}
               </button>
             </div>
@@ -121,6 +121,12 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    bookNow(id) {
+      this.$router.push({
+        name: "booking-schedule",
+        params: { fieldId: id },
+      });
     },
   },
 };

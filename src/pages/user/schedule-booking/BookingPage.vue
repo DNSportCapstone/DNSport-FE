@@ -184,8 +184,12 @@
                 type="date"
                 class="form-control"
                 v-model="recurring.startDate"
+                @change="validateStartDate"
                 required
               />
+              <span v-if="startDateError" class="text-danger">{{
+                startDateError
+              }}</span>
             </div>
             <div class="col-md-2">
               <label class="form-label">Lặp vào</label>
@@ -286,6 +290,7 @@ export default {
       services: [],
       field: {},
       fetchedField: {},
+      startDateError: "",
     };
   },
   computed: {
@@ -461,9 +466,6 @@ export default {
       clearInterval(this.intervalId);
       this.startSlideshow();
     },
-    bookField() {
-      alert(`Bạn đã đặt sân ${this.field.name} thành công!`);
-    },
     async createBooking(request) {
       try {
         const response = await API.post(`booking/recurring`, request);
@@ -517,6 +519,21 @@ export default {
       }
 
       return total;
+    },
+    validateStartDate() {
+      const today = new Date();
+      const minDate = new Date();
+      minDate.setDate(today.getDate() + 7);
+
+      if (this.recurring.startDate) {
+        const selectedDate = new Date(this.recurring.startDate);
+        if (selectedDate < minDate) {
+          this.recurring.startDate = "";
+          this.startDateError = "Ngày bắt đầu phải sau hôm nay ít nhất 7 ngày.";
+        } else {
+          this.startDateError = "";
+        }
+      }
     },
   },
   async mounted() {
