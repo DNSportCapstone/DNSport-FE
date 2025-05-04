@@ -73,10 +73,11 @@
               <div class="search-box">
                 <i class="bi bi-search"></i>
                 <input
+                  v-model="stadiumName"
                   type="text"
                   :placeholder="t('home.hero.search_placeholder')"
                 />
-                <button class="search-btn">
+                <button class="search-btn" @click="searchForStadiumByName">
                   {{ t("home.hero.search_button") }}
                 </button>
               </div>
@@ -191,7 +192,7 @@
     </section>
 
     <!-- Featured Stadiums Section -->
-    <section class="featured-stadiums section">
+    <section class="featured-stadiums section" ref="stadiumSection">
       <div class="container section-title" data-aos="fade-up">
         <h2>{{ t("home.stadiums.title") }}</h2>
         <div>
@@ -199,6 +200,15 @@
         </div>
       </div>
       <div class="container" data-aos="fade" data-aos-delay="100">
+        <div class="search-container">
+          <input
+            v-model="stadiumName"
+            @keyup.enter="searchForStadiumByName"
+            type="text"
+            placeholder="Search..."
+            class="form-control"
+          />
+        </div>
         <div class="stadium-grid">
           <div
             v-for="stadium in stadiums"
@@ -400,6 +410,7 @@ export default {
       isSubmitting: false,
       formMessage: "",
       formSuccess: false,
+      stadiumName: "",
     };
   },
   methods: {
@@ -489,6 +500,28 @@ export default {
         phoneNumber: "",
         address: "",
       };
+    },
+    async searchForStadiumByName() {
+      try {
+        var response;
+        if (this.stadiumName) {
+          response = await API.get(
+            `/Stadium/search-by-name/${this.stadiumName}`
+          );
+        } else {
+          response = await API.get("/Stadium");
+        }
+
+        this.stadiums = response.data;
+        this.$nextTick(() => {
+          const section = this.$refs.stadiumSection;
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching stadium data:", error);
+      }
     },
   },
   async mounted() {
