@@ -186,7 +186,7 @@ const protectedRoutes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/booking-schedule",
+    path: "/booking-schedule/:fieldId",
     name: "booking-schedule",
     component: ScheduleBooking,
     props: true,
