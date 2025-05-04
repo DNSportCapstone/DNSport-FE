@@ -70,6 +70,9 @@ export default {
   },
   mounted() {
     this.$i18n.locale = this.currentLang;
+    if (!localStorage.getItem("lang")) {
+      localStorage.setItem("lang", "en");
+    }
   },
 };
 </script>

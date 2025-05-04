@@ -48,7 +48,7 @@
                               <span
                                 class="simplecalendar-title"
                                 data-rel="simplecalendar-title"
-                                >{{ todayDate }}</span
+                                >{{ formattedDate }}</span
                               >
                               <a
                                 data-rel="simplecalendar-next-date"
@@ -126,7 +126,7 @@
                                         {{ t("Field") }}
                                       </th>
                                       <th class="th-booking-fields">
-                                        Chủ Nhật 19/01
+                                        {{ formattedDate }}
                                       </th>
                                       <th class="th-booking-fields th-action">
                                         {{ t("Action") }}
@@ -245,6 +245,17 @@ export default {
       multipleBookingModel: [],
       todayDate: "",
     };
+  },
+  computed: {
+    formattedDate() {
+      const d = new Date(this.todayDate);
+      const lang = localStorage.getItem("lang") === "en" ? "en-US" : "vi-VN";
+      return d.toLocaleDateString(lang, {
+        weekday: "long",
+        day: "2-digit",
+        month: "2-digit",
+      });
+    },
   },
   methods: {
     async fetchFields() {
@@ -377,7 +388,10 @@ export default {
       });
     },
     changeDate(increment) {
-      this.todayDate.value.setDate(this.todayDate.value.getDate() + increment); // Thêm hoặc bớt 1 ngày
+      const current = new Date(this.todayDate);
+      current.setDate(current.getDate() + increment);
+      this.todayDate = current.toISOString();
+      this.fetchFields();
     },
   },
   async mounted() {

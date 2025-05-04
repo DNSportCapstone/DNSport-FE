@@ -184,8 +184,12 @@
                 type="date"
                 class="form-control"
                 v-model="recurring.startDate"
+                @change="validateStartDate"
                 required
               />
+              <span v-if="startDateError" class="text-danger">{{
+                startDateError
+              }}</span>
             </div>
             <div class="col-md-2">
               <label class="form-label">Lặp vào</label>
@@ -286,6 +290,7 @@ export default {
       services: [],
       field: {},
       fetchedField: {},
+      startDateError: "",
     };
   },
   computed: {
@@ -314,29 +319,31 @@ export default {
     },
   },
   methods: {
-    async fetchField() {
-      const response = await API.get(`field/${5}`);
+    async fetchField(fieldId) {
+      const response = await API.get(`field/${fieldId}`);
       const field = response.data;
 
       const today = this.todayDate.split("T")[0];
       const allSlots = this.generateSlots();
-      const bookedSlots = field.bookingFields
-        .filter((b) => b.startTime?.split("T")[0] === today)
-        .map((b) => this.formatTime(b.startTime));
+      const bookedSlots =
+        field.bookingFields
+          ?.filter((b) => b.startTime?.split("T")[0] === today)
+          .map((b) => this.formatTime(b.startTime)) || null;
 
       const bookingSlots = allSlots.map((slot) => ({
         ...slot,
-        isBooked: bookedSlots.includes(slot.time),
+        isBooked: bookedSlots?.includes(slot.time) || false,
       }));
 
       this.field = {
-        name: `Sân ${field.sport.sportName}`,
-        stadiumName: field.stadium.stadiumName,
-        address: field.stadium.address,
+        name: `Sân ${field.fieldName}`,
+        stadiumName: field.stadiumName,
+        address: field.address,
         price: field.dayPrice,
         description: field.description,
-        images: field.images.map((img) => img.url),
+        images: field.imageUrls,
       };
+      console.log(this.field.images);
       this.selectedImage = this.field.images[0];
       this.startSlideshow();
 
@@ -446,8 +453,10 @@ export default {
       }
     },
     nextImage() {
-      this.currentIndex = (this.currentIndex + 1) % this.field.images.length;
-      this.selectedImage = this.field.images[this.currentIndex];
+      if (this.field.images.length > 1) {
+        this.currentIndex = (this.currentIndex + 1) % this.field.images.length;
+        this.selectedImage = this.field.images[this.currentIndex];
+      }
     },
     startSlideshow() {
       if (this.intervalId) clearInterval(this.intervalId);
@@ -456,9 +465,6 @@ export default {
     restartSlideshow() {
       clearInterval(this.intervalId);
       this.startSlideshow();
-    },
-    bookField() {
-      alert(`Bạn đã đặt sân ${this.field.name} thành công!`);
     },
     async createBooking(request) {
       try {
@@ -480,19 +486,59 @@ export default {
     async handlePayment(bookingId) {
       try {
         const response = await API.post(
-          `payment/payment-url/recurring-booking`,
+          `payment/payos-create-payment/multiple-booking`,
           {
+            amount: this.calculateTotalPrice(),
             bookingId: bookingId,
           }
         );
-        window.location.href = response.data;
+        window.location.href = response.data.paymentUrl;
       } catch (error) {
         console.error(error);
       }
     },
+    calculateTotalPrice() {
+      let total = 0;
+      const repeatWeeks = this.recurring.repeatWeeks || 1;
+
+      for (const field of this.multipleBookingModel) {
+        const slotTotal = field.selectedSlots.reduce(
+          (sum, slot) => sum + slot.price,
+          0
+        );
+
+        const serviceTotal = (this.recurring.serviceIds || []).reduce(
+          (sum, id) => {
+            const service = this.services.find((s) => s.id === id);
+            return sum + (service?.price || 0);
+          },
+          0
+        );
+
+        total += (slotTotal + serviceTotal) * repeatWeeks;
+      }
+
+      return total;
+    },
+    validateStartDate() {
+      const today = new Date();
+      const minDate = new Date();
+      minDate.setDate(today.getDate() + 7);
+
+      if (this.recurring.startDate) {
+        const selectedDate = new Date(this.recurring.startDate);
+        if (selectedDate < minDate) {
+          this.recurring.startDate = "";
+          this.startDateError = "Ngày bắt đầu phải sau hôm nay ít nhất 7 ngày.";
+        } else {
+          this.startDateError = "";
+        }
+      }
+    },
   },
   async mounted() {
-    await this.fetchField();
+    const { fieldId } = this.$route.params;
+    await this.fetchField(fieldId);
     this.fetchServices();
   },
   beforeUnmount() {
