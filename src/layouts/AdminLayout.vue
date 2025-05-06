@@ -71,7 +71,7 @@
               {{ t("ManageComplaints") }}
             </router-link>
           </li>
-          <li>
+          <!-- <li>
             <router-link
               :to="{ name: 'pending-stadium' }"
               :class="{ active: currentRoute === 'pending-stadium' }"
@@ -80,7 +80,7 @@
               <i class="bi bi-exclamation-triangle"></i>
               {{ t("Pending Stadium") }}
             </router-link>
-          </li>
+          </li> -->
           <li>
             <router-link
               :to="{ name: 'refund-requests' }"
