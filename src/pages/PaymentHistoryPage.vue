@@ -48,7 +48,7 @@
             <tbody>
               <tr v-for="transaction in paginatedTransactions" :key="transaction.id" class="align-middle border-bottom">
                 <td>
-                  <span class="fw-medium">#{{ transaction.logId }}</span>
+                  <span class="fw-medium">{{ transaction.logId }}</span>
                 </td>
                 <td>
                   <div class="d-flex align-items-center">
@@ -146,8 +146,17 @@ import CommonHelper from '@/utils/common';
     methods: {
       formatDate(dateString) {
         if (!dateString) return "";
-        const options = { year: "numeric", month: "long", day: "numeric" };
-        return new Date(dateString).toLocaleDateString(undefined, options);
+        const timeOptions = { hour: "2-digit", minute: "2-digit", hour12: false };
+        const time = new Date(dateString).toLocaleTimeString(
+          "vi-VN",
+          timeOptions
+      );
+        const dateOptions = { year: "numeric", month: "long", day: "numeric" };
+        const date = new Date(dateString).toLocaleDateString(
+          "vi-VN",
+        dateOptions
+      );
+      return `${time}, ${date}`;
       },
       formatCurrency(value) {
         return new Intl.NumberFormat('vi-VN', {
@@ -187,7 +196,7 @@ import CommonHelper from '@/utils/common';
         }
       },
       getAmountClass(amount) {
-        if (amount > 0) return "text-success";
+        if (amount > 0) return "text-danger";
         if (amount < 0) return "text-danger";
         return "";
       },
