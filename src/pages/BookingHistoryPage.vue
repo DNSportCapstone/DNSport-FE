@@ -618,17 +618,19 @@ export default {
       try {
         const userId = CommonHelper.getCurrentUserId();
         const response = await API.get(`Booking/history/${userId}`);
-        this.bookings = response.data.map((b) => ({
-          BookingId: b.bookingId,
-          TotalPrice: b.totalPrice,
-          BookingDate: b.bookingDate,
-          Status: b.status,
-          FieldId: b.description,
-          StartTime: b.startTime,
-          EndTime: b.endTime,
-          StadiumName: b.stadiumName,
-          IsReport: b.isReport,
-        }));
+        this.bookings = response.data
+          .map((b) => ({
+            BookingId: b.bookingId,
+            TotalPrice: b.totalPrice,
+            BookingDate: b.bookingDate,
+            Status: b.status,
+            FieldId: b.description,
+            StartTime: b.startTime,
+            EndTime: b.endTime,
+            StadiumName: b.stadiumName,
+            IsReport: b.isReport,
+          }))
+          .sort((a, b) => new Date(b.BookingDate).getTime() - new Date(a.BookingDate).getTime());
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       } finally {

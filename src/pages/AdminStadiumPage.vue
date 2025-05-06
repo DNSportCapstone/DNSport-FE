@@ -25,6 +25,22 @@
                         </li>
                     </ul>
                 </div>
+
+                <!-- Status Filter Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="statusFilterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel me-1"></i> Status: {{ selectedStatusFilter || 'All' }}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="statusFilterDropdown">
+                        <li>
+                            <button class="dropdown-item" @click="filterByStatus(null)">All</button>
+                        </li>
+                        <li v-for="status in statusOptions" :key="status">
+                            <button class="dropdown-item" @click="filterByStatus(status)">{{ status }}</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Search Bar -->
@@ -76,13 +92,23 @@
                         </td>
                         <td>
                             <div class="d-flex gap-1">
+                                <!-- Show Approve/Reject buttons if stadium is pending -->
+                                <template v-if="stadium.status === 'Pending'">
+                                    <button class="btn btn-sm btn-outline-success" @click="handleApprove(stadium)">
+                                        <i class="bi bi-check-circle"></i> Approve
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" @click="handleReject(stadium)">
+                                        <i class="bi bi-x-circle"></i> Reject
+                                    </button>
+                                </template>
                                 <!-- Show Enable button if stadium is disabled -->
-                                <button v-if="stadium.status === 'Disable'" class="btn btn-sm btn-outline-success"
+                                <button v-else-if="stadium.status === 'Disable'" class="btn btn-sm btn-outline-success"
                                     @click="handleEnable(stadium)">
                                     <i class="bi bi-check-circle"></i> Enable
                                 </button>
-                                <!-- Show Disable button if stadium is not disabled -->
-                                <button v-else class="btn btn-sm btn-outline-warning" @click="handleDisable(stadium)">
+                                <!-- Show Disable button if stadium is active -->
+                                <button v-else-if="stadium.status === 'Active'" class="btn btn-sm btn-outline-warning"
+                                    @click="handleDisable(stadium)">
                                     <i class="bi bi-slash-circle"></i> Disable
                                 </button>
                             </div>
@@ -175,6 +201,52 @@
                 </div>
             </div>
         </div>
+
+        <!-- Approve confirmation modal -->
+        <div class="modal fade" id="approveConfirmModal" tabindex="-1" aria-labelledby="approveConfirmModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="approveConfirmModalLabel">Confirm Approval</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to approve <strong>{{ stadiumToApprove?.stadiumName }}</strong>?
+                        <p class="text-success mt-2 mb-0"><small>This will make the stadium active and available for bookings.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" @click="confirmApprove">
+                            <i class="bi bi-check-circle me-1"></i>Approve Stadium
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reject confirmation modal -->
+        <div class="modal fade" id="rejectConfirmModal" tabindex="-1" aria-labelledby="rejectConfirmModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rejectConfirmModalLabel">Confirm Rejection</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to reject <strong>{{ stadiumToReject?.stadiumName }}</strong>?
+                        <p class="text-danger mt-2 mb-0"><small>This will reject the stadium registration request.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" @click="confirmReject">
+                            <i class="bi bi-x-circle me-1"></i>Reject Stadium
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -190,14 +262,22 @@ export default {
         return {
             stadiumToDisable: null,
             stadiumToEnable: null,
+            stadiumToApprove: null,
+            stadiumToReject: null,
             disableModal: null,
             enableModal: null,
+            approveModal: null,
+            rejectModal: null,
             toast: useToast(),
             loading: false,
             error: null,
 
             // Stadium data from API
             stadiums: [],
+
+            // Status filter
+            statusOptions: ['Active', 'Disable', 'Pending'],
+            selectedStatusFilter: null,
 
             columns: [
                 { key: 'stadiumId', label: 'ID', visible: true },
@@ -215,7 +295,7 @@ export default {
             sortDirection: 'asc',
 
             // Pagination
-            itemsPerPage: 5,
+            itemsPerPage: 10,
             currentPage: 1
         };
     },
@@ -225,17 +305,27 @@ export default {
             return this.columns.filter(column => column.visible);
         },
 
-        // Filtered data based on search
+        // Filtered data based on search and status filter
         filteredData() {
-            if (!this.searchQuery) return this.stadiums;
+            let result = this.stadiums;
 
-            const query = this.searchQuery.toLowerCase();
-            return this.stadiums.filter(stadium => {
-                return Object.keys(stadium).some(key => {
-                    const value = stadium[key];
-                    return value && value.toString().toLowerCase().includes(query);
+            // Apply status filter if selected
+            if (this.selectedStatusFilter) {
+                result = result.filter(stadium => stadium.status === this.selectedStatusFilter);
+            }
+
+            // Apply search filter
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                result = result.filter(stadium => {
+                    return Object.keys(stadium).some(key => {
+                        const value = stadium[key];
+                        return value && value.toString().toLowerCase().includes(query);
+                    });
                 });
-            });
+            }
+
+            return result;
         },
 
         // Pagination calculations
@@ -309,22 +399,25 @@ export default {
         },
 
         getStatusBadgeClass(status) {
-            console.log(status);
             if (!status) return 'badge bg-secondary';
 
             const classes = 'badge ';
             switch (status.trim()) {
                 case 'Active':
                     return classes + 'bg-success';
-                case 'Under Renovation':
+                case 'Pending':
                     return classes + 'bg-warning text-dark';
-                case 'Scheduled for Demolition':
-                    return classes + 'bg-danger';
-                case 'Disabled':
+                case 'Disable':
                     return classes + 'bg-secondary';
                 default:
                     return classes + 'bg-secondary';
             }
+        },
+
+        // Status filter
+        filterByStatus(status) {
+            this.selectedStatusFilter = status;
+            this.currentPage = 1; // Reset to first page when filtering
         },
 
         // Sorting
@@ -373,11 +466,22 @@ export default {
             this.enableModal.show();
         },
 
+        // Approve pending stadium
+        handleApprove(stadium) {
+            this.stadiumToApprove = stadium;
+            this.approveModal.show();
+        },
+
+        // Reject pending stadium
+        handleReject(stadium) {
+            this.stadiumToReject = stadium;
+            this.rejectModal.show();
+        },
+
         // Confirm disable
         async confirmDisable() {
             try {
-                // this.loading = true;
-                console.log(this.stadiumToDisable);
+                this.loading = true;
 
                 // Call API to disable the stadium
                 await API.post(`Admin/disable-or-enable-stadium/${this.stadiumToDisable.stadiumId}`, JSON.stringify('Disable'),
@@ -387,11 +491,10 @@ export default {
                         },
                     });
 
-
                 // Update the local state
                 const index = this.stadiums.findIndex(s => s.stadiumId === this.stadiumToDisable.stadiumId);
                 if (index !== -1) {
-                    this.stadiums[index].status = 'Disabled';
+                    this.stadiums[index].status = 'Disable';
                 }
 
                 // Hide the modal
@@ -413,8 +516,7 @@ export default {
         // Confirm enable
         async confirmEnable() {
             try {
-                // this.loading = true;
-                console.log(this.stadiumToEnable);
+                this.loading = true;
 
                 // Call API to enable the stadium
                 await API.post(`Admin/disable-or-enable-stadium/${this.stadiumToEnable.stadiumId}`, JSON.stringify('Active'),
@@ -423,6 +525,7 @@ export default {
                             "Content-Type": "application/json",
                         },
                     });
+
                 // Update the local state
                 const index = this.stadiums.findIndex(s => s.stadiumId === this.stadiumToEnable.stadiumId);
                 if (index !== -1) {
@@ -445,6 +548,46 @@ export default {
             }
         },
 
+        // Confirm approve
+        async confirmApprove() {
+            try {
+                await this.updateStadiumStatus(this.stadiumToApprove.stadiumId, 'Active');
+                this.approveModal.hide();
+                this.stadiumToApprove = null;
+            } catch (e) {
+                console.error('Approve failed', e);
+            }
+            },
+
+            async confirmReject() {
+            try {
+                await this.updateStadiumStatus(this.stadiumToReject.stadiumId, 'Rejected');
+                this.rejectModal.hide();
+                this.stadiumToReject = null;
+            } catch (e) {
+                console.error('Reject failed', e);
+            }
+        },
+        async updateStadiumStatus(stadiumId, newStatus) {
+            this.loading = true;
+            try {
+                await API.put("/Admin/update-status", {
+                stadiumId,
+                newStatus,
+                });
+                this.toast.success(`Stadium ${newStatus.toLowerCase()} successfully!`);
+                await this.fetchStadiums();
+            } catch (error) {
+                const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.title ||
+                error.message ||
+                "An unexpected error occurred";
+                this.toast.error(`Failed to update stadium status: ${errorMessage}`);
+            } finally {
+                this.loading = false;
+            }
+        },
         // Export to Excel
         handleExport() {
             try {
@@ -497,15 +640,11 @@ export default {
         // Fetch stadiums from API
         async fetchStadiums() {
             try {
-                //this.loading = true;
+                this.loading = true;
                 this.error = null;
 
                 const response = await API.get('Stadium');
                 this.stadiums = response.data;
-
-                // Sort by default column
-                //this.sortBy(this.sortColumn);
-
             } catch (error) {
                 console.error('Error fetching stadiums:', error);
                 this.error = error.message || 'Failed to load stadiums';
@@ -523,6 +662,8 @@ export default {
         // Initialize Bootstrap modals
         this.disableModal = new Modal(document.getElementById('disableConfirmModal'));
         this.enableModal = new Modal(document.getElementById('enableConfirmModal'));
+        this.approveModal = new Modal(document.getElementById('approveConfirmModal'));
+        this.rejectModal = new Modal(document.getElementById('rejectConfirmModal'));
     }
 };
 </script>
