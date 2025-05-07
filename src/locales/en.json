@@ -259,8 +259,7 @@
         "value": "+1 234 567 890"
       },
       "email": {
-        "title": "Email Us",
-        "value": "dnsport2025@gmail.com"
+        "title": "Email Us"
       }
     }
   },
@@ -291,5 +290,9 @@
       "book_now": "Book Now",
       "booking_alert": "Booking field with ID: {id}"
     }
-  }
+  },
+  "InvalidVoucherCode": "Voucher Code is invalid!",
+  "ExpiredVoucherCode": "Voucher Code is expired!",
+  "IsUsedVoucherCode": "Voucher Code has been used!",
+  "ApplyVoucherError": "Apply Voucher Error!"
 }

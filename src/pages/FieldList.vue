@@ -52,10 +52,13 @@
               }}
             </p>
             <div class="stadium-actions mt-auto">
-              <button class="view-details-btn">
+              <button
+                class="view-details-btn"
+                @click="navigateToFieldDetail(field.fieldId)"
+              >
                 {{ t("field_list.field.view_details") }}
               </button>
-              <button class="book-now-btn" @click="bookNow(field.id)">
+              <button class="book-now-btn" @click="bookNow(field.fieldId)">
                 {{ t("field_list.field.book_now") }}
               </button>
             </div>
@@ -105,7 +108,16 @@ export default {
       }).format(value);
     },
     bookNow(id) {
-      alert(this.t("field_list.field.booking_alert", { id }));
+      this.$router.push({
+        name: "booking-schedule",
+        params: { fieldId: id },
+      });
+    },
+    navigateToFieldDetail(fieldId) {
+      this.$router.push({
+        name: "field-details",
+        params: { fieldId: fieldId },
+      });
     },
   },
   mounted() {

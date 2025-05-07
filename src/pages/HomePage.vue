@@ -73,10 +73,11 @@
               <div class="search-box">
                 <i class="bi bi-search"></i>
                 <input
+                  v-model="stadiumName"
                   type="text"
                   :placeholder="t('home.hero.search_placeholder')"
                 />
-                <button class="search-btn">
+                <button class="search-btn" @click="searchForStadiumByName">
                   {{ t("home.hero.search_button") }}
                 </button>
               </div>
@@ -191,7 +192,7 @@
     </section>
 
     <!-- Featured Stadiums Section -->
-    <section class="featured-stadiums section">
+    <section class="featured-stadiums section" ref="stadiumSection">
       <div class="container section-title" data-aos="fade-up">
         <h2>{{ t("home.stadiums.title") }}</h2>
         <div>
@@ -199,6 +200,15 @@
         </div>
       </div>
       <div class="container" data-aos="fade" data-aos-delay="100">
+        <div class="search-container">
+          <input
+            v-model="stadiumName"
+            @keyup.enter="searchForStadiumByName"
+            type="text"
+            placeholder="Search..."
+            class="form-control"
+          />
+        </div>
         <div class="stadium-grid">
           <div
             v-for="stadium in stadiums"
@@ -280,7 +290,7 @@
               <i class="bi bi-envelope flex-shrink-0"></i>
               <div>
                 <h3>{{ t("home.contact.email.title") }}</h3>
-                <p>{{ t("home.contact.email.value") }}</p>
+                <p>dnsport2025@gmail.com</p>
               </div>
             </div>
           </div>
@@ -302,7 +312,11 @@
 
           <!-- Lessor Form bên phải -->
           <div class="col-lg-4">
-            <div class="lessor-form-container" data-aos="fade-up" data-aos-delay="300">
+            <div
+              class="lessor-form-container"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
               <h3 class="form-title">Become a Lessor</h3>
               <p class="form-subtitle">List your sports field with us</p>
               <form @submit.prevent="submitLessorForm" class="lessor-form">
@@ -359,7 +373,11 @@
                   <span v-else>Register as Lessor</span>
                 </button>
 
-                <div v-if="formMessage" class="form-message" :class="{ 'success': formSuccess, 'error': !formSuccess }">
+                <div
+                  v-if="formMessage"
+                  class="form-message"
+                  :class="{ success: formSuccess, error: !formSuccess }"
+                >
                   {{ formMessage }}
                 </div>
               </form>
@@ -384,14 +402,15 @@ export default {
     return {
       stadiums: [],
       lessorForm: {
-        fullname: '',
-        email: '',
-        phoneNumber: '',
-        address: ''
+        fullname: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
       },
       isSubmitting: false,
-      formMessage: '',
-      formSuccess: false
+      formMessage: "",
+      formSuccess: false,
+      stadiumName: "",
     };
   },
   methods: {
@@ -447,22 +466,27 @@ export default {
     },
     async submitLessorForm() {
       this.isSubmitting = true;
-      this.formMessage = '';
+      this.formMessage = "";
 
       try {
         // Replace with your actual API endpoint for lessor registration
-        const response = await API.post("/Lessor/create-lessor-contact", this.lessorForm);
+        const response = await API.post(
+          "/Lessor/create-lessor-contact",
+          this.lessorForm
+        );
 
         if (response.status === 200 || response.status === 201) {
           this.formSuccess = true;
-          this.formMessage = "Thank you! Your lessor registration has been submitted successfully.";
+          this.formMessage =
+            "Thank you! Your lessor registration has been submitted successfully.";
           this.resetForm();
         } else {
           throw new Error("Unexpected response");
         }
       } catch (error) {
         this.formSuccess = false;
-        this.formMessage = "Sorry, there was an error submitting your form. Please try again later.";
+        this.formMessage =
+          "Sorry, there was an error submitting your form. Please try again later.";
         console.error("Error submitting lessor form:", error);
       } finally {
         this.isSubmitting = false;
@@ -471,12 +495,34 @@ export default {
 
     resetForm() {
       this.lessorForm = {
-        fullname: '',
-        email: '',
-        phoneNumber: '',
-        address: ''
+        fullname: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
       };
-    }
+    },
+    async searchForStadiumByName() {
+      try {
+        var response;
+        if (this.stadiumName) {
+          response = await API.get(
+            `/Stadium/search-by-name/${this.stadiumName}`
+          );
+        } else {
+          response = await API.get("/Stadium");
+        }
+
+        this.stadiums = response.data;
+        this.$nextTick(() => {
+          const section = this.$refs.stadiumSection;
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching stadium data:", error);
+      }
+    },
   },
   async mounted() {
     await this.fetchStadiums();

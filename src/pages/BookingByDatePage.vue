@@ -38,7 +38,7 @@
                                 data-rel="simplecalendar-prev-date"
                                 class="btn btn-light simplecalendar-navigation"
                                 href="javascript:;"
-                                simple-date="2025-01-18"
+                                @click="changeDate(-1)"
                               >
                                 <img
                                   src="https://manager.datsan247.com/images/arrow-left.svg"
@@ -48,13 +48,13 @@
                               <span
                                 class="simplecalendar-title"
                                 data-rel="simplecalendar-title"
-                                >{{ todayDate }}</span
+                                >{{ formattedDate }}</span
                               >
                               <a
                                 data-rel="simplecalendar-next-date"
                                 class="btn btn-light simplecalendar-navigation"
                                 href="javascript:;"
-                                simple-date="2025-01-20"
+                                @click="changeDate(1)"
                               >
                                 <img
                                   src="https://manager.datsan247.com/images/arrow-right.svg"
@@ -126,7 +126,7 @@
                                         {{ t("Field") }}
                                       </th>
                                       <th class="th-booking-fields">
-                                        Chủ Nhật 19/01
+                                        {{ formattedDate }}
                                       </th>
                                       <th class="th-booking-fields th-action">
                                         {{ t("Action") }}
@@ -246,25 +246,58 @@ export default {
       todayDate: "",
     };
   },
+  computed: {
+    formattedDate() {
+      const d = new Date(this.todayDate);
+      const lang = localStorage.getItem("lang") === "en" ? "en-US" : "vi-VN";
+      return d.toLocaleDateString(lang, {
+        weekday: "long",
+        day: "2-digit",
+        month: "2-digit",
+      });
+    },
+  },
   methods: {
     async fetchFields() {
       try {
         this.$store.dispatch("clearMultipleBookingModel");
+
         const response = await API.get(
           `Field/fields-by-stadium-id/${this.stadiumId}`
         );
+
         this.fields = response.data.map((field) => {
-          const allSlots = this.generateSlots();
-          const bookedSlots = field.bookingFields
-            .filter(
-              (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
-            )
-            .map((b) => this.formatTime(b.startTime));
-          console.log(bookedSlots);
-          const bookingSlots = allSlots.map((slot) => ({
-            ...slot,
-            isBooked: bookedSlots.includes(slot.time),
-          }));
+          const allSlots = this.generateSlots(); // các khung giờ như "08:00", "08:30", ...
+          console.log(field.bookingFields);
+          const bookedSlots = field.bookingFields.filter(
+            (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
+          );
+
+          const bookingSlots = allSlots.map((slot) => {
+            const slotStart = this.combineDateTime(this.todayDate, slot.time);
+            const slotEnd = this.addMinutes(slotStart, 60);
+            const now = new Date();
+
+            const isPast = slotEnd <= now;
+
+            const isBooked =
+              isPast ||
+              bookedSlots.some((b) => {
+                const bookingStart = new Date(b.startTime);
+                const bookingEnd = new Date(b.endTime);
+                return (
+                  (slotStart >= bookingStart && slotStart < bookingEnd) ||
+                  (slotEnd > bookingStart && slotEnd <= bookingEnd) ||
+                  (slotStart <= bookingStart && slotEnd >= bookingEnd)
+                );
+              });
+
+            return {
+              ...slot,
+              isBooked,
+            };
+          });
+
           return {
             fieldId: field.fieldId,
             fieldName: field.description,
@@ -275,12 +308,20 @@ export default {
         console.error("Lỗi khi lấy danh sách sân:", error);
       }
     },
+    combineDateTime(dateStr, timeStr) {
+      return new Date(`${dateStr.split("T")[0]}T${timeStr}:00`);
+    },
+
+    addMinutes(date, minutes) {
+      return new Date(date.getTime() + minutes * 60000);
+    },
     formatTime(isoString) {
       const date = new Date(isoString);
       return date.toTimeString().slice(0, 5); // Lấy HH:mm
     },
     handleSlotSelected(slot) {
       const { fieldId, fieldName, isChoose, time } = slot;
+      console.log(this.todayDate);
       slot.date = this.todayDate;
 
       let field = this.multipleBookingModel.find((f) => f.fieldId === fieldId);
@@ -351,11 +392,18 @@ export default {
         name: "booking-services",
       });
     },
+    changeDate(increment) {
+      const current = new Date(this.todayDate);
+      current.setDate(current.getDate() + increment);
+      this.todayDate = current.toISOString();
+      this.fetchFields();
+    },
   },
   async mounted() {
+    const now = new Date();
+    now.setHours(now.getHours() + 7);
+    this.todayDate = now.toISOString();
     await this.fetchFields();
-    this.todayDate = new Date();
-    this.todayDate.setHours(0, 0, 0, 0);
   },
 };
 </script>
