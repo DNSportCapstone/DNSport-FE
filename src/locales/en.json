@@ -291,6 +291,11 @@
       "booking_alert": "Booking field with ID: {id}"
     }
   },
+  "pagination": {
+  "previous": "Previous",
+  "next": "Next",
+  "page": "Page"
+},
   "InvalidVoucherCode": "Voucher Code is invalid!",
   "ExpiredVoucherCode": "Voucher Code is expired!",
   "IsUsedVoucherCode": "Voucher Code has been used!",

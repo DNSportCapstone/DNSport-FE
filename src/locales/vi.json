@@ -273,6 +273,11 @@
       "booking_alert": "Đang đặt sân với ID: {id}"
     }
   },
+  "pagination": {
+  "previous": "Trang trước",
+  "next": "Trang sau",
+  "page": "Trang"
+},
   "InvalidVoucherCode": "Mã giảm giá không hợp lệ!",
   "ExpiredVoucherCode": "Mã giảm giá đã hết hạn!",
   "IsUsedVoucherCode": "Mã giảm giá đã được sử dụng!",
