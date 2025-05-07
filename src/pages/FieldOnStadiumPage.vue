@@ -112,7 +112,7 @@ export default {
           this.t("field_on_stadium.unknown_stadium");
 
         const response = await API.get(
-          `/Field/fields-by-stadium-id/${stadiumId}`
+          `/Field/active-fields-by-stadium-id/${stadiumId}`
         );
         console.log(response.data);
         this.fields = response.data;
