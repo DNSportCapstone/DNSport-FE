@@ -168,7 +168,7 @@
                     </span>
                   </div>
                   <div v-if="voucherError" class="text-danger small mt-1">
-                    {{ voucherError }}
+                    {{ t(voucherError) }}
                   </div>
                 </div>
                 <span>Tạm tính</span>
@@ -222,6 +222,7 @@ watchEffect(() => {
 import ProgressSteps from "@/components/ProgressSteps.vue";
 import API from "@/utils/axios";
 import { showMessageBox } from "@/utils/message-box-service.js";
+import CommonHelper from "@/utils/common";
 
 export default {
   name: "check-out",
@@ -327,15 +328,10 @@ export default {
     async applyVoucher() {
       this.voucherError = "";
       try {
-        const res = await API.post(
-          "vouchers/apply",
-          JSON.stringify(this.voucherCode),
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await API.post("vouchers/apply", {
+          userId: CommonHelper.getCurrentUserId(),
+          voucherCode: this.voucherCode,
+        });
 
         if (!res.data.isError) {
           this.voucherDiscount = res.data.discountPercentage;

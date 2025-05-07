@@ -272,5 +272,9 @@
       "book_now": "Đặt ngay",
       "booking_alert": "Đang đặt sân với ID: {id}"
     }
-  }
+  },
+  "InvalidVoucherCode": "Mã giảm giá không hợp lệ!",
+  "ExpiredVoucherCode": "Mã giảm giá đã hết hạn!",
+  "IsUsedVoucherCode": "Mã giảm giá đã được sử dụng!",
+  "ApplyVoucherError": "Áp dụng mã giảm giá có lỗi!"
 }

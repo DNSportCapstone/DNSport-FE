@@ -290,5 +290,9 @@
       "book_now": "Book Now",
       "booking_alert": "Booking field with ID: {id}"
     }
-  }
+  },
+  "InvalidVoucherCode": "Voucher Code is invalid!",
+  "ExpiredVoucherCode": "Voucher Code is expired!",
+  "IsUsedVoucherCode": "Voucher Code has been used!",
+  "ApplyVoucherError": "Apply Voucher Error!"
 }
