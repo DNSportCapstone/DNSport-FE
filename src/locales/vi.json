@@ -251,8 +251,8 @@
     "no_fields": "Không có sân nào được tìm thấy.",
     "field": {
       "maximum_people": "👥 Tối đa: {count} người",
-      "day_price": "☀️ Giá ngày: {price}đ",
-      "night_price": "🌙 Giá đêm: {price}đ",
+      "day_price": "☀️ Giá ngày: {price}",
+      "night_price": "🌙 Giá đêm: {price}",
       "view_details": "Xem chi tiết",
       "book_now": "Đặt ngay"
     },

@@ -43,14 +43,14 @@
             <p class="card-text text-muted mb-1">
               {{
                 t("field_on_stadium.field.day_price", {
-                  price: formatPrice(field.dayPrice),
+                  price: formatCurrency(field.dayPrice),
                 })
               }}
             </p>
             <p class="card-text text-muted mb-3">
               {{
                 t("field_on_stadium.field.night_price", {
-                  price: formatPrice(field.nightPrice),
+                  price: formatCurrency(field.nightPrice),
                 })
               }}
             </p>
@@ -69,6 +69,7 @@
       </div>
     </div>
   </div>
+  <div style="margin-bottom: 31px"></div>
 </template>
 
 <script>
@@ -94,14 +95,12 @@ export default {
     this.loadFields();
   },
   methods: {
-    formatPrice(value) {
-      const priceLocale = this.locale === "vi" ? "vi-VN" : "en-US";
-      const currency = this.locale === "vi" ? "VND" : "USD"; // Adjust currency if needed
-      return new Intl.NumberFormat(priceLocale, {
-        style: "currency",
-        currency: currency,
-        currencyDisplay: "symbol",
-      }).format(value);
+    formatCurrency(amount, locale = "vi-VN") {
+      const formatter = new Intl.NumberFormat(locale, {
+        style: "decimal",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(amount) + " VND";
     },
     async loadFields() {
       this.loading = true;

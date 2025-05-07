@@ -23,7 +23,7 @@
       <div v-for="field in fields" :key="field.id" class="col-md-4 col-lg-3">
         <div class="card field-card h-100">
           <img
-            :src="field.imageUrls || defaultImage"
+            :src="field.thumbnail || defaultImage"
             @error="(e) => (e.target.src = defaultImage)"
             :alt="t('field_list.field.image_alt')"
             class="card-img-top"
@@ -40,14 +40,14 @@
             <p class="card-text text-muted mb-1">
               {{
                 t("field_list.field.day_price", {
-                  price: formatPrice(field.dayPrice || 0),
+                  price: formatCurrency(field.dayPrice || 0),
                 })
               }}
             </p>
             <p class="card-text text-muted mb-3">
               {{
                 t("field_list.field.night_price", {
-                  price: formatPrice(field.nightPrice || 0),
+                  price: formatCurrency(field.nightPrice || 0),
                 })
               }}
             </p>
@@ -98,14 +98,12 @@ export default {
         this.loading = false;
       }
     },
-    formatPrice(value) {
-      const priceLocale = this.locale === "vi" ? "vi-VN" : "en-US";
-      const currency = this.locale === "vi" ? "VND" : "USD"; // Adjust currency if needed
-      return new Intl.NumberFormat(priceLocale, {
-        style: "currency",
-        currency: currency,
-        currencyDisplay: "symbol",
-      }).format(value);
+    formatCurrency(amount, locale = "vi-VN") {
+      const formatter = new Intl.NumberFormat(locale, {
+        style: "decimal",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(amount) + " VND";
     },
     bookNow(id) {
       this.$router.push({
