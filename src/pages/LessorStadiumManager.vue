@@ -117,20 +117,6 @@
             <td>
               <div class="d-flex gap-1">
                 <button
-                  v-if="stadium.status === 'Disabled'"
-                  class="btn btn-sm btn-outline-success"
-                  @click="handleEnable(stadium)"
-                >
-                  <i class="bi bi-check-circle"></i> Enable
-                </button>
-                <button
-                  v-else
-                  class="btn btn-sm btn-outline-warning"
-                  @click="handleDisable(stadium)"
-                >
-                  <i class="bi bi-slash-circle"></i> Disable
-                </button>
-                <button
                   class="btn btn-sm btn-outline-primary"
                   @click="handleViewFields(stadium)"
                 >
@@ -203,6 +189,11 @@
                 >
                   {{ formatCurrency(field[column.key]) }}
                 </template>
+                <template v-else-if="column.key === 'status'">
+                  <span :class="getStatusBadgeClass(field.status)">
+                    {{ field.status }}
+                  </span>
+                </template>
                 <template v-else>
                   {{ field[column.key] }}
                 </template>
@@ -216,10 +207,18 @@
                     <i class="bi bi-pencil"></i> Edit
                   </button>
                   <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="handleDeleteField(field)"
+                    v-if="field.status === 'Disable'"
+                    class="btn btn-sm btn-outline-success"
+                    @click="handleToggleFieldStatus(field, 'Active')"
                   >
-                    <i class="bi bi-trash"></i> Delete
+                    <i class="bi bi-check-circle"></i> Activate
+                  </button>
+                  <button
+                    v-else
+                    class="btn btn-sm btn-outline-warning"
+                    @click="handleToggleFieldStatus(field, 'Disable')"
+                  >
+                    <i class="bi bi-slash-circle"></i> Disable
                   </button>
                 </div>
               </td>
@@ -334,163 +333,11 @@
         </ul>
       </nav>
     </div>
-
-    <!-- Disable Confirmation Modal -->
-    <div
-      class="modal fade"
-      id="disableConfirmModal"
-      tabindex="-1"
-      aria-labelledby="disableConfirmModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="disableConfirmModalLabel">
-              Confirm Disable
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to disable
-            <strong>{{ stadiumToDisable?.stadiumName }}</strong
-            >?
-            <p class="text-warning mt-2 mb-0">
-              <small
-                >This will make the stadium unavailable for new bookings.</small
-              >
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-warning"
-              @click="confirmDisable"
-            >
-              <i class="bi bi-slash-circle me-1"></i>Disable Stadium
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Enable Confirmation Modal -->
-    <div
-      class="modal fade"
-      id="enableConfirmModal"
-      tabindex="-1"
-      aria-labelledby="enableConfirmModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="enableConfirmModalLabel">
-              Confirm Enable
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to enable
-            <strong>{{ stadiumToEnable?.stadiumName }}</strong
-            >?
-            <p class="text-success mt-2 mb-0">
-              <small
-                >This will make the stadium available for bookings again.</small
-              >
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-success"
-              @click="confirmEnable"
-            >
-              <i class="bi bi-check-circle me-1"></i>Enable Stadium
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Delete Field Confirmation Modal -->
-    <div
-      class="modal fade"
-      id="deleteFieldConfirmModal"
-      tabindex="-1"
-      aria-labelledby="deleteFieldConfirmModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteFieldConfirmModalLabel">
-              Confirm Delete
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to delete
-            <strong>{{ fieldToDelete?.description }}</strong
-            >?
-            <p class="text-danger mt-2 mb-0">
-              <small>This action cannot be undone.</small>
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger"
-              @click="confirmDeleteField"
-            >
-              <i class="bi bi-trash me-1"></i>Delete Field
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import { useToast } from "vue-toastification";
-import { Modal } from "bootstrap";
 import API from "@/utils/axios";
 import * as XLSX from "xlsx";
 import CommonHelper from "@/utils/common";
@@ -499,15 +346,9 @@ export default {
   name: "StadiumTable",
   data() {
     return {
-      // State for modals and UI
+      // State for UI
       userId: null,
-      stadiumToDisable: null,
-      stadiumToEnable: null,
-      fieldToDelete: null,
       selectedStadium: null,
-      disableModal: null,
-      enableModal: null,
-      deleteFieldModal: null,
       toast: useToast(),
       loading: false,
       fieldsLoading: false,
@@ -669,6 +510,7 @@ export default {
         case "Scheduled for Demolition":
           return classes + "bg-danger";
         case "Disabled":
+        case "Disable":
           return classes + "bg-secondary";
         default:
           return classes + "bg-secondary";
@@ -720,76 +562,6 @@ export default {
     },
     clearSearch() {
       this.searchQuery = "";
-    },
-    handleDisable(stadium) {
-      this.stadiumToDisable = stadium;
-      this.disableModal.show();
-    },
-    handleEnable(stadium) {
-      this.stadiumToEnable = stadium;
-      this.enableModal.show();
-    },
-    async confirmDisable() {
-      try {
-        this.loading = true;
-        await API.post(
-          `Admin/disable-or-enable-stadium/${this.stadiumToDisable.stadiumId}`,
-          JSON.stringify("Disabled"),
-          { headers: { "Content-Type": "application/json" } }
-        );
-
-        const index = this.stadiums.findIndex(
-          (s) => s.stadiumId === this.stadiumToDisable.stadiumId
-        );
-        if (index !== -1) this.stadiums[index].status = "Disabled";
-
-        this.disableModal.hide();
-        this.toast.success(
-          `${this.stadiumToDisable.stadiumName} has been disabled successfully`
-        );
-        await this.fetchStadiums();
-      } catch (error) {
-        console.error("Error disabling stadium:", error);
-        this.toast.error(
-          `Failed to disable stadium: ${
-            error.response?.data?.message || error.message || "Unknown error"
-          }`
-        );
-      } finally {
-        this.loading = false;
-        this.stadiumToDisable = null;
-      }
-    },
-    async confirmEnable() {
-      try {
-        this.loading = true;
-        await API.post(
-          `Admin/disable-or-enable-stadium/${this.stadiumToEnable.stadiumId}`,
-          JSON.stringify("Active"),
-          { headers: { "Content-Type": "application/json" } }
-        );
-
-        const index = this.stadiums.findIndex(
-          (s) => s.stadiumId === this.stadiumToEnable.stadiumId
-        );
-        if (index !== -1) this.stadiums[index].status = "Active";
-
-        this.enableModal.hide();
-        this.toast.success(
-          `${this.stadiumToEnable.stadiumName} has been enabled successfully`
-        );
-        await this.fetchStadiums();
-      } catch (error) {
-        console.error("Error enabling stadium:", error);
-        this.toast.error(
-          `Failed to enable stadium: ${
-            error.response?.data?.message || error.message || "Unknown error"
-          }`
-        );
-      } finally {
-        this.loading = false;
-        this.stadiumToEnable = null;
-      }
     },
     handleExport() {
       try {
@@ -884,6 +656,39 @@ export default {
         this.fieldsLoading = false;
       }
     },
+    async handleToggleFieldStatus(field, newStatus) {
+      try {
+        this.fieldsLoading = true;
+
+        await API.put("Field/set-status", {
+          FieldId: field.fieldId,
+          Status: newStatus,
+        });
+
+        // Update the field status in the local data
+        const fieldIndex = this.fields.findIndex(
+          (f) => f.fieldId === field.fieldId
+        );
+        if (fieldIndex !== -1) {
+          this.fields[fieldIndex].status = newStatus;
+        }
+
+        this.toast.success(
+          `Field ${field.description} has been ${
+            newStatus === "Active" ? "activated" : "disabled"
+          } successfully`
+        );
+      } catch (error) {
+        console.error("Error toggling field status:", error);
+        this.toast.error(
+          `Failed to update field status: ${
+            error.response?.data?.message || error.message || "Unknown error"
+          }`
+        );
+      } finally {
+        this.fieldsLoading = false;
+      }
+    },
     handleAddNewField() {
       if (!this.selectedStadium) {
         this.toast.error("Please select a stadium first!");
@@ -917,44 +722,9 @@ export default {
         query: { stadiumId: stadium.stadiumId },
       });
     },
-    handleDeleteField(field) {
-      this.fieldToDelete = field;
-      this.deleteFieldModal.show();
-    },
-    async confirmDeleteField() {
-      try {
-        this.fieldsLoading = true;
-        await API.delete(`Field/${this.fieldToDelete.fieldId}`);
-
-        this.fields = this.fields.filter(
-          (field) => field.fieldId !== this.fieldToDelete.fieldId
-        );
-        this.deleteFieldModal.hide();
-        this.toast.success(
-          `${this.fieldToDelete.description} has been deleted successfully`
-        );
-      } catch (error) {
-        console.error("Error deleting field:", error);
-        this.toast.error(
-          `Failed to delete field: ${
-            error.response?.data?.message || error.message || "Unknown error"
-          }`
-        );
-      } finally {
-        this.fieldsLoading = false;
-        this.fieldToDelete = null;
-      }
-    },
   },
   mounted() {
     this.fetchStadiums();
-    this.disableModal = new Modal(
-      document.getElementById("disableConfirmModal")
-    );
-    this.enableModal = new Modal(document.getElementById("enableConfirmModal"));
-    this.deleteFieldModal = new Modal(
-      document.getElementById("deleteFieldConfirmModal")
-    );
   },
 };
 </script>

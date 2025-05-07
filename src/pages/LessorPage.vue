@@ -19,7 +19,7 @@
           <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
       </button>
-      <div class="logo-mobile">Lessor Dashboard</div>
+      <div class="logo-mobile">Lessor Manager</div>
     </div>
 
     <!-- Sidebar -->
@@ -41,7 +41,7 @@
             <line x1="8" y1="21" x2="16" y2="21"></line>
             <line x1="12" y1="17" x2="12" y2="21"></line>
           </svg>
-          <span>Lessor Dashboard</span>
+          <span>Lessor Manager</span>
         </div>
         <button @click="toggleSidebar" class="close-sidebar">
           <svg
@@ -97,9 +97,9 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <line x1="12" y1="20" x2="12" y2="10"></line>
-            <line x1="18" y1="20" x2="18" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="16"></line>
+            <path d="M2 8l10-6 10 6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"></path>
+            <path d="M12 4v16"></path>
+            <rect x="6" y="12" width="12" height="6" rx="1"></rect>
           </svg>
           <span>Stadium Manager</span>
         </li>
@@ -118,10 +118,9 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+            <path d="M6 6v12"></path>
+            <circle cx="12" cy="12" r="2"></circle>
           </svg>
           <span>Vouchers</span>
         </li>

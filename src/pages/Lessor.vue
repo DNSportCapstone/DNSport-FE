@@ -337,6 +337,9 @@ export default {
         let totalOwnerAmount = 0;
         const stadiumRevenue = [];
 
+        const startDate = new Date(this.dateRange.start);
+        const endDate = new Date(this.dateRange.end);
+
         for (const stadium of stadiums) {
           const fieldsResponse = await API.get(
             `Field/fields-by-stadium-id/${stadium.stadiumId}`
@@ -349,18 +352,30 @@ export default {
           if (fields.length > 0) {
             for (const field of fields) {
               const ownerAmountResponse = await API.get(
-                `RevenueTransaction/owner-amount/${field.fieldId}?startDate=${this.dateRange.start}&endDate=${this.dateRange.end}`
-              ).catch(() => ({ data: { ownerAmount: 0 } }));
-              const fieldOwnerAmount =
-                ownerAmountResponse.data.ownerAmount || 0;
+                `RevenueTransaction/owner-amount/${field.fieldId}`
+              ).catch(() => ({ data: [] }));
+
+              const fieldOwnerAmount = Array.isArray(ownerAmountResponse.data)
+                ? ownerAmountResponse.data
+                : [];
+
+              const filteredOwnerAmount = fieldOwnerAmount.filter((item) => {
+                const date = new Date(item.revenueTransactionDate);
+                return date >= startDate && date <= endDate;
+              });
+
+              let fieldOwnerAmountSum = 0;
+              filteredOwnerAmount.forEach((item) => {
+                fieldOwnerAmountSum += item.ownerAmount ?? 0;
+              });
 
               fieldData.push({
                 fieldId: field.fieldId,
                 fieldName: field.fieldName || `Field ${field.fieldId}`,
-                ownerAmount: fieldOwnerAmount,
+                ownerAmount: fieldOwnerAmountSum,
               });
 
-              stadiumOwnerAmount += fieldOwnerAmount;
+              stadiumOwnerAmount += fieldOwnerAmountSum;
             }
           }
 

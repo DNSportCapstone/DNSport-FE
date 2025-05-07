@@ -200,7 +200,7 @@ export default {
         this.loading = true;
         await API.post("/Stadium/Stadium", this.stadium); // Corrected endpoint
         this.toast.success("Stadium added successfully!");
-        this.$router.push("/stadiums");
+        this.$router.push("/stadium-manager");
       } catch (error) {
         console.error("Error saving stadium:", error);
         const errorMessage =
@@ -224,10 +224,10 @@ export default {
             "Are you sure you want to cancel? Unsaved changes will be lost."
           )
         ) {
-          this.$router.push("/stadiums");
+          this.$router.push("/stadium-manager");
         }
       } else {
-        this.$router.push("/stadiums");
+        this.$router.push("/stadium-manager");
       }
     },
   },
