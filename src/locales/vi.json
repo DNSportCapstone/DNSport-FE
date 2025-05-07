@@ -109,7 +109,7 @@
       "submitting": "Đang gửi..."
     },
     "confirm_title": "Xác nhận hoàn tiền",
-    "confirm_message": "Họ và tên: {userName}. Thời gian còn lại: {timeRemaining}, bạn sẽ được hoàn {refundPercentage}% số tiền: {refundAmount} VND vào ngân hàng {bank}. Bạn có muốn tiếp tục không?",
+    "confirm_message": "Họ và tên: <strong>{userName}</strong>. Thời gian còn lại: <strong>{timeRemaining}</strong>. Bạn sẽ được hoàn <strong>{refundPercentage}%</strong> số tiền: <strong>{refundAmount}</strong> vào ngân hàng <strong>{bank}</strong>. Bạn có muốn tiếp tục không?",
     "confirm": "Đồng ý",
     "processing": "Đang xử lý...",
     "cancel": "Hủy",

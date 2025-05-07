@@ -104,7 +104,7 @@
       "submitting": "Submitting..."
     },
     "confirm_title": "Confirm Refund",
-    "confirm_message": "Full Name: {userName}. Time Remaining: {timeRemaining}, you will be refunded {refundPercentage}% of the amount: {refundAmount} VND to the bank {bank}. Do you want to continue?",
+    "confirm_message": "Name: <strong>{userName}</strong>. Time remaining: <strong>{timeRemaining}</strong>. You will be refunded </strong>{refundPercentage}%</strong> of the amount: <strong>{refundAmount}</strong> to the bank <strong>{bank}</strong>. Do you want to continue?",
     "confirm": "Confirm",
     "processing": "Processing...",
     "cancel": "Cancel",
