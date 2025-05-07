@@ -416,7 +416,7 @@ export default {
   methods: {
     async fetchStadiums() {
       try {
-        const response = await API.get("/Stadium");
+        const response = await API.get("/Stadium/active");
         this.stadiums = response.data;
       } catch (error) {
         console.error("Error fetching stadium data:", error);

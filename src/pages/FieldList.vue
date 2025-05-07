@@ -90,7 +90,7 @@ export default {
   methods: {
     async fetchFields() {
       try {
-        const response = await API.get("/Field/get-all-fields");
+        const response = await API.get("/Field/active");
         this.fields = response.data;
       } catch (error) {
         console.error(this.t("field_list.error.fetch_failed"), error);
