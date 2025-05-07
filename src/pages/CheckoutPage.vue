@@ -152,23 +152,47 @@
                 <h5>Cart Summary</h5>
               </div>
               <div class="ibox-content">
-                <span>Total</span>
+                <div class="form-group">
+                  <label>Mã giảm giá</label>
+                  <div class="input-group">
+                    <input
+                      v-model="voucherCode"
+                      type="text"
+                      class="form-control"
+                      placeholder="Nhập mã"
+                    />
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary" @click="applyVoucher">
+                        Áp dụng
+                      </button>
+                    </span>
+                  </div>
+                  <div v-if="voucherError" class="text-danger small mt-1">
+                    {{ voucherError }}
+                  </div>
+                </div>
+                <span>Tạm tính</span>
+                <h4>{{ formatPrice(calculateCartTotal()) }}</h4>
+                <span>Giảm giá</span>
+                <h5 class="text-danger">
+                  -{{ formatPrice(calculateSalesAfterDiscount()) }}
+                </h5>
+                <span>Tổng thanh toán</span>
                 <h2 class="font-bold">
-                  {{ formatPrice(calculateCartTotal()) }}
+                  {{ formatPrice(calculateTotalAfterDiscount()) }}
                 </h2>
                 <hr />
                 <span class="text-muted small">
                   *For VietName applicable sales tax will be applied
                 </span>
                 <div class="m-t-sm">
-                  <div class="btn-group">
+                  <div class="">
                     <button
                       class="btn btn-dns-primary btn-sm"
                       @click="createBooking"
                     >
                       <i class="fa fa-shopping-cart"></i> Checkout
                     </button>
-                    <a href="#" class="btn btn-white btn-sm">Cancel</a>
                   </div>
                 </div>
               </div>
@@ -205,6 +229,10 @@ export default {
   data() {
     return {
       multipleBookingModel: [],
+      voucherCode: "",
+      voucherDiscount: 0,
+      voucherError: "",
+      voucherId: 0,
     };
   },
   computed: {
@@ -266,6 +294,7 @@ export default {
       try {
         const response = await API.post(`booking/multiple`, {
           fields: this.multipleBookingModel,
+          voucherId: this.voucherId,
         });
         if (response.data.isSuccess) {
           this.handlePayment(response.data.bookingId);
@@ -286,13 +315,59 @@ export default {
         const response = await API.post(
           `payment/payos-create-payment/multiple-booking`,
           {
-            amount: this.calculateCartTotal(),
+            amount: this.calculateTotalAfterDiscount(),
             bookingId: bookingId,
           }
         );
         window.location.href = response.data.paymentUrl;
       } catch (error) {
         console.error(error);
+      }
+    },
+    async applyVoucher() {
+      this.voucherError = "";
+      try {
+        const res = await API.post(
+          "vouchers/apply",
+          JSON.stringify(this.voucherCode),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!res.data.isError) {
+          this.voucherDiscount = res.data.discountPercentage;
+          this.voucherId = res.data.voucherId;
+          showMessageBox({
+            title: "Information",
+            description: `Apply code successfully! <strong>${res.data.discountPercentage}%</strong> off`,
+            type: "info",
+            showCancel: false,
+          });
+        } else {
+          this.voucherDiscount = 0;
+          this.voucherError = res.data.message;
+        }
+      } catch (err) {
+        this.voucherError = "There is an error when applying the voucher code.";
+        console.error(err);
+      }
+    },
+    calculateTotalAfterDiscount() {
+      if (this.voucherDiscount != 0) {
+        console.log(this.voucherDiscount);
+        return this.calculateCartTotal() * (1 - this.voucherDiscount / 100);
+      } else {
+        return this.calculateCartTotal();
+      }
+    },
+    calculateSalesAfterDiscount() {
+      if (this.voucherDiscount != 0) {
+        return (this.calculateCartTotal() * this.voucherDiscount) / 100;
+      } else {
+        return 0;
       }
     },
   },

@@ -18,7 +18,7 @@
           <button type="button" class="btn-close" @click="close"></button>
         </div>
         <div class="modal-body">
-          <p>{{ description }}</p>
+          <p v-html="description"></p>
         </div>
         <div class="modal-footer">
           <button

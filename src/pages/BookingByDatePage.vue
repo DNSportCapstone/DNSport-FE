@@ -276,17 +276,21 @@ export default {
           const bookingSlots = allSlots.map((slot) => {
             const slotStart = this.combineDateTime(this.todayDate, slot.time);
             const slotEnd = this.addMinutes(slotStart, 60);
+            const now = new Date();
 
-            const isBooked = bookedSlots.some((b) => {
-              const bookingStart = new Date(b.startTime);
-              console.log(bookingStart);
-              const bookingEnd = new Date(b.endTime);
-              return (
-                (slotStart >= bookingStart && slotStart < bookingEnd) || // bắt đầu trong khung đặt
-                (slotEnd > bookingStart && slotEnd <= bookingEnd) || // kết thúc trong khung đặt
-                (slotStart <= bookingStart && slotEnd >= bookingEnd) // bao phủ toàn bộ
-              );
-            });
+            const isPast = slotEnd <= now;
+
+            const isBooked =
+              isPast ||
+              bookedSlots.some((b) => {
+                const bookingStart = new Date(b.startTime);
+                const bookingEnd = new Date(b.endTime);
+                return (
+                  (slotStart >= bookingStart && slotStart < bookingEnd) ||
+                  (slotEnd > bookingStart && slotEnd <= bookingEnd) ||
+                  (slotStart <= bookingStart && slotEnd >= bookingEnd)
+                );
+              });
 
             return {
               ...slot,
