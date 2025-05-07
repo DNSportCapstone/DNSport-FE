@@ -13,20 +13,8 @@
     <div class="container">
       <div class="review-form-container">
         <div class="review-form-card">
-          <!-- Error Message -->
-          <div v-if="errorMessage" class="alert-message error">
-            <i class="bi bi-exclamation-circle-fill"></i>
-            {{ errorMessage }}
-          </div>
-
-          <!-- Success Message -->
-          <div v-if="hasRated" class="alert-message success">
-            <i class="bi bi-check-circle-fill"></i>
-            {{ t("review.success.already_rated") }}
-          </div>
-
           <!-- Review Form -->
-          <div v-else class="review-form">
+          <div v-if="canRate" class="review-form">
             <div class="form-header">
               <h2>{{ t("review.form.title") }}</h2>
               <p>{{ t("review.form.description") }}</p>
@@ -74,6 +62,7 @@ import StarRating from "@/components/StarRating.vue";
 import CommonHelper from "@/utils/common";
 import API from "@/utils/axios";
 import { useI18n } from "vue-i18n";
+import { showMessageBox } from "@/utils/message-box-service.js";
 
 export default {
   components: { StarRating },
@@ -85,46 +74,104 @@ export default {
     return {
       rating: 0,
       newComment: "",
-      hasRated: false,
       bookingId: "",
       userId: null,
-      errorMessage: "",
       isSubmitting: false,
+      canRate: false,
     };
   },
   methods: {
     async fetchUserAndBooking() {
       try {
-        // Get userId from CommonHelper instead of calling API
         this.userId = CommonHelper.getCurrentUserId();
 
         if (!this.userId) {
           throw new Error("User ID not found.");
         }
 
-        // Check if the user has already rated
-        await this.checkIfRated();
+        await this.checkCanRate();
       } catch (error) {
         console.error("Error fetching user and booking info:", error);
-        this.errorMessage = this.t("review.error.load_failed");
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.t("review.error.load_failed"),
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        this.redirectToBookingHistory();
       }
     },
-    async checkIfRated() {
+
+    async checkCanRate() {
       if (!this.bookingId || !this.userId) return;
 
       try {
         const { data } = await API.get(
-          `/rating/check/${this.bookingId}/${this.userId}`
+          `/rating/can-rate/${this.bookingId}/${this.userId}`
         );
-        this.hasRated = data.hasRated;
+
+        if (!data.success || !data.result.canRate) {
+          showMessageBox({
+            title: this.t("error.title"),
+            description: this.t(
+              `review.error.${this.getErrorKey(data.result.message)}`
+            ),
+            type: "error",
+            confirmText: this.t("error.close"),
+            showCancel: false,
+          });
+          this.redirectToBookingHistory();
+          return;
+        }
+
+        this.canRate = true;
       } catch (error) {
-        console.error("Error checking rating:", error);
+        console.error("Error checking rating eligibility:", error);
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.t("review.error.check_failed"),
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        this.redirectToBookingHistory();
       }
     },
+
+    getErrorKey(message) {
+      if (message.includes("Only successful bookings can be rated")) {
+        return "only_successful";
+      } else if (
+        message.includes("You can only rate after the booked time has passed")
+      ) {
+        return "after_booking";
+      } else if (message.includes("You can only rate once per booking")) {
+        return "already_rated";
+      }
+      return "unknown";
+    },
+
+    redirectToBookingHistory() {
+      this.$router.push("/booking-history");
+    },
+
     handleRatingSelected(rating) {
       this.rating = rating;
     },
+
     async submitReview() {
+      if (!this.rating && this.newComment.trim() === "") {
+        showMessageBox({
+          title: this.t("error.title"),
+          description: this.t("review.error.rating_required"),
+          type: "error",
+          confirmText: this.t("error.close"),
+          showCancel: false,
+        });
+        return;
+      }
+
       this.isSubmitting = true;
       try {
         await API.post("/rating/add", {
@@ -134,41 +181,71 @@ export default {
           comment: this.newComment,
         });
 
-        this.hasRated = true;
-        alert(this.t("review.success.submitted"));
+        showMessageBox(
+          {
+            description: this.t("review.success.submitted"),
+            type: "success",
+            confirmText: this.t("error.close"),
+            showCancel: false,
+          },
+          () => {
+            this.redirectToBookingHistory();
+          }
+        );
       } catch (error) {
         console.error("Error submitting review:", error);
 
-        // Handle error messages from API
         if (error.response && error.response.data.message) {
           const errorMsg = error.response.data.message;
+          let errorKey = "review.error.submit_failed";
+
           if (errorMsg.includes("Only successful bookings can be rated")) {
-            this.errorMessage = this.t("review.error.only_successful");
+            errorKey = "review.error.only_successful";
           } else if (
             errorMsg.includes(
               "You can only rate after the booked time has passed"
             )
           ) {
-            this.errorMessage = this.t("review.error.after_booking");
+            errorKey = "review.error.after_booking";
           } else if (errorMsg.includes("You can only rate once per booking")) {
-            this.errorMessage = this.t("review.error.already_rated");
-          } else {
-            this.errorMessage = this.t("review.error.submit_failed");
+            errorKey = "review.error.already_rated";
           }
+
+          showMessageBox({
+            title: this.t("error.title"),
+            description: this.t(errorKey),
+            type: "error",
+            confirmText: this.t("error.close"),
+            showCancel: false,
+          });
         } else {
-          this.errorMessage = this.t("review.error.submit_failed");
+          showMessageBox({
+            title: this.t("error.title"),
+            description: this.t("review.error.submit_failed"),
+            type: "error",
+            confirmText: this.t("error.close"),
+            showCancel: false,
+          });
         }
       } finally {
         this.isSubmitting = false;
       }
     },
   },
-  async created() {
-    await this.fetchUserAndBooking();
-  },
   mounted() {
-    console.log("Booking ID:", this.bookingId);
     this.bookingId = this.$route.params.bookingId;
+    if (!this.bookingId) {
+      showMessageBox({
+        title: this.t("error.title"),
+        description: this.t("review.error.missing_booking"),
+        type: "error",
+        confirmText: this.t("error.close"),
+        showCancel: false,
+      });
+      this.redirectToBookingHistory();
+      return;
+    }
+    this.fetchUserAndBooking();
   },
 };
 </script>

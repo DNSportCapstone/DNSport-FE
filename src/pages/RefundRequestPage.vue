@@ -209,6 +209,29 @@ export default {
     };
   },
   methods: {
+    formatCurrency(amount, locale = "vi-VN") {
+      const formatter = new Intl.NumberFormat(locale, {
+        style: "decimal",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(amount) + " VND";
+    },
+    formatRemainingTime(timeRemainingInSeconds) {
+      if (
+        typeof timeRemainingInSeconds !== "number" ||
+        isNaN(timeRemainingInSeconds) ||
+        timeRemainingInSeconds <= 0
+      ) {
+        return this.$i18n.locale === "vi" ? "Không xác định" : "Unknown";
+      }
+      const hours = Math.floor(timeRemainingInSeconds / 3600);
+      const minutes = Math.floor((timeRemainingInSeconds % 3600) / 60);
+
+      const viTime = `${hours} giờ ${minutes} phút`;
+      const enTime = `${hours} hours ${minutes} minutes`;
+
+      return this.$i18n.locale === "vi" ? viTime : enTime;
+    },
     async fetchRefundPreview() {
       try {
         const response = await API.get(
@@ -336,12 +359,19 @@ export default {
         }
       }
 
-      // Show confirmation message box with cancel button
+      const locale = this.$i18n.locale === "vi" ? "vi-VN" : "en-US";
+      const formattedRefundAmount = this.formatCurrency(
+        parseInt(this.refundPreview.refundAmount) || 0,
+        locale
+      );
+
       this.modalMessage = this.t("refund.confirm_message", {
         userName: this.refundRequest.userName,
-        timeRemaining: this.refundPreview.timeRemaining,
+        timeRemaining: this.formatRemainingTime(
+          this.refundPreview.timeRemainingInSeconds
+        ),
         refundPercentage: this.refundPreview.refundPercentage,
-        refundAmount: this.refundPreview.refundAmount,
+        refundAmount: formattedRefundAmount,
         bank: this.refundRequest.bank,
       });
       showMessageBox(
@@ -349,23 +379,19 @@ export default {
           title: this.t("refund.confirm_title"),
           description: this.modalMessage,
           type: "info",
-          confirmText: this.isConfirming
-            ? this.t("refund.processing")
-            : this.t("refund.confirm"),
-          cancelText: this.t("refund.cancel"),
-          showCancel: true,
-          disabled: this.isConfirming,
+          showCancel: false,
         },
-        async () => {
-          await this.confirmRefund();
-          this.isSubmitting = false;
-        },
-        () => {
-          this.cancelRefund();
-          this.isSubmitting = false;
+        async (result) => {
+          if (result) {
+            await this.confirmRefund();
+            this.isSubmitting = false;
+          } else {
+            this.cancelRefund();
+          }
         }
       );
     },
+
     async confirmRefund() {
       if (this.isConfirming) return;
       this.isConfirming = true;

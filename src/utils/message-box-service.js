@@ -34,7 +34,10 @@ export function showMessageBox(
         description,
         type,
         showCancel,
-        "onUpdate:visible": (v) => (this.visible = v),
+        "onUpdate:visible": (v) => {
+          this.visible = v;
+          if (!v && callback) callback(false);
+        },
         onConfirm: callback != null ? this.confirm : null,
       });
     },
