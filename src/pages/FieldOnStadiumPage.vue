@@ -57,7 +57,10 @@
 
             <!-- Nút hành động -->
             <div class="stadium-actions mt-auto">
-              <button class="view-details-btn">
+              <button
+                class="view-details-btn"
+                @click="navigateToFieldDetail(field.fieldId)"
+              >
                 {{ t("field_on_stadium.field.view_details") }}
               </button>
               <button class="book-now-btn" @click="bookNow(field.fieldId)">
@@ -120,6 +123,12 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    navigateToFieldDetail(fieldId) {
+      this.$router.push({
+        name: "field-details",
+        params: { fieldId: fieldId },
+      });
     },
     bookNow(id) {
       this.$router.push({
