@@ -401,7 +401,7 @@ export default {
       this.fields = [
         {
           fieldId: field.fieldId,
-          fieldName: field.description,
+          fieldName: field.fieldName,
           bookingSlots,
         },
       ];

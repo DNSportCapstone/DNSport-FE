@@ -63,25 +63,6 @@
                               </a>
                             </div>
                           </div>
-                          <div
-                            class="component-calendar-viewswitcher btn-group pull-right"
-                            role="group"
-                          >
-                            <a
-                              data-rel="simplecalendar-view-switch"
-                              data-view="week"
-                              href="#"
-                              class="btn btn-secondary"
-                              >Tuần</a
-                            >
-                            <a
-                              data-rel="simplecalendar-view-switch"
-                              data-view="day"
-                              href="#"
-                              class="btn btn-secondary active"
-                              >Ngày</a
-                            >
-                          </div>
                         </div>
                       </div>
                       <div
@@ -263,7 +244,7 @@ export default {
         this.$store.dispatch("clearMultipleBookingModel");
 
         const response = await API.get(
-          `Field/fields-by-stadium-id/${this.stadiumId}`
+          `Field/active-fields-by-stadium-id/${this.stadiumId}`
         );
 
         this.fields = response.data.map((field) => {
@@ -303,7 +284,7 @@ export default {
 
           return {
             fieldId: field.fieldId,
-            fieldName: field.description,
+            fieldName: field.fieldName,
             bookingSlots,
           };
         });
