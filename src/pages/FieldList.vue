@@ -33,7 +33,7 @@
             class="card-img-top"
           />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-primary">{{ field.name }}</h5>
+            <h5 class="card-title text-primary">{{ field.fieldName }}</h5>
             <!-- <p class="card-text text-muted mb-1">
               {{
                 t("field_list.field.maximum_people", {
