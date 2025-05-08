@@ -210,7 +210,7 @@
                 required
               />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <label class="form-label">Dịch vụ</label>
               <div class="form-check" v-for="s in services" :key="s.id">
                 <input
@@ -225,11 +225,53 @@
                 </label>
               </div>
             </div>
-            <div class="col-md-1 d-flex align-items-end">
-              <h5>
-                Tổng tiền:
-                <strong>{{ totalPrice.toLocaleString("vi-VN") }}₫</strong>
-              </h5>
+            <div class="col-md-3">
+              <label class="form-label">Voucher</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="voucherCode"
+                  placeholder="Nhập mã giảm giá"
+                />
+                <button
+                  class="btn btn-outline-primary"
+                  type="button"
+                  @click="applyVoucher"
+                >
+                  Áp dụng
+                </button>
+              </div>
+              <small class="text-danger" v-if="voucherError">{{
+                t(voucherError)
+              }}</small>
+            </div>
+
+            <div class="mt-4 border-top pt-3">
+              <h5>Tạm tính</h5>
+              <div class="d-flex justify-content-between">
+                <span>Tổng tiền:</span>
+                <span
+                  >{{ calculateTotalPrice().toLocaleString("vi-VN") }}₫</span
+                >
+              </div>
+              <div
+                class="d-flex justify-content-between"
+                v-if="voucherDiscount > 0"
+              >
+                <span>Giảm giá:</span>
+                <span class="text-success">-{{ voucherDiscount }}%</span>
+              </div>
+              <div class="d-flex justify-content-between fw-bold fs-5 mt-2">
+                <span>Thành tiền:</span>
+                <span
+                  >{{
+                    calculateTotalPriceAfterApplyVoucher().toLocaleString(
+                      "vi-VN"
+                    )
+                  }}₫</span
+                >
+              </div>
             </div>
 
             <div class="col-md-1 d-flex align-items-end">
@@ -277,6 +319,7 @@ export default {
         fieldId: null,
         selectedSlots: [],
         userId: null,
+        voucherId: null,
       },
       weekdays: [
         "Chủ nhật",
@@ -291,6 +334,11 @@ export default {
       field: {},
       fetchedField: {},
       startDateError: "",
+      voucherCode: "",
+      voucherDiscount: 0,
+      voucherError: "",
+      voucherId: 0,
+      currentIndex: 0,
     };
   },
   computed: {
@@ -315,6 +363,10 @@ export default {
         total += (slotTotal + serviceTotal) * repeatWeeks;
       }
 
+      if (this.voucherDiscount && this.voucherDiscount != 0) {
+        total *= 1 - this.voucherDiscount / 100;
+      }
+
       return total;
     },
   },
@@ -336,14 +388,13 @@ export default {
       }));
 
       this.field = {
-        name: `Sân ${field.fieldName}`,
+        name: `${field.fieldName}`,
         stadiumName: field.stadiumName,
         address: field.address,
         price: field.dayPrice,
         description: field.description,
         images: field.imageUrls,
       };
-      console.log(this.field.images);
       this.selectedImage = this.field.images[0];
       this.startSlideshow();
 
@@ -488,7 +539,7 @@ export default {
         const response = await API.post(
           `payment/payos-create-payment/multiple-booking`,
           {
-            amount: this.calculateTotalPrice(),
+            amount: this.calculateTotalPriceAfterApplyVoucher(),
             bookingId: bookingId,
           }
         );
@@ -534,6 +585,35 @@ export default {
           this.startDateError = "";
         }
       }
+    },
+    async applyVoucher() {
+      this.voucherError = "";
+      try {
+        const res = await API.post("vouchers/apply", {
+          userId: CommonHelper.getCurrentUserId(),
+          voucherCode: this.voucherCode,
+        });
+
+        if (!res.data.isError) {
+          this.voucherDiscount = res.data.discountPercentage;
+          this.recurring.voucherId = res.data.voucherId;
+          showMessageBox({
+            title: "Information",
+            description: `Apply code successfully! <strong>${res.data.discountPercentage}%</strong> off`,
+            type: "info",
+            showCancel: false,
+          });
+        } else {
+          this.voucherDiscount = 0;
+          this.voucherError = res.data.message;
+        }
+      } catch (err) {
+        this.voucherError = "There is an error when applying the voucher code.";
+        console.error(err);
+      }
+    },
+    calculateTotalPriceAfterApplyVoucher() {
+      return this.calculateTotalPrice() * (1 - this.voucherDiscount / 100);
     },
   },
   async mounted() {
