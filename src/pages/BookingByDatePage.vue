@@ -270,7 +270,10 @@ export default {
           const allSlots = this.generateSlots(); // các khung giờ như "08:00", "08:30", ...
           console.log(field.bookingFields);
           const bookedSlots = field.bookingFields.filter(
-            (b) => b.startTime?.split("T")[0] === this.todayDate.split("T")[0]
+            (b) =>
+              b.startTime?.split("T")[0] === this.todayDate.split("T")[0] &&
+              b.booking?.status !== "PendingPayment" &&
+              b.booking?.status !== "Refunded"
           );
 
           const bookingSlots = allSlots.map((slot) => {
@@ -278,7 +281,7 @@ export default {
             const slotEnd = this.addMinutes(slotStart, 60);
             const now = new Date();
 
-            const isPast = slotEnd <= now;
+            const isPast = slotStart < now;
 
             const isBooked =
               isPast ||
