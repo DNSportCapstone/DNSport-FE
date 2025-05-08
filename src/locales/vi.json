@@ -98,6 +98,8 @@
   "refund": {
     "title": "Hoàn tiền",
     "request_title": "Yêu cầu hoàn tiền",
+    "tracking_title": "Theo Dõi Yêu Cầu Hoàn Tiền",
+    "tracking_description": "Xem trạng thái hoàn tiền",
     "form": {
       "name": "Họ và tên",
       "name_placeholder": "Nhập họ và tên đầy đủ",

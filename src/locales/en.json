@@ -93,6 +93,8 @@
   "refund": {
     "title": "Refund",
     "request_title": "Refund Request",
+    "tracking_title": "Refund Request Tracking",
+    "tracking_description": "View refund requests status",
     "form": {
       "name": "Full Name",
       "name_placeholder": "Enter full name",
