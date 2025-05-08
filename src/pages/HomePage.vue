@@ -317,60 +317,66 @@
               data-aos="fade-up"
               data-aos-delay="300"
             >
-              <h3 class="form-title">Become a Lessor</h3>
-              <p class="form-subtitle">List your sports field with us</p>
+              <h3 class="form-title">{{ t("lessor_form.title") }}</h3>
+              <p class="form-subtitle">{{ t("lessor_form.subtitle") }}</p>
               <form @submit.prevent="submitLessorForm" class="lessor-form">
                 <div class="form-group">
-                  <label for="fullname">Full Name</label>
+                  <label for="fullname">{{
+                    t("lessor_form.fields.fullname")
+                  }}</label>
                   <input
                     type="text"
                     id="fullname"
                     v-model="lessorForm.fullname"
                     class="form-control"
-                    placeholder="Enter your full name"
+                    :placeholder="t('lessor_form.placeholders.fullname')"
                     required
                   />
                 </div>
 
                 <div class="form-group">
-                  <label for="email">Email</label>
+                  <label for="email">{{ t("lessor_form.fields.email") }}</label>
                   <input
                     type="email"
                     id="email"
                     v-model="lessorForm.email"
                     class="form-control"
-                    placeholder="Enter your email"
+                    :placeholder="t('lessor_form.placeholders.email')"
                     required
                   />
                 </div>
 
                 <div class="form-group">
-                  <label for="phone">Phone Number</label>
+                  <label for="phone">{{ t("lessor_form.fields.phone") }}</label>
                   <input
                     type="tel"
                     id="phoneNumber"
                     v-model="lessorForm.phoneNumber"
                     class="form-control"
-                    placeholder="Enter your phone number"
+                    :placeholder="t('lessor_form.placeholders.phone')"
                     required
                   />
                 </div>
 
                 <div class="form-group">
-                  <label for="address">Address</label>
+                  <label for="address">{{
+                    t("lessor_form.fields.address")
+                  }}</label>
                   <textarea
                     id="address"
                     v-model="lessorForm.address"
                     class="form-control"
-                    placeholder="Enter your address"
+                    :placeholder="t('lessor_form.placeholders.address')"
                     rows="3"
                     required
                   ></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">
-                  <span v-if="isSubmitting">Submitting...</span>
-                  <span v-else>Register as Lessor</span>
+                  <span v-if="isSubmitting">{{
+                    t("lessor_form.submitting")
+                  }}</span>
+                  <span v-else>{{ t("lessor_form.submit_button") }}</span>
                 </button>
 
                 <div
