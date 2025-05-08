@@ -92,12 +92,13 @@
             </a>
             <ul>
               <li>
-                <router-link to="/edit-user">
-                  <font-awesome-icon
-                    class="pr-5"
-                    :icon="['fas', 'address-card']"
-                  />
-                  <span>My Profile</span>
+                <router-link to="/edit-user"
+                  ><span>
+                    <font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'address-card']"
+                    />My Profile</span
+                  >
                 </router-link>
               </li>
               <!-- <li class="dropdown">
@@ -114,19 +115,54 @@
                 </ul>
               </li> -->
               <li v-if="isAdmin">
-                <router-link to="/administration">Administration</router-link>
+                <router-link to="/administration"
+                  ><span
+                    ><font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'user-shield']"
+                    />Administration</span
+                  ></router-link
+                >
               </li>
               <li v-if="isLessor">
-                <router-link to="/lessor-page">Lessor Manager</router-link>
+                <router-link to="/lessor-page"
+                  ><span
+                    ><font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'user-tie']"
+                    />Lessor Manager</span
+                  ></router-link
+                >
               </li>
               <li>
-                <router-link to="/booking-history">Booking History</router-link>
+                <router-link to="/booking-history"
+                  ><span
+                    ><font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'calendar-check']"
+                    />Booking History</span
+                  ></router-link
+                >
               </li>
               <li>
-                <router-link to="/payment-history">Payment History</router-link>
+                <router-link to="/payment-history"
+                  ><span
+                    ><font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'money-bill-transfer']"
+                    />Payment History</span
+                  ></router-link
+                >
               </li>
               <li>
-                <router-link to="/refund-tracking">Refund Tracking</router-link>
+                <router-link to="/refund-tracking"
+                  ><span
+                    ><font-awesome-icon
+                      class="pr-5"
+                      :icon="['fas', 'rotate-left']"
+                    />Refund Tracking</span
+                  ></router-link
+                >
               </li>
               <li>
                 <a href="" @click="handleLogout()"
