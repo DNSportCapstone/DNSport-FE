@@ -42,7 +42,7 @@
             :key="field.fieldId"
             :value="field.fieldId"
           >
-            {{ field.description }}
+            {{ field.FieldName }}
           </option>
         </select>
       </div>
