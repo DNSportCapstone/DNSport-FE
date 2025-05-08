@@ -12,19 +12,10 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li>
-            <a
-              @click="changeMenu('hpl-home')"
-              :class="currentHeaderMenu == 'hpl-home' ? 'active' : ''"
-              ><router-link to="/">Home</router-link></a
-            >
+            <a><router-link to="/">Home</router-link></a>
           </li>
           <li>
-            <a
-              href="field-list"
-              @click="changeMenu('hpl-field-list')"
-              :class="currentHeaderMenu == 'hpl-field-list' ? 'active' : ''"
-              >Field</a
-            >
+            <a href="field-list">Field</a>
           </li>
 
           <!-- <li>
@@ -245,9 +236,6 @@ export default {
     // 9. Phương thức
     increment() {
       this.count++;
-    },
-    changeMenu(menu) {
-      this.currentHeaderMenu = menu;
     },
     handleLogout() {
       this.$store.dispatch("logout");
