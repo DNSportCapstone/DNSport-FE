@@ -51,7 +51,18 @@
               </button>
             </div>
           </div>
-
+          <!-- Field Name -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Field Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="description"
+              v-model="field.fieldName"
+              placeholder="Enter field name"
+              required
+            />
+          </div>
           <!-- Sport -->
           <div class="mb-3">
             <label for="sportId" class="form-label">Sport</label>
@@ -70,13 +81,13 @@
 
           <!-- Description -->
           <div class="mb-3">
-            <label for="description" class="form-label">Field Name</label>
+            <label for="description" class="form-label">Description</label>
             <input
               type="text"
               class="form-control"
               id="description"
               v-model="field.description"
-              placeholder="Enter field name"
+              placeholder="Enter description"
               required
             />
           </div>
@@ -122,7 +133,18 @@
               <option value="Disabled">Disabled</option>
             </select>
           </div>
-
+          <div class="mb-3">
+            <label for="maximumPeople" class="form-label">Maximum People</label>
+            <input
+              type="number"
+              class="form-control"
+              id="dayPrice"
+              v-model.number="field.maximumPeople"
+              placeholder="Enter maximum people"
+              min="0"
+              required
+            />
+          </div>
           <!-- Upload Images -->
           <div class="mb-3">
             <label for="imageUpload" class="form-label">Upload Images</label>
@@ -229,11 +251,13 @@ export default {
       field: {
         fieldId: null,
         stadiumId: null,
+        fieldName: "",
         sportId: null,
         description: "",
         dayPrice: 0,
         nightPrice: 0,
         status: "Active",
+        maximumPeople: 0,
         imageUrls: [],
       },
       stadiums: [],
@@ -348,11 +372,13 @@ export default {
         this.field = {
           fieldId: field.fieldId,
           stadiumId: field.stadiumId,
+          fieldName: field.fieldName,
           sportId: field.sportId || null,
           description: field.description || "",
           dayPrice: field.dayPrice || 0,
           nightPrice: field.nightPrice || 0,
           status: field.status || "Active",
+          maximumPeople: field.maximumPeople || 0,
           imageUrls: field.imageUrls || [],
         };
       } catch (error) {
@@ -406,11 +432,13 @@ export default {
         const payload = {
           fieldId: this.isEditMode ? this.field.fieldId : undefined, // Optional
           stadiumId: this.field.stadiumId,
+          fieldName: this.field.fieldName,
           sportId: this.field.sportId,
           description: this.field.description,
           dayPrice: this.field.dayPrice,
           nightPrice: this.field.nightPrice,
           status: this.field.status,
+          maximumPeople: this.field.maximumPeople,
           imageUrls: this.field.imageUrls,
         };
 
