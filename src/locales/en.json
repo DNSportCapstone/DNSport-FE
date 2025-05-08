@@ -298,6 +298,28 @@
   "next": "Next",
   "page": "Page"
 },
+"lessor_form": {
+  "title": "Become a Lessor",
+  "subtitle": "List your sports field with us",
+  "fields": {
+    "fullname": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "address": "Address"
+  },
+  "placeholders": {
+    "fullname": "Enter your full name",
+    "email": "Enter your email",
+    "phone": "Enter your phone number",
+    "address": "Enter your address"
+  },
+  "submit_button": "Register as Lessor",
+  "submitting": "Submitting...",
+  "messages": {
+    "success": "Thank you! Your lessor registration has been submitted successfully.",
+    "error": "Sorry, there was an error submitting your form. Please try again later."
+  }
+},
   "InvalidVoucherCode": "Voucher Code is invalid!",
   "ExpiredVoucherCode": "Voucher Code is expired!",
   "IsUsedVoucherCode": "Voucher Code has been used!",

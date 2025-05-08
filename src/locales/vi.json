@@ -280,6 +280,28 @@
   "next": "Trang sau",
   "page": "Trang"
 },
+"lessor_form": {
+  "title": "Trở thành người cho thuê",
+  "subtitle": "Đăng ký sân thể thao của bạn với chúng tôi",
+  "fields": {
+    "fullname": "Họ và tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ"
+  },
+  "placeholders": {
+    "fullname": "Nhập họ và tên của bạn",
+    "email": "Nhập email của bạn",
+    "phone": "Nhập số điện thoại của bạn",
+    "address": "Nhập địa chỉ của bạn"
+  },
+  "submit_button": "Đăng ký làm người cho thuê",
+  "submitting": "Đang gửi...",
+  "messages": {
+    "success": "Cảm ơn bạn! Đăng ký của bạn đã được gửi thành công.",
+    "error": "Xin lỗi, đã xảy ra lỗi khi gửi biểu mẫu của bạn. Vui lòng thử lại sau."
+  }
+},
   "InvalidVoucherCode": "Mã giảm giá không hợp lệ!",
   "ExpiredVoucherCode": "Mã giảm giá đã hết hạn!",
   "IsUsedVoucherCode": "Mã giảm giá đã được sử dụng!",
