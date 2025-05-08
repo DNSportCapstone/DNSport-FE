@@ -24,13 +24,13 @@
             />
             <div class="card-body d-flex flex-column">
               <h5 class="card-title text-primary">{{ field.fieldName }}</h5>
-              <p class="card-text text-muted mb-1">
+              <!-- <p class="card-text text-muted mb-1">
                 {{
                   t("field_on_stadium.field.maximum_people", {
                     count: field.maximumPeople,
                   })
                 }}
-              </p>
+              </p> -->
               <p class="card-text text-muted mb-1">
                 {{
                   t("field_on_stadium.field.day_price", {

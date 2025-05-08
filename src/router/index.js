@@ -152,7 +152,6 @@ const protectedRoutes = [
     path: "/field-details/:fieldId",
     name: "field-details",
     component: FieldDetails,
-    meta: { requiresAuth: true },
   },
   {
     path: "/booking-services",
