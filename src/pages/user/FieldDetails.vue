@@ -2,101 +2,99 @@
   <div class="section">
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-      <h2>Field</h2>
+      <h2>{{ t("FieldDetails") }}</h2>
       <div>
         <span class="description-title">{{ t("FieldDetails") }}</span>
       </div>
     </div>
-    <!-- End Section Title -->
 
-    <div class="container">
-      <div class="row">
-        <!-- Hình ảnh sân bóng -->
-        <div class="col-md-6 mb-4">
-          <img
-            :src="selectedImage"
-            alt="Field"
-            class="img-fluid rounded mb-3 product-image"
-          />
-          <div class="d-flex">
-            <img
-              v-for="(image, index) in field.imageUrls"
-              :key="index"
-              :src="image"
-              :alt="'Thumbnail ' + (index + 1)"
-              class="thumbnail rounded"
-              :class="{ active: selectedImage === image }"
-              @click="changeImage(image, true)"
-            />
-          </div>
-        </div>
-
-        <!-- Thông tin sân bóng -->
-        <div class="col-md-6">
-          <h2 class="mb-3">Sân 5 Người</h2>
-          <!-- Tên sân có thể thay đổi -->
-          <p class="text-muted mb-4">{{ field.description }}</p>
-          <div class="mb-3">
-            <span class="h4 me-2"
-              >{{ CommonHelper.formatVND(field.dayPrice) }} /giờ (Ban
-              ngày)</span
-            >
-          </div>
-          <div class="mb-3">
-            <span class="h4 me-2"
-              >{{ CommonHelper.formatVND(field.nightPrice) }} /giờ (Ban
-              đêm)</span
-            >
-          </div>
-
-          <button class="btn btn-primary btn-lg mb-3 me-2" @click="bookField">
-            <i class="bi bi-cart-plus"></i> Đặt sân ngay
-          </button>
-
-          <div class="mt-4">
-            <h5>Thông tin sân:</h5>
-            <ul>
-              <li>Diện tích: 40m x 20m</li>
-              <li>Mặt sân: Cỏ nhân tạo cao cấp</li>
-              <li>Hệ thống đèn chiếu sáng</li>
-              <li>Phòng thay đồ, nhà vệ sinh sạch sẽ</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Đánh giá và Bình luận -->
-      <div class="mt-5">
-        <h4>Đánh giá của khách hàng</h4>
-
-        <div v-if="reviews.length">
-          <div
-            v-for="(review, index) in reviews"
-            :key="index"
-            class="card mb-3"
-          >
-            <div class="card-body">
-              <h5 class="card-title">{{ review.name }}</h5>
-              <p class="card-text">
-                <span v-for="n in 5" :key="n">
-                  <i
-                    class="bi"
-                    :class="
-                      n <= review.rating
-                        ? 'bi-star-fill text-warning'
-                        : 'bi-star text-muted'
-                    "
-                  ></i>
-                </span>
-              </p>
-              <p class="card-text">{{ review.comment }}</p>
+    <div class="fd-main container-fluid">
+      <div class="row fd-main-row">
+        <!-- Image Gallery -->
+        <div class="col-lg-6 col-12 fd-gallery-col">
+          <div class="fd-gallery-card">
+            <img :src="selectedImage" alt="Field" class="fd-main-image" />
+            <div class="fd-thumbnails">
+              <img
+                v-for="(image, index) in field.imageUrls"
+                :key="index"
+                :src="image"
+                :alt="'Thumbnail ' + (index + 1)"
+                class="fd-thumbnail"
+                :class="{ active: selectedImage === image }"
+                @click="changeImage(image, true)"
+              />
             </div>
           </div>
         </div>
-        <div v-else>
-          <p>Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+
+        <!-- Field Info Card -->
+        <div class="col-lg-6 col-12 fd-info-col">
+          <div class="fd-info-card">
+            <h2 class="fd-info-title">
+              {{ field.fieldName }}
+            </h2>
+            <div class="fd-pricing">
+              <div class="fd-price-item">
+                <i class="bi bi-sun-fill text-warning"></i>
+                <span
+                  >{{ CommonHelper.formatVND(field.dayPrice) }}
+                  <span class="fd-price-unit">/giờ (Ban ngày)</span></span
+                >
+              </div>
+              <div class="fd-price-item">
+                <i class="bi bi-moon-fill text-primary"></i>
+                <span
+                  >{{ CommonHelper.formatVND(field.nightPrice) }}
+                  <span class="fd-price-unit">/giờ (Ban đêm)</span></span
+                >
+              </div>
+            </div>
+            <button class="fd-book-btn" @click="bookNow(field.fieldId)">
+              Đặt sân ngay
+            </button>
+            <div class="fd-features">
+              <h5>Thông tin sân</h5>
+              <p>{{ field.description }}</p>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Reviews -->
+      <section class="fd-reviews-section">
+        <h3 class="fd-reviews-title">
+          <i class="bi bi-chat-dots"></i> Đánh giá khách hàng
+        </h3>
+        <div v-if="reviews.length" class="fd-reviews-list">
+          <div
+            v-for="(review, index) in reviews"
+            :key="index"
+            class="fd-review-row"
+          >
+            <div class="fd-review-row-header">
+              <span class="fd-review-name">{{ review.fullName }}</span>
+              <span class="fd-review-date">{{ formatDate(review.time) }}</span>
+            </div>
+            <div class="fd-review-rating">
+              <span v-for="n in 5" :key="n">
+                <i
+                  class="bi"
+                  :class="
+                    n <= review.ratingValue
+                      ? 'bi-star-fill text-warning'
+                      : 'bi-star text-muted'
+                  "
+                ></i>
+              </span>
+            </div>
+            <div class="fd-review-comment">{{ review.comment }}</div>
+          </div>
+        </div>
+        <div v-else class="fd-no-reviews">
+          <p>Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -126,6 +124,12 @@ export default {
     };
   },
   methods: {
+    async fetchFieldReview(fieldId) {
+      // Gọi API để lấy chi tiết sân
+      var response = await API.get(`/rating/comments/${fieldId}`);
+      console.log(response.data);
+      this.reviews = response.data;
+    },
     async fetchFieldDetails(fieldId) {
       // Gọi API để lấy chi tiết sân
       var response = await API.get(`/Field/${fieldId}`);
@@ -153,36 +157,29 @@ export default {
       clearInterval(this.intervalId);
       this.startSlideshow();
     },
-    bookField() {
-      alert(`Bạn đã đặt sân thành công!`);
+    bookNow(id) {
+      this.$router.push({
+        name: "booking-schedule",
+        params: { fieldId: id },
+      });
+    },
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      const pad = (n) => n.toString().padStart(2, "0");
+      return `${pad(date.getDate())}/${pad(
+        date.getMonth() + 1
+      )}/${date.getFullYear()} ${pad(date.getHours())}:${pad(
+        date.getMinutes()
+      )}`;
     },
   },
   async mounted() {
     const { fieldId } = this.$route.params;
     await this.fetchFieldDetails(fieldId);
-    this.reviews = [
-      {
-        name: "Nguyễn Văn A",
-        rating: 5,
-        comment: "Sân đẹp, cỏ êm, đèn sáng, sẽ quay lại!",
-      },
-      {
-        name: "Trần Thị B",
-        rating: 4,
-        comment: "Sân ổn, tuy nhiên nhà vệ sinh hơi nhỏ.",
-      },
-      {
-        name: "Lê Văn C",
-        rating: 5,
-        comment: "Mặt sân cực kỳ chất lượng, nhân viên thân thiện!",
-      },
-      {
-        name: "Phạm Thị D",
-        rating: 3,
-        comment: "Sân hơi xa trung tâm, bù lại giá hợp lý.",
-      },
-    ];
+    await this.fetchFieldReview(fieldId);
   },
+
   beforeUnmount() {
     clearInterval(this.intervalId);
   },
@@ -190,18 +187,280 @@ export default {
 </script>
 
 <style>
-.thumbnail {
-  width: 80px;
-  height: 60px;
-  cursor: pointer;
+.field-details-page {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f8f9fa 60%, #e6f7ee 100%);
+}
+
+.fd-header {
+  background: #fff;
+  border-bottom: 2px solid #0dd70d22;
+  padding: 32px 0 16px 0;
+  margin-bottom: 16px;
+}
+.fd-header-content {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.fd-header-icon {
+  font-size: 2.5rem;
+  color: #0dd70d;
+}
+.fd-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1a237e;
+  margin-bottom: 0.2rem;
+  letter-spacing: 1px;
+}
+.fd-subtitle {
+  font-size: 1.1rem;
+  color: #0dd70d;
+  font-weight: 600;
+}
+
+.fd-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+.fd-main-row {
+  margin-bottom: 32px;
+  align-items: stretch;
+}
+.fd-gallery-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fd-gallery-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(44, 62, 80, 0.08);
+  padding: 18px 18px 12px 18px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fd-main-image {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px 0 rgba(13, 215, 13, 0.08);
+  transition: transform 0.3s;
+}
+.fd-main-image:hover {
+  transform: scale(1.03);
+}
+.fd-thumbnails {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: 4px;
+}
+.fd-thumbnail {
+  width: 70px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
   border: 2px solid transparent;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: border 0.2s, transform 0.2s;
 }
-.thumbnail:hover,
-.thumbnail.active {
+.fd-thumbnail.active,
+.fd-thumbnail:hover {
   border: 2px solid #0dd70d;
+  transform: translateY(-2px) scale(1.04);
 }
-.product-image {
-  width: 100% !important;
+
+.fd-info-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fd-info-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 1.5px solid #0dd70d33;
+  box-shadow: 0 6px 24px 0 rgba(13, 215, 13, 0.08),
+    0 1.5px 4px 0 rgba(44, 62, 80, 0.04);
+  padding: 32px 28px 24px 28px;
+  width: 100%;
+  max-width: 420px;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+.fd-info-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  text-align: center;
+}
+.fd-info-icon {
+  color: #0dd70d;
+  font-size: 1.5rem;
+}
+.fd-pricing {
+  margin-bottom: 18px;
+}
+.fd-price-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+  color: #222;
+}
+.fd-price-unit {
+  color: #888;
+  font-size: 0.98rem;
+}
+.fd-book-btn {
+  width: 100%;
+  background: #28a745;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  margin-bottom: 18px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px 0 rgba(13, 215, 13, 0.08);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.fd-book-btn:hover {
+  background: #218838;
+  color: #fff;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 16px 0 rgba(13, 215, 13, 0.13);
+}
+.fd-features {
+  margin-top: 10px;
+}
+.fd-features h5 {
+  font-size: 1.1rem;
+  color: #1a237e;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.fd-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.fd-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #222;
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+.fd-features i {
+  color: #0dd70d;
+  font-size: 1.1rem;
+}
+
+/* Reviews */
+.fd-reviews-section {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px 0 rgba(44, 62, 80, 0.06);
+  padding: 28px 18px 18px 18px;
+}
+.fd-reviews-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fd-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 12px;
+}
+.fd-review-row {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.fd-review-row:last-child {
+  border-bottom: none;
+}
+.fd-review-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a237e;
+}
+.fd-review-date {
+  font-size: 0.95rem;
+  color: #888;
+  font-weight: 400;
+}
+.fd-review-rating {
+  margin: 2px 0 2px 0;
+}
+.fd-review-comment {
+  color: #222;
+  font-size: 1rem;
+  margin-top: 2px;
+}
+.fd-no-reviews {
+  text-align: center;
+  color: #888;
+  font-size: 1.05rem;
+  padding: 18px 0 6px 0;
+}
+
+@media (max-width: 991px) {
+  .fd-main-row {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .fd-gallery-card,
+  .fd-info-card {
+    max-width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .fd-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .fd-title {
+    font-size: 1.3rem;
+  }
+  .fd-main-image {
+    height: 180px;
+  }
+  .fd-info-card {
+    padding: 18px 8px 12px 8px;
+  }
+  .fd-reviews-section {
+    padding: 14px 4px 8px 4px;
+  }
 }
 </style>
