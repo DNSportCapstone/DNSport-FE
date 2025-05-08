@@ -368,9 +368,11 @@ export default {
       ],
       fieldColumns: [
         { key: "fieldId", label: "Field ID" },
-        { key: "description", label: "Field Name" },
+        { key: "fieldName", label: "Field Name" },
+        { key: "description", label: "Description" },
         { key: "dayPrice", label: "Day Price" },
         { key: "nightPrice", label: "Night Price" },
+        { key: "maximumPeople", label: "Maximum People" },
         { key: "status", label: "Status" },
       ],
 
