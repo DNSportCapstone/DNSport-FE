@@ -1,4 +1,5 @@
 <template>
+  <div style="padding-bottom: 10vh"></div>
   <div class="payment-success-container">
     <div class="success-container">
       <div class="success-circle-border">
@@ -11,6 +12,7 @@
     <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
     <router-link to="/" class="home-button">Quay về trang chủ</router-link>
   </div>
+  <div style="margin-bottom: 20vh"></div>
 </template>
 
 <style scoped>
@@ -104,7 +106,7 @@ p {
 .success-circle {
   width: 80px;
   height: 80px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   border-radius: 50%;
   display: flex;
   justify-content: center;
