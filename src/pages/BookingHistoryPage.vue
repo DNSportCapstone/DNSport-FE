@@ -624,13 +624,17 @@ export default {
             TotalPrice: b.totalPrice,
             BookingDate: b.bookingDate,
             Status: b.status,
-            FieldId: b.description,
+            FieldId: b.fieldName,
             StartTime: b.startTime,
             EndTime: b.endTime,
             StadiumName: b.stadiumName,
             IsReport: b.isReport,
           }))
-          .sort((a, b) => new Date(b.BookingDate).getTime() - new Date(a.BookingDate).getTime());
+          .sort(
+            (a, b) =>
+              new Date(b.BookingDate).getTime() -
+              new Date(a.BookingDate).getTime()
+          );
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       } finally {
