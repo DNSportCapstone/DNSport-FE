@@ -19,7 +19,7 @@
         class="mb-4"
       >
         <h4 class="field-name">
-          Sân: <strong>{{ field.fieldName }}</strong>
+          <strong>{{ field.fieldName }}</strong>
         </h4>
         <div
           v-for="slot in field.selectedSlots"
@@ -29,7 +29,8 @@
         >
           <div class="d-flex justify-content-between align-items-center">
             <span class="slot-title">
-              Thời gian: {{ slot.time }} - Giá: {{ formatCurrency(slot.price) }}
+              {{ t("Time") }}: {{ slot.time }} - {{ t("Price") }}:
+              {{ formatCurrency(slot.price) }}
             </span>
             <span class="service-count">
               ({{ slot.services?.length || 0 }})
@@ -50,7 +51,7 @@
                 type="button"
                 @click.stop="toggleDropdown(field.fieldId, slot.time)"
               >
-                Chọn dịch vụ
+                {{ t("ChooseServices") }}
               </button>
               <ul
                 class="dropdown-menu show position-absolute dropdown-outline btn-dns-secondary"
@@ -71,7 +72,7 @@
               </ul>
             </div>
             <div v-if="slot.services?.length" class="mt-2">
-              <strong>Dịch vụ đã chọn:</strong>
+              <strong>{{ t("ChoosenServices") }}:</strong>
               <ul>
                 <li v-for="service in slot.services" :key="service.id">
                   {{ service.name }} -

@@ -294,12 +294,14 @@
     }
   },
   "pagination": {
-  "previous": "Previous",
-  "next": "Next",
-  "page": "Page"
-},
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page"
+  },
   "InvalidVoucherCode": "Voucher Code is invalid!",
   "ExpiredVoucherCode": "Voucher Code is expired!",
   "IsUsedVoucherCode": "Voucher Code has been used!",
-  "ApplyVoucherError": "Apply Voucher Error!"
+  "ApplyVoucherError": "Apply Voucher Error!",
+  "Price": "Price",
+  "ChoosenServices": "Choosen Servicss"
 }

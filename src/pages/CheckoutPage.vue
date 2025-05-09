@@ -57,13 +57,6 @@
                               <dd>
                                 Slot {{ slotIndex + 1 }}: {{ slot.time }} -
                                 {{ calculateEndTime(slot.time, slot.duration) }}
-                                <a href="#" class="text-muted"
-                                  ><i class="fa fa-edit"></i> Sửa</a
-                                >
-                                |
-                                <a href="#" class="text-muted"
-                                  ><i class="fa fa-trash"></i> Xóa</a
-                                >
                               </dd>
                               <!-- Bảng dịch vụ cho từng slot -->
                               <table class="table service-table">
@@ -88,32 +81,10 @@
                                       class="form-control service-quantity"
                                     />
                                   </td>
-                                  <td>
-                                    <a href="#" class="text-muted"
-                                      ><i class="fa fa-edit"></i> Sửa</a
-                                    >
-                                    |
-                                    <a href="#" class="text-muted"
-                                      ><i class="fa fa-trash"></i> Xóa</a
-                                    >
-                                  </td>
                                 </tr>
                               </table>
                             </template>
-                            <a href="#" class="text-muted"
-                              ><i class="fa fa-plus"></i> Thêm Slot</a
-                            >
                           </dl>
-
-                          <div class="m-t-sm">
-                            <a href="#" class="text-muted">
-                              <i class="fa fa-calendar"></i> Chọn thời gian khác
-                            </a>
-                            |
-                            <a href="#" class="text-muted">
-                              <i class="fa fa-trash"></i> Hủy đặt sân
-                            </a>
-                          </div>
                         </td>
                         <td>
                           {{ formatPrice(field.selectedSlots[0].price) }} / Slot
@@ -302,7 +273,7 @@ export default {
         } else {
           showMessageBox({
             title: "Warning",
-            description: "Booking failed!",
+            description: "There is a slot that has already been booked!",
             type: "warning",
             showCancel: false,
           });
