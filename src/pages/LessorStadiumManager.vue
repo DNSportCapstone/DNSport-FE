@@ -674,7 +674,7 @@ export default {
         }
 
         this.toast.success(
-          `Field ${field.description} has been ${
+          `Field ${field.fieldName} has been ${
             newStatus === "Active" ? "activated" : "disabled"
           } successfully`
         );
